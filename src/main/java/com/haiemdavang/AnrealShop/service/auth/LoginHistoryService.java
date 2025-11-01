@@ -11,6 +11,8 @@ import jakarta.servlet.http.HttpServletRequest;
 import lombok.AllArgsConstructor;
 import org.springframework.stereotype.Service;
 
+import java.time.LocalDate;
+import java.time.LocalDateTime;
 import java.util.List;
 
 @Service
@@ -35,6 +37,7 @@ public class LoginHistoryService {
                 .userAgent(userAgent)
                 .device(device)
                 .location(location)
+                .loginAt(LocalDateTime.now())
                 .build();
 
         HistoryLogin existingDevices = historyRepo.findByUserAndDevice(user, device);

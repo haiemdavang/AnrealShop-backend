@@ -1,5 +1,5 @@
 spring:
-  datasource: # 13.229.228.146
+  datasource:
     url: jdbc:mysql://${DB_HOST:localhost}:${DB_PORT:3306}/${DB_NAME:db_anrealShop_test_2}?useSSL=false&allowPublicKeyRetrieval=true&serverTimezone=Asia/Ho_Chi_Minh&rewriteBatchedStatements=true
     username: ${DB_USERNAME:haiemdavang}
     password: ${DB_PASSWORD:haiemdavang}
@@ -18,8 +18,7 @@ spring:
 
   data:
     redis:
-      port: ${REDIS_PORT:6379}
-      host: ${REDIS_HOST:localhost}
+      url: ${REDIS_URL}
 
   mail:
     host: smtp.gmail.com
@@ -38,6 +37,11 @@ spring:
 
   kafka:
     bootstrap-servers: ${KAFKA_HOST}:${KAFKA_PORT:9092}
+    consumer:
+      properties:
+        max.poll.interval.ms: 900000
+        session.timeout.ms: 60000
+        heartbeat.interval.ms: 15000
 
   elasticsearch:
     uris: http://${ES_HOST:localhost}:${ES_PORT:9200}

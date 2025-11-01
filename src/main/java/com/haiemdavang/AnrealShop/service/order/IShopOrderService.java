@@ -52,4 +52,5 @@ public interface IShopOrderService {
     void updateStatus(@NotEmpty(message = "{SHIPMENT_SHOP_ORDER_IDS_NOT_EMPTY}") List<String> shopOrderIds, ShopOrderStatus preparing);
 
 
+    List<ShopOrder> getShopOrdersByOrderId(String content);
 }

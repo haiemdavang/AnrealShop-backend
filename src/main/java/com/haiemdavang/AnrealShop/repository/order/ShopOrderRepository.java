@@ -81,4 +81,9 @@ public interface ShopOrderRepository extends JpaRepository<ShopOrder, String>, J
             "WHERE so.id = :shopOrderId")
     ShopOrder findWithFullOrderItemById(String shopOrderId);
 
+    @EntityGraph(attributePaths = {
+            "shop",
+            "shop.user",
+    })
+    List<ShopOrder> findByOrderId(String orderId);
 }

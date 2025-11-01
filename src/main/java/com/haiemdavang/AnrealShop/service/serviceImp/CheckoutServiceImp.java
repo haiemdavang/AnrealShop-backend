@@ -20,6 +20,8 @@ import com.haiemdavang.AnrealShop.service.ICheckoutService;
 import com.haiemdavang.AnrealShop.service.IProductService;
 import com.haiemdavang.AnrealShop.service.order.IUserOrderService;
 import com.haiemdavang.AnrealShop.service.shipment.IGHNService;
+import com.haiemdavang.AnrealShop.tech.kafka.producer.NoticeKafkaProducer;
+import com.haiemdavang.AnrealShop.dto.notice.NoticeTemplate;
 import jakarta.servlet.http.HttpServletRequest;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
@@ -40,19 +42,26 @@ public class CheckoutServiceImp implements ICheckoutService {
     private final ShopMapper shopMapper;
     private final CartMapper cartMapper;
 
+    private final NoticeKafkaProducer noticeKafkaProducer;
+
 
     @Override
     public CheckoutResponseDto checkout(CheckoutRequestDto requestDto, HttpServletRequest request) {
         UserAddress userAddress = addressService.getCurrentUserAddressById(requestDto.getAddressId());
 
+        CheckoutResponseDto responseDto;
         if (requestDto.getPaymentMethod().equals(PaymentType.BANK_TRANSFER)){
-            return orderService.createOrderBankTran(requestDto, userAddress, getClientIpAddress(request));
+            responseDto = orderService.createOrderBankTran(requestDto, userAddress, getClientIpAddress(request));
         } else if (requestDto.getPaymentMethod().equals(PaymentType.COD)) {
-            return orderService.createOrderCOD(requestDto, userAddress);
+            responseDto = orderService.createOrderCOD(requestDto, userAddress);
         } else {
             throw new BadRequestException("PAYMENT_METHOD_NOT_SUPPORT");
         }
 
+        if (responseDto != null) {
+            noticeKafkaProducer.sendNoticeSyncMessage(NoticeTemplate.newOrderForShop(responseDto.getOrderId()));
+        }
+        return responseDto;
     }
 
     @Override

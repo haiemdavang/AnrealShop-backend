@@ -279,6 +279,10 @@ public class ShopOrderServiceImp implements IShopOrderService {
         shopOrderRepository.saveAll(shopOrders);
     }
 
+    @Override
+    public List<ShopOrder> getShopOrdersByOrderId(String content) {
+        return shopOrderRepository.findByOrderId(content);
+    }
 
 
     private  void handleMapStatus(ShopOrder shopOrder) {
