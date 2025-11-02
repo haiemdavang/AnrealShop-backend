@@ -3,7 +3,7 @@ package com.haiemdavang.AnrealShop.tech.mail.service;
 import com.haiemdavang.AnrealShop.exception.AnrealShopException;
 import com.haiemdavang.AnrealShop.exception.BadRequestException;
 import com.haiemdavang.AnrealShop.exception.ForbiddenException;
-import com.haiemdavang.AnrealShop.repository.UserRepository;
+import com.haiemdavang.AnrealShop.repository.user.UserRepository;
 import com.haiemdavang.AnrealShop.tech.mail.MailType;
 import com.haiemdavang.AnrealShop.tech.redis.service.IRedisService;
 import com.haiemdavang.AnrealShop.utils.MailTemplate;

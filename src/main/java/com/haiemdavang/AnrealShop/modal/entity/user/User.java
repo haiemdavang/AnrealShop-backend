@@ -1,5 +1,6 @@
 package com.haiemdavang.AnrealShop.modal.entity.user;
 
+import com.haiemdavang.AnrealShop.modal.entity.shop.Shop;
 import com.haiemdavang.AnrealShop.modal.enums.GenderType;
 import jakarta.persistence.*;
 import lombok.*;
@@ -10,11 +11,13 @@ import org.hibernate.annotations.Where;
 
 import java.time.LocalDate;
 import java.time.LocalDateTime;
+import java.util.Set;
+
 @Getter
 @Setter
 @NoArgsConstructor
 @AllArgsConstructor
-@ToString(exclude = {"role"})
+@ToString(exclude = {"role", "shops"})
 @EqualsAndHashCode(of = "id")
 @Entity
 @Table(name = "users", indexes = {
@@ -80,8 +83,8 @@ public class User {
     private String deleteReason;
 
 
-    // @OneToMany(mappedBy = "user", cascade = CascadeType.ALL, fetch = FetchType.LAZY)
-    // private Set<Shop> shops; // Các shop mà user này sở hữu
+     @OneToMany(mappedBy = "user", cascade = CascadeType.ALL, fetch = FetchType.LAZY)
+     private Set<Shop> shops;
 
     // @OneToMany(mappedBy = "user", cascade = CascadeType.ALL, orphanRemoval = true, fetch = FetchType.LAZY)
     // private Set<UserAddress> userAddresses; // Địa chỉ của user

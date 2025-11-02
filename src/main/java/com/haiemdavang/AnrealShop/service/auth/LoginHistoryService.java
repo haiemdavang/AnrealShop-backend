@@ -4,14 +4,13 @@ import com.haiemdavang.AnrealShop.dto.auth.HistoryLoginDto;
 import com.haiemdavang.AnrealShop.mapper.HistoryLoginMapper;
 import com.haiemdavang.AnrealShop.modal.entity.user.HistoryLogin;
 import com.haiemdavang.AnrealShop.modal.entity.user.User;
-import com.haiemdavang.AnrealShop.repository.HistoryLoginRepository;
+import com.haiemdavang.AnrealShop.repository.user.HistoryLoginRepository;
 import com.haiemdavang.AnrealShop.security.SecurityUtils;
 import eu.bitwalker.useragentutils.UserAgent;
 import jakarta.servlet.http.HttpServletRequest;
 import lombok.AllArgsConstructor;
 import org.springframework.stereotype.Service;
 
-import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.util.List;
 
