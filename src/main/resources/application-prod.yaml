@@ -17,8 +17,7 @@ spring:
     driver-class-name: com.mysql.cj.jdbc.Driver
   data:
     redis:
-      port: ${REDIS_PORT}
-      host: ${REDIS_HOST}
+        url: ${REDIS_URL}
   mail:
     username: ${EMAIL_USERNAME}
     password: ${EMAIL_PASSWORD}
