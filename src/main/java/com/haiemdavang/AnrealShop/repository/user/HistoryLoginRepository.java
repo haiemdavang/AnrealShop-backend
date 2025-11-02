@@ -1,4 +1,4 @@
-package com.haiemdavang.AnrealShop.repository;
+package com.haiemdavang.AnrealShop.repository.user;
 
 import com.haiemdavang.AnrealShop.modal.entity.user.HistoryLogin;
 import com.haiemdavang.AnrealShop.modal.entity.user.User;

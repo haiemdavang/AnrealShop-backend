@@ -1,6 +1,9 @@
-package com.haiemdavang.AnrealShop.repository;
+package com.haiemdavang.AnrealShop.repository.user;
 
 import com.haiemdavang.AnrealShop.modal.entity.user.User;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
+import org.springframework.data.jpa.domain.Specification;
 import org.springframework.data.jpa.repository.EntityGraph;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.stereotype.Repository;
@@ -12,7 +15,5 @@ public interface UserRepository extends JpaRepository<User, String> {
     @EntityGraph(attributePaths = "role")
     Optional<User> findByEmail(String email);
     boolean existsByEmail(String email);
-    Optional<User> findByUsername(String username);
-    boolean existsByUsername(String username);
-    Optional<User> findByEmailOrUsername(String email, String username);
+    Page<User> findAll(Specification<User> userSpecification, Pageable pageable);
 }
