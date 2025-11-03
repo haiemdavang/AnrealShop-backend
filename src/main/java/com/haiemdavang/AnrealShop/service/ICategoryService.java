@@ -1,7 +1,9 @@
 package com.haiemdavang.AnrealShop.service;
 
+import com.haiemdavang.AnrealShop.dto.category.AdminCategoryDto;
 import com.haiemdavang.AnrealShop.dto.category.BaseCategoryDto;
 import com.haiemdavang.AnrealShop.dto.category.CategoryModalSelectedDto;
+import com.haiemdavang.AnrealShop.dto.category.CategoryRequestDto;
 import com.haiemdavang.AnrealShop.modal.entity.category.Category;
 
 import java.util.List;
@@ -25,4 +27,16 @@ public interface ICategoryService {
     Set<BaseCategoryDto> getCategorySuggestByProductName(String keyword);
 
     List<CategoryModalSelectedDto> getCategoryMyShop();
+
+    List<AdminCategoryDto> getListCategoryForAdmin();
+
+    void addCategory(CategoryRequestDto categoryRequestDto);
+
+    void updateCategory(String categoryId, CategoryRequestDto categoryRequestDto);
+
+    void toggleIsVisible(String categoryId, boolean isToggleAll);
+
+    void softDelete(String categoryId, boolean includeChildren);
+
+    List<AdminCategoryDto> getListCategoryDisableForAdmin();
 }
