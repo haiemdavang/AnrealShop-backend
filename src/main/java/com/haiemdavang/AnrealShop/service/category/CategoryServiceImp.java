@@ -1,4 +1,4 @@
-package com.haiemdavang.AnrealShop.service.serviceImp;
+package com.haiemdavang.AnrealShop.service.category;
 
 import com.haiemdavang.AnrealShop.dto.category.AdminCategoryDto;
 import com.haiemdavang.AnrealShop.dto.category.BaseCategoryDto;
@@ -9,7 +9,7 @@ import com.haiemdavang.AnrealShop.tech.elasticsearch.service.CategoryIndexerServ
 import com.haiemdavang.AnrealShop.exception.BadRequestException;
 import com.haiemdavang.AnrealShop.mapper.CategoryMapper;
 import com.haiemdavang.AnrealShop.modal.entity.category.Category;
-import com.haiemdavang.AnrealShop.repository.CategoryRepository;
+import com.haiemdavang.AnrealShop.repository.category.CategoryRepository;
 import com.haiemdavang.AnrealShop.service.ICategoryService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.cache.annotation.Cacheable;
