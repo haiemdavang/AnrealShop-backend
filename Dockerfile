@@ -8,7 +8,7 @@ COPY src ./src
 RUN mvn clean package -DskipTests
 
 
-FROM openjdk:20-jdk-slim
+FROM eclipse-temurin:21-jre-jammy
 WORKDIR /app
 
 # Copy file jar từ stage build
