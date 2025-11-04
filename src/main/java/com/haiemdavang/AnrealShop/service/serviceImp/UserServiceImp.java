@@ -1,16 +1,15 @@
 package com.haiemdavang.AnrealShop.service.serviceImp;
 
-import com.haiemdavang.AnrealShop.dto.user.ChangePasswordDto;
-import com.haiemdavang.AnrealShop.dto.user.ProfileRequest;
-import com.haiemdavang.AnrealShop.dto.user.RegisterRequest;
-import com.haiemdavang.AnrealShop.dto.user.UserDto;
+import com.haiemdavang.AnrealShop.dto.user.*;
 import com.haiemdavang.AnrealShop.exception.BadRequestException;
 import com.haiemdavang.AnrealShop.exception.ConflictException;
 import com.haiemdavang.AnrealShop.mapper.UserMapper;
 import com.haiemdavang.AnrealShop.modal.entity.user.Role;
 import com.haiemdavang.AnrealShop.modal.entity.user.User;
+import com.haiemdavang.AnrealShop.modal.enums.CancelBy;
 import com.haiemdavang.AnrealShop.modal.enums.RoleName;
-import com.haiemdavang.AnrealShop.repository.UserRepository;
+import com.haiemdavang.AnrealShop.repository.user.UserRepository;
+import com.haiemdavang.AnrealShop.repository.user.UserSpecification;
 import com.haiemdavang.AnrealShop.security.SecurityUtils;
 import com.haiemdavang.AnrealShop.service.IAddressService;
 import com.haiemdavang.AnrealShop.service.ICartService;
@@ -19,9 +18,16 @@ import com.haiemdavang.AnrealShop.service.IUserService;
 import com.haiemdavang.AnrealShop.tech.mail.service.IMailService;
 import com.haiemdavang.AnrealShop.utils.ApplicationInitHelper;
 import lombok.RequiredArgsConstructor;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Pageable;
+import org.springframework.data.jpa.domain.Specification;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
+
+import java.time.LocalDateTime;
+import java.util.List;
 
 @Service
 @RequiredArgsConstructor
@@ -110,6 +116,32 @@ public class UserServiceImp implements IUserService {
         user.setPassword(passwordEncoder.encode(changePasswordDto.getNewPassword()));
         userRepository.save(user);
         return userMapper.toUserDto(user);
+    }
+
+    @Override
+    public AdminUserListResponse getListUser(int page, int limit, String search, LocalDateTime confirmSDTime, LocalDateTime confirmEDTime, AccountType accountType, String sortBy) {
+        Specification<User> userSpecification = UserSpecification.filter(search, confirmSDTime, confirmEDTime, accountType);
+        Pageable pageable = PageRequest.of(page, limit, ApplicationInitHelper.getSortBy(sortBy));
+
+        Page<User> users = userRepository.findAll(userSpecification, pageable);
+        List<UserManagerDto> userManagerListDto = userMapper.toUserManagerDtoList(users.getContent());
+
+        return AdminUserListResponse.builder()
+                .users(userManagerListDto)
+                .totalPages(users.getTotalPages())
+                .currentPage(page)
+                .totalCount(users.getTotalElements())
+                .build();
+    }
+
+    @Override
+    @Transactional
+    public void softDelete(String id, String reason, CancelBy cancelBy) {
+        User user = findByEmail(id);
+        user.setDeleted(true);
+        user.setDeleteReason(reason);
+
+        userRepository.save(user);
     }
 
 }

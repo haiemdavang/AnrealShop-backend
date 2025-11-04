@@ -40,6 +40,12 @@ public class Category {
     @Column(columnDefinition = "TEXT")
     private String urlPath;
 
+    @Column(name = "is_deleted", nullable = false, columnDefinition = "BOOLEAN DEFAULT FALSE")
+    private boolean isDeleted;
+
+    @Column(name = "is_visible", nullable = false, columnDefinition = "BOOLEAN DEFAULT TRUE")
+    private boolean isVisible;
+
     @Column(name = "has_children", nullable = false, columnDefinition = "BOOLEAN DEFAULT FALSE")
     private boolean hasChildren;
 

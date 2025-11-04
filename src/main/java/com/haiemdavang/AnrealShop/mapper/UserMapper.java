@@ -4,10 +4,13 @@ import com.haiemdavang.AnrealShop.dto.auth.Oauth2.OAuth2UserInfo;
 import com.haiemdavang.AnrealShop.dto.user.ProfileRequest;
 import com.haiemdavang.AnrealShop.dto.user.RegisterRequest;
 import com.haiemdavang.AnrealShop.dto.user.UserDto;
+import com.haiemdavang.AnrealShop.dto.user.UserManagerDto;
 import com.haiemdavang.AnrealShop.modal.entity.user.User;
 import com.haiemdavang.AnrealShop.utils.ApplicationInitHelper;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
+
+import java.util.List;
 
 @Service
 @RequiredArgsConstructor
@@ -85,5 +88,32 @@ public class UserMapper {
         return user;
     }
 
+    public UserManagerDto toUserManagerDto(User user) {
+        if (user == null) {
+            return null;
+        }
+
+        return UserManagerDto.builder()
+                .id(user.getId())
+                .username(user.getUsername())
+                .email(ApplicationInitHelper.maskEmail(user.getEmail()))
+                .fullName(user.getFullName())
+                .phoneNumber(ApplicationInitHelper.maskPhoneNumber(user.getPhoneNumber()))
+                .avatarUrl(user.getAvatarUrl())
+                .role(user.getRole() != null ? user.getRole().getName().toString() : null)
+                .isVerified(user.isVerify())
+                .createdAt(user.getCreatedAt())
+                .build();
+    }
+
+    public List<UserManagerDto> toUserManagerDtoList(List<User> users) {
+        if (users == null || users.isEmpty()) {
+            return List.of();
+        }
+
+        return users.stream()
+                .map(this::toUserManagerDto)
+                .toList();
+    }
 
 }

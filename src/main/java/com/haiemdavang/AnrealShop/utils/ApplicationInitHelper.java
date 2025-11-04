@@ -26,5 +26,30 @@ public class ApplicationInitHelper {
         return SortEnum.fromValue(sortBy).getSort();
     }
 
+    public static String maskEmail(String email) {
+        if (email == null || !email.contains("@")) {
+            return "";
+        }
+        String[] parts = email.split("@");
+        String localPart = parts[0];
+        String domain = parts[1];
+        if (localPart.length() <= 3) {
+            return "***@" + domain;
+        }
+        String maskedLocal = localPart.substring(0, 3) + "***" + localPart.charAt(localPart.length() - 1);
+        return maskedLocal + "@" + domain;
+    }
+
+    public static String maskPhoneNumber(String phoneNumber) {
+        if (phoneNumber == null || phoneNumber.isEmpty()) {
+            return "";
+        }
+        String digitsOnly = phoneNumber.replaceAll("\\D", "");
+
+        if (digitsOnly.length() <= 6) {
+            return "***";
+        }
+        return digitsOnly.substring(0, 4) + "***" + digitsOnly.substring(digitsOnly.length() - 3);
+    }
 
 }

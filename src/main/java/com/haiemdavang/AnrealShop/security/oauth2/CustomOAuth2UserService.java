@@ -7,7 +7,7 @@ import com.haiemdavang.AnrealShop.exception.AnrealShopException;
 import com.haiemdavang.AnrealShop.mapper.UserMapper;
 import com.haiemdavang.AnrealShop.modal.entity.user.User;
 import com.haiemdavang.AnrealShop.modal.enums.RoleName;
-import com.haiemdavang.AnrealShop.repository.UserRepository;
+import com.haiemdavang.AnrealShop.repository.user.UserRepository;
 import com.haiemdavang.AnrealShop.security.userDetails.UserDetailSecu;
 import com.haiemdavang.AnrealShop.service.IRoleService;
 import lombok.RequiredArgsConstructor;

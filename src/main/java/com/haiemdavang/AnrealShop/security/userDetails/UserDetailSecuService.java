@@ -2,7 +2,7 @@ package com.haiemdavang.AnrealShop.security.userDetails;
 
 import com.haiemdavang.AnrealShop.exception.BadRequestException;
 import com.haiemdavang.AnrealShop.modal.entity.user.User;
-import com.haiemdavang.AnrealShop.repository.UserRepository;
+import com.haiemdavang.AnrealShop.repository.user.UserRepository;
 import lombok.RequiredArgsConstructor;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.core.userdetails.UserDetailsService;
