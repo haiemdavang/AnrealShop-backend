@@ -12,13 +12,15 @@ public class GeoIpService {
 
     public String getLocationFromIp(String ip) {
         try {
-            String url = "https://ipapi.co/" + ip + "/json/";
             RestTemplate restTemplate = new RestTemplate();
+            String url = "https://ipwho.is/" + ip;
 
             Map result = restTemplate.getForObject(url, Map.class);
-            return result.get("city") + ", " + result.get("country_name");
+
+            assert result != null;
+            return result.get("city") + ", " + result.get("country");
         } catch (Exception e) {
-            log.info("Failed to get location for IP: " + ip, e);
+            log.warn("Failed to get location for IP: {}", ip, e);
             return "Unknown";
         }
     }
