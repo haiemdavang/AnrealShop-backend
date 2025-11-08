@@ -85,9 +85,9 @@ public class ProductController {
     }
 
     @PutMapping("/{id}")
-    public ResponseEntity<MyShopProductDto> updateProduct(@PathVariable String id, @Valid @RequestBody BaseProductRequest baseProductRequest) {
-        MyShopProductDto productDto = productService.updateProduct(id, baseProductRequest);
-        return ResponseEntity.ok(productDto);
+    public ResponseEntity<?> updateProduct(@PathVariable String id, @Valid @RequestBody BaseProductRequest baseProductRequest) {
+        productService.updateProduct(id, baseProductRequest);
+        return ResponseEntity.ok(Map.of("message", "Product updated successfully"));
     }
 
     @DeleteMapping("/{id}")

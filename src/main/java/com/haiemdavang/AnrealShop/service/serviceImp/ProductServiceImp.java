@@ -74,7 +74,7 @@ public class ProductServiceImp implements IProductService {
             throw new BadRequestException("PRODUCT_NOT_FOUND");
         }else {
             Product product = productRepository.findBaseInfoById(id);
-            List<ProductSku> skuForProduct = productSkuRepository.findWithAttributeByProductId(id);
+            List<ProductSku> skuForProduct = productSkuRepository.findWithAttributeByProductIdOrProductSlug(id);
             List<ProductAttributeSingleValueDto> attributeValues = productGeneralAttributeRepository.findProductAttributeSingleValueDtoByProductId(id);
 
             return productMapper.toBaseProductRequest(product, skuForProduct, attributeValues);
@@ -165,10 +165,21 @@ public class ProductServiceImp implements IProductService {
     @Override
     public ProductDetailDto getProductById(String id, boolean isReview) {
 //        isReview chua trien khai nghe haidev
-        Product p = productRepository.findFullInfoByIdOrSlug(id)
+        Product product = productRepository.findFullInfoByIdOrSlug(id)
                 .orElseThrow(() -> new BadRequestException("PRODUCT_NOT_FOUND"));
         List<ProductAttributeSingleValueDto> productAttributes = productGeneralAttributeRepository.findProductAttributeSingleValueDtoByProductId(id);
-        return productMapper.toProductDetailDto(p, productAttributes);
+
+        ProductDetailDto response = productMapper.toProductDetailDto(product, productAttributes);
+
+        List<ProductSku> productSkus = productSkuRepository.findWithAttributeByProductIdOrProductSlug(id);
+        List<MyShopProductSkuDto> skuDtos = new ArrayList<>();
+        if (productSkus != null && !productSkus.isEmpty()) {
+            skuDtos = product.getProductSkus().stream()
+                    .map(productMapper::toMyShopProductSkuDto)
+                    .toList();
+        }
+        response.setProductSkus(skuDtos);
+        return response;
     }
 
     @Override
@@ -229,7 +240,7 @@ public class ProductServiceImp implements IProductService {
 
     @Override
     @Transactional
-    public MyShopProductDto updateProduct(String id, BaseProductRequest baseProductRequest) {
+    public void updateProduct(String id, BaseProductRequest baseProductRequest) {
         Product product = productRepository.findWithCategoryAndMediaAndGeneralAttributeById(id)
                 .orElseThrow(() -> new BadRequestException("PRODUCT_NOT_FOUND"));
 
@@ -249,7 +260,7 @@ public class ProductServiceImp implements IProductService {
 
         this.updateAttributeForProduct(oldAttributeForProduct, baseProductRequest.getAttributes(), product);
 
-        List<ProductSku> oldProductSkus = productSkuRepository.findWithAttributeByProductId(id);
+        List<ProductSku> oldProductSkus = productSkuRepository.findWithAttributeByProductIdOrProductSlug(id);
 
         List<ProductAttributeDto> attributeList = new ArrayList<>();
         if (baseProductRequest.getAttributes() != null) {
@@ -269,7 +280,6 @@ public class ProductServiceImp implements IProductService {
                 .product(productMapper.toEsProductDto(product, attributeMapper.formatAttributes(attributeList)))
                 .build();
         productKafkaProducer.sendProductSyncMessage(message);
-        return productMapper.toMyShopProductDto(product, product.getProductSkus());
     }
 
     @Override

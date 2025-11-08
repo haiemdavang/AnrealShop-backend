@@ -108,13 +108,6 @@ public class ProductMapper {
                         .toList() :
                 new ArrayList<>();
 
-        List<MyShopProductSkuDto> skuDtos = new ArrayList<>();
-        if (product.getProductSkus() != null && !product.getProductSkus().isEmpty()) {
-            skuDtos = product.getProductSkus().stream()
-                    .map(this::toMyShopProductSkuDto)
-                    .toList();
-        }
-
         return ProductDetailDto.builder()
                 .id(product.getId())
                 .name(product.getName())
@@ -144,7 +137,6 @@ public class ProductMapper {
                 .baseShopDto(shopMapper.toBaseShopDto(product.getShop()))
                 .medias(mediaList)
                 .attributes(attributes)
-                .productSkus(skuDtos)
                 .build();
     }
 

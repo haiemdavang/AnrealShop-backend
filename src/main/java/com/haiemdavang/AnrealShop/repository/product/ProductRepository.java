@@ -42,7 +42,7 @@ public interface ProductRepository extends JpaRepository<Product, String>, JpaSp
             "shop",
             "mediaList",
             "generalAttributes",
-            "productSkus",
+            "productSkus"
     })
     @Query("SELECT p FROM Product p WHERE p.id = :id or p.urlSlug = :id")
     Optional<Product> findFullInfoByIdOrSlug(String id);

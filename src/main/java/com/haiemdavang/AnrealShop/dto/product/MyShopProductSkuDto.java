@@ -20,6 +20,6 @@ public class MyShopProductSkuDto {
     private Integer quantity;
     private Integer sold;
     private String createdAt;
-    private String[] keyAttributes; // nullable = true
-    private List<ProductAttributeSingleValueDto> attributeForSku; // nullable = true
+    private String[] keyAttributes;
+    private List<ProductAttributeSingleValueDto> attributeForSku;
 }

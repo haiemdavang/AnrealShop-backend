@@ -16,7 +16,7 @@ public interface IProductService {
 
     MyShopProductListResponse getMyShopProducts(int page, int limit, String status, String search, String categoryId, String sortBy);
 
-    MyShopProductDto updateProduct(String id, BaseProductRequest baseProductRequest);
+    void updateProduct(String id, BaseProductRequest baseProductRequest);
 
     void delete(String id, boolean isForce);
 
