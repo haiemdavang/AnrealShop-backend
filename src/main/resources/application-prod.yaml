@@ -58,6 +58,12 @@ spring:
 logging:
   level:
     root: INFO
+    com.haiemdavang.AnrealShop.aspect.LoggingAspect: WARN
+    org.apache.kafka.clients.consumer.ConsumerConfig: WARN    # Tắt log in cấu hình Consumer
+    org.apache.kafka.clients.admin.AdminClientConfig: WARN    # Tắt log in cấu hình AdminClient
+    org.apache.kafka.clients.producer.ProducerConfig: WARN    # Tắt log in cấu hình Producer
+    org.hibernate.jpa.internal.util.LogHelper: WARN           # Tắt log PersistenceUnitInfo
+    org.hibernate.Version: WARN
 
 cloudinary:
   cloud-name: ${CLOUDINARY_NAME}
