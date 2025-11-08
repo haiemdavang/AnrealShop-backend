@@ -47,11 +47,7 @@ spring:
     basename: errorMessage/MessageString
     encoding: UTF-8
 
-logging:
-  level:
-    org:
-      elasticsearch:
-        client: TRACE
+
 server:
   port: 4141
 jwt:
