@@ -5,6 +5,7 @@ import com.fasterxml.jackson.core.type.TypeReference;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.haiemdavang.AnrealShop.dto.shipping.*;
 import com.haiemdavang.AnrealShop.exception.AnrealShopException;
+import com.haiemdavang.AnrealShop.exception.BadRequestException;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Value;
@@ -79,21 +80,21 @@ public class GHNServiceImp implements IGHNService {
         body.put("to_ward_code", toWardCode);
         body.put("weight", weight);
 
-        HttpEntity<Map<String, Object>> requestEntity = new HttpEntity<>(body, initHeader());
-        ResponseEntity<String> response = restTemplate.postForEntity(calculateFeeApi,
-                requestEntity,
-                String.class);
-        if (response.getStatusCode() == HttpStatus.OK) {
-            try {
-                GHNResponse<FeeData> data = objectMapper.readValue(
-                        response.getBody(),
-                        new TypeReference<GHNResponse<FeeData>>() {
-                        });
-                return data.getData().getTotal();
-            } catch (JsonProcessingException e) {
-                log.error("Can't convert object from get fee api ghn to dto");
-                return 0;
+        try {
+            HttpEntity<Map<String, Object>> requestEntity = new HttpEntity<>(body, initHeader());
+            ResponseEntity<String> response = restTemplate.postForEntity(calculateFeeApi,
+                    requestEntity,
+                    String.class);
+            if (response.getStatusCode() == HttpStatus.OK) {
+                    GHNResponse<FeeData> data = objectMapper.readValue(
+                            response.getBody(),
+                            new TypeReference<GHNResponse<FeeData>>() {
+                            });
+                    return data.getData().getTotal();
+
             }
+        } catch (Exception e) {
+            throw new BadRequestException("ADDRESS_NOT_SUPPORT");
         }
         log.error("Can't fetch data api fee");
         return 0;

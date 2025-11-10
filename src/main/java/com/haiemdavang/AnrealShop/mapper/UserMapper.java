@@ -63,7 +63,7 @@ public class UserMapper {
                 .avatarUrl(user.getAvatarUrl())
                 .gender(user.getGender())
                 .dob(user.getDob())
-                .isVerified(user.isVerify())
+                .verified(user.isVerify())
                 .hasPassword(user.getPassword() != null && !user.getPassword().isEmpty())
                 .role(user.getRole() != null ? user.getRole().getName().toString() : null)
                 .createdAt(user.getCreatedAt())

@@ -22,7 +22,7 @@ public class UserDto {
     private GenderType gender;
     private LocalDate dob;
     private String role;
-    private boolean isVerified;
+    private boolean verified;
     private LocalDateTime createdAt;
     private LocalDateTime updatedAt;
 
