@@ -42,7 +42,7 @@ public class MailServiceImp implements IMailService{
         } catch (IllegalArgumentException e) {
             throw new AnrealShopException("INVALID_MAIL_TYPE");
         }
-        if(userRepository.existsByEmail(email) && !mailType.equals(MailType.VERIFY_EMAIL))
+        if(!userRepository.existsByEmail(email))
             throw new BadRequestException("USER_NOT_FOUND");
         int stamp = 0;
 

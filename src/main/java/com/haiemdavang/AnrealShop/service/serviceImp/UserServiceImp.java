@@ -48,6 +48,7 @@ public class UserServiceImp implements IUserService {
     public void resetPassword(String email, String password) {
         User user = findByEmail(email);
         user.setPassword(passwordEncoder.encode(password));
+        user.setVerify(true);
         userRepository.save(user);
     }
 
