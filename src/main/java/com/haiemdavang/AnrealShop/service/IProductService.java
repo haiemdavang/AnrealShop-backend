@@ -38,7 +38,7 @@ public interface IProductService {
 
     ProductDetailDto getProductById(String id, boolean isReview);
 
-    List<UserProductDto> getProducts(int page, int limit, String search, String categoryId, String sortBy);
+    List<UserProductDto> getProducts(int page, int limit, String search, String categoryId, String sortBy, Double minPrice, Double maxPrice, int rating, List<String> brands,  List<String> colors, List<String> sizes, List<String> origins, List<String> genders);
 
     List<ProductSku> findByProductSkuIdIn(Set<String> ids);
 

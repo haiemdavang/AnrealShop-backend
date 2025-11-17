@@ -22,9 +22,17 @@ public class PublicProductController {
             @RequestParam(required = false, defaultValue = "10") int limit,
             @RequestParam(required = false) String search,
             @RequestParam(required = false) String categoryId,
-            @RequestParam(required = false, defaultValue = "newest") String sortBy) {
+            @RequestParam(required = false, defaultValue = "newest") String sortBy,
+            @RequestParam(required = false) Double minPrice,
+            @RequestParam(required = false) Double maxPrice,
+            @RequestParam(required = false, defaultValue = "0") Integer rating,
+            @RequestParam(required = false) List<String> brands,
+            @RequestParam(required = false) List<String> colors,
+            @RequestParam(required = false) List<String> sizes,
+            @RequestParam(required = false) List<String> origins,
+            @RequestParam(required = false) List<String> genders) {
 
-        List<UserProductDto> response = productService.getProducts(page, limit, search, categoryId, sortBy);
+        List<UserProductDto> response = productService.getProducts(page, limit, search, categoryId, sortBy, minPrice, maxPrice, rating, brands,colors, sizes, origins, genders);
         return ResponseEntity.ok(response);
     }
 
