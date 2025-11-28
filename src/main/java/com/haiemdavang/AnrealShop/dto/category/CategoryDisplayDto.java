@@ -19,6 +19,9 @@ public class CategoryDisplayDto {
     private String categoryName;
     private CategoryDisplayPosition position;
     private int order;
+    private String slug;
+    private String parentId;
+    private int level;
     private String thumbnailUrl;
     private MediaType mediaType;
 }

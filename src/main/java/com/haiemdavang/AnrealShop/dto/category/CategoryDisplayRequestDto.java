@@ -19,5 +19,5 @@ public class CategoryDisplayRequestDto {
     private CategoryDisplayPosition position;
     private int order;
     private String thumbnailUrl;
-    private MediaType mediaType;
+    private MediaType mediaType = MediaType.IMAGE;
 }

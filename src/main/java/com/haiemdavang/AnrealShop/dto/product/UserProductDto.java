@@ -1,9 +1,12 @@
 package com.haiemdavang.AnrealShop.dto.product;
 
+import com.haiemdavang.AnrealShop.dto.attribute.ProductAttributeDto;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
+
+import java.util.List;
 
 @Data
 @Builder
@@ -28,4 +31,5 @@ public class UserProductDto {
     private String shopId;
     private String shopName;
     private String shopThumbnailUrl;
+
 }

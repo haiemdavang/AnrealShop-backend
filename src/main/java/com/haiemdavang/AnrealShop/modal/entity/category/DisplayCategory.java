@@ -1,12 +1,15 @@
 package com.haiemdavang.AnrealShop.modal.entity.category;
 
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
+import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import com.haiemdavang.AnrealShop.modal.enums.CategoryDisplayPosition;
 import com.haiemdavang.AnrealShop.modal.enums.MediaType;
 import jakarta.persistence.*;
 import lombok.*;
 
 @Entity
+@JsonIgnoreProperties({"hibernateLazyInitializer", "handler"})
 @Table(name = "display_categories")
 @Data
 @NoArgsConstructor
@@ -19,6 +22,7 @@ public class DisplayCategory {
     @Column(length = 36, updatable = false, nullable = false)
     private String id;
 
+    @JsonIgnore
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "category_id", nullable = false)
     private Category category;

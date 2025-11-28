@@ -98,7 +98,9 @@ public class ProductIndexerService {
         esProductRepository.saveAll(esProducts);
     }
 
-    public List<EsProductDto> searchProducts(int page, int limit, String search, String categoryId, String sortBy, Double minPrice, Double maxPrice, Integer rating, List<String> brands, List<String> colors, List<String> sizes, List<String> origins, List<String> genders) {
+    public List<EsProductDto> searchProducts(int page, int limit, String search, String categoryId, String sortBy, Double minPrice,
+                                             Double maxPrice, Integer rating, List<String> brands,
+                                             List<String> colors, List<String> sizes, List<String> origins, List<String> genders) {
         var queryBuilder = NativeQuery.builder();
 
         queryBuilder.withQuery(QueryBuilders.bool(b -> {
@@ -116,7 +118,7 @@ public class ProductIndexerService {
             }
 
             if (categoryId != null && !categoryId.trim().isEmpty()) {
-                b.filter(f -> f.term(t -> t.field("category_id").value(categoryId)));
+                b.filter(f -> f.term(t -> t.field("category").value(categoryId)));
             }
 
             if (minPrice != null || maxPrice != null) {
@@ -181,7 +183,7 @@ public class ProductIndexerService {
         b.filter(f -> f.nested(n -> n
                 .path("attributes")
                 .query(q -> q.bool(bb -> bb
-                        .must(m -> m.term(t -> t.field("attributes.keyName").value(keyName)))
+                        .must(m -> m.term(t -> t.field("attributes.key_name").value(keyName)))
                         .must(m -> m.terms(t -> t
                                 .field("attributes.value")
                                 .terms(tt -> tt.value(values.stream()
