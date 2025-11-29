@@ -1,6 +1,5 @@
 package com.haiemdavang.AnrealShop.modal.entity.category;
 
-import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import jakarta.persistence.*;
 import lombok.*;
@@ -27,7 +26,6 @@ public class Category {
     @Column(nullable = false, length = 100)
     private String name;
 
-    @JsonIgnore
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "parent_id")
     private Category parent;
