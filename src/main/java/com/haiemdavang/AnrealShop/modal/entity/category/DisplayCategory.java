@@ -1,12 +1,17 @@
 package com.haiemdavang.AnrealShop.modal.entity.category;
 
 
+import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import com.haiemdavang.AnrealShop.modal.enums.CategoryDisplayPosition;
 import com.haiemdavang.AnrealShop.modal.enums.MediaType;
 import jakarta.persistence.*;
-import lombok.*;
+import lombok.AllArgsConstructor;
+import lombok.Builder;
+import lombok.Data;
+import lombok.NoArgsConstructor;
 
 @Entity
+@JsonIgnoreProperties({"hibernateLazyInitializer", "handler"})
 @Table(name = "display_categories")
 @Data
 @NoArgsConstructor

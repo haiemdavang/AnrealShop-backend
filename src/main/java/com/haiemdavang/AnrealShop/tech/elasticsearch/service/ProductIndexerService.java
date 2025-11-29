@@ -1,7 +1,9 @@
 package com.haiemdavang.AnrealShop.tech.elasticsearch.service;
 
+import co.elastic.clients.elasticsearch._types.query_dsl.BoolQuery;
 import co.elastic.clients.elasticsearch._types.query_dsl.QueryBuilders;
 import co.elastic.clients.elasticsearch._types.query_dsl.TextQueryType;
+import co.elastic.clients.json.JsonData;
 import com.haiemdavang.AnrealShop.dto.product.EsProductDto;
 import com.haiemdavang.AnrealShop.tech.elasticsearch.document.EsCategory;
 import com.haiemdavang.AnrealShop.tech.elasticsearch.document.EsProduct;
@@ -96,7 +98,9 @@ public class ProductIndexerService {
         esProductRepository.saveAll(esProducts);
     }
 
-    public List<EsProductDto> searchProducts(int page, int limit, String search, String categoryId, String sortBy) {
+    public List<EsProductDto> searchProducts(int page, int limit, String search, String categoryId, String sortBy, Double minPrice,
+                                             Double maxPrice, Integer rating, List<String> brands,
+                                             List<String> colors, List<String> sizes, List<String> origins, List<String> genders) {
         var queryBuilder = NativeQuery.builder();
 
         queryBuilder.withQuery(QueryBuilders.bool(b -> {
@@ -114,8 +118,22 @@ public class ProductIndexerService {
             }
 
             if (categoryId != null && !categoryId.trim().isEmpty()) {
-                b.filter(f -> f.term(t -> t.field("category_id").value(categoryId)));
+                b.filter(f -> f.term(t -> t.field("category").value(categoryId)));
             }
+
+            if (minPrice != null || maxPrice != null) {
+                b.filter(f -> f.range(r -> r.number(v -> v.field("discount_price").gte(minPrice).lte(maxPrice))));
+            }
+
+            if (rating != null && rating > 0) {
+                b.filter(f -> f.range(r -> r.number(v -> v.field("average_rating").gte(Double.valueOf(rating)))));
+            }
+
+            addNestedAttributeFilter(b, "BRAND", brands);
+            addNestedAttributeFilter(b, "COLOR", colors);
+            addNestedAttributeFilter(b, "SIZE", sizes);
+            addNestedAttributeFilter(b, "ORIGIN", origins);
+            addNestedAttributeFilter(b, "TARGET_AUDIENCE", genders);
 
             return b;
         }));
@@ -155,5 +173,23 @@ public class ProductIndexerService {
         esProduct.setUpdatedAt(Instant.now());
         esProduct.setRestrictStatus(status.getId());
         esProductRepository.save(esProduct);
+    }
+
+    private void addNestedAttributeFilter(BoolQuery.Builder b, String keyName, List<String> values) {
+        if (values == null || values.isEmpty()) {
+            return;
+        }
+
+        b.filter(f -> f.nested(n -> n
+                .path("attributes")
+                .query(q -> q.bool(bb -> bb
+                        .must(m -> m.term(t -> t.field("attributes.key_name").value(keyName)))
+                        .must(m -> m.terms(t -> t
+                                .field("attributes.value")
+                                .terms(tt -> tt.value(values.stream()
+                                        .map(co.elastic.clients.elasticsearch._types.FieldValue::of)
+                                        .collect(Collectors.toList())))))
+                ))
+        ));
     }
 }

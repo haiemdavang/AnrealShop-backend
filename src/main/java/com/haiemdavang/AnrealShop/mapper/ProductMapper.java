@@ -196,6 +196,7 @@ public class ProductMapper {
                 .updatedAt(LocalDateTime.ofInstant(esProduct.getUpdatedAt(), ZoneOffset.systemDefault()).toString())
                 .shop(shopMapper.toBaseShopDto(esProduct.getShop()))
                 .category(categoryMapper.toBaseCategoryDto(esCategory))
+                .attributes(attributeMapper.toProductAttributeDtoFromEs(esProduct.getAttributes()))
                 .build();
     }
     public EsProduct toEsProduct(EsProductDto esProductDto) {

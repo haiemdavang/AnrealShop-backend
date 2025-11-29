@@ -1,4 +1,4 @@
-package com.haiemdavang.AnrealShop.controller;
+package com.haiemdavang.AnrealShop.controller.myshop;
 
 import com.haiemdavang.AnrealShop.dto.category.BaseCategoryDto;
 import com.haiemdavang.AnrealShop.dto.category.CategoryModalSelectedDto;
@@ -16,7 +16,7 @@ import java.util.Set;
 @RequiredArgsConstructor
 @RestController
 @RequestMapping("/api/categories")
-public class CategoryController {
+public class MyShopCategoryController {
     private final ICategoryService categoryService;
 
     @GetMapping("/my-shop")
@@ -36,5 +36,6 @@ public class CategoryController {
         Set<BaseCategoryDto> categories = categoryService.getCategorySuggestByProductName(keyword);
         return ResponseEntity.ok(categories);
     }
+
 
 }

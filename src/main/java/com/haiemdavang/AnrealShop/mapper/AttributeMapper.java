@@ -14,7 +14,15 @@ import java.util.stream.Collectors;
 @RequiredArgsConstructor
 @Service
 public class AttributeMapper {
-
+    public List<ProductAttributeDto> toProductAttributeDtoFromEs(List<EsAttribute> attributes) {
+        return attributes.stream()
+                .map(attribute -> ProductAttributeDto.builder()
+                        .attributeKeyName(attribute.getKeyName())
+                        .attributeKeyDisplay(attribute.getDisplayName())
+                        .values(attribute.getValue())
+                        .build())
+                .collect(Collectors.toList());
+    }
     public List<ProductAttributeDto> toProductAttributeDto(List<ProductAttributeSingleValueDto> attributeSingleValueDtos) {
         return attributeSingleValueDtos.stream()
                 .collect(Collectors.groupingBy(
@@ -149,4 +157,6 @@ public class AttributeMapper {
                         .build())
                 .collect(Collectors.toList());
     }
+
+
 }

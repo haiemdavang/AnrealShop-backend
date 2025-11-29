@@ -43,15 +43,14 @@ public class DisplayCategoryServiceImp implements IDisplayCategoryService {
                 String cachedData = redisService.getValue(RedisTemplate.PREFIX_LIST_CATEGORY_DISPLAY_HOMEPAGE.getValue());
                 if (cachedData != null && !cachedData.isEmpty()) {
                     try {
-                        DisplayCategory[] cachedCategories = objectMapper.readValue(cachedData, DisplayCategory[].class);
-                        return displayCategoryMapper.toCategoryDisplayDtos(List.of(cachedCategories));
+                        CategoryDisplayDto[] cachedCategories = objectMapper.readValue(cachedData, CategoryDisplayDto[].class);
+                        return List.of(cachedCategories);
                     } catch (Exception e) {
                         throw new RuntimeException(e);
                     }
                 }
-            }else {
-                categoryDisplayDtos = categoryDisplayRepository.findAllByPositionOrderByDisplayOrderAsc(categoryDisplayPosition);
             }
+            categoryDisplayDtos = categoryDisplayRepository.findAllByPositionOrderByDisplayOrderAsc(categoryDisplayPosition);
         }
         if (categoryDisplayDtos != null && !categoryDisplayDtos.isEmpty()) {
             return displayCategoryMapper.toCategoryDisplayDtos(categoryDisplayDtos);
@@ -80,6 +79,8 @@ public class DisplayCategoryServiceImp implements IDisplayCategoryService {
                         displayCategoryMapper.updateDisplayCategoryFields(displayCategory, dto);
                     }
                 }
+                categoryDisplayRepository.saveAll(displayMap.values());
+                updateRedisCategory();
             }
 
             if (!creates.isEmpty()) {
@@ -106,17 +107,19 @@ public class DisplayCategoryServiceImp implements IDisplayCategoryService {
                 categoryDisplayRepository.saveAll(newDisplayCategories);
                 updateRedisCategory();
             }
-        }
+    }
 
 
-        private void updateRedisCategory() {
-            try {
-                List<DisplayCategory> displayCategories = categoryDisplayRepository.findAllByPositionOrderByDisplayOrderAsc(CategoryDisplayPosition.HOMEPAGE);
-                redisService.addValue(RedisTemplate.PREFIX_LIST_CATEGORY_DISPLAY_HOMEPAGE.getValue(), objectMapper.writeValueAsString(displayCategories));
-            } catch (Exception e) {
-                throw new RuntimeException(e);
-            }
+    private void updateRedisCategory() {
+        try {
+            List<DisplayCategory> displayCategories = categoryDisplayRepository.findAllByPositionOrderByDisplayOrderAsc(CategoryDisplayPosition.HOMEPAGE);
+            List<CategoryDisplayDto> categoryDisplayDtos = displayCategoryMapper.toCategoryDisplayDtos(displayCategories);
+            redisService.addValue(RedisTemplate.PREFIX_LIST_CATEGORY_DISPLAY_HOMEPAGE.getValue(), objectMapper.writeValueAsString(categoryDisplayDtos));
+        } catch (Exception e) {
+            throw new RuntimeException(e);
         }
+    }
+
     @Override
     @Transactional
     public void deleteCategoriesDisplay(List<String> ids) {

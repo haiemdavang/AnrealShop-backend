@@ -415,8 +415,9 @@ public class ProductServiceImp implements IProductService {
     }
 
     @Override
-    public List<UserProductDto> getProducts(int page, int limit, String search, String categoryId, String sortBy) {
-        List<EsProductDto> esProducts = productIndexerService.searchProducts(page, limit, search, categoryId, sortBy);
+    public List<UserProductDto> getProducts(int page, int limit, String search, String categoryId, String sortBy,
+                                            Double minPrice, Double maxPrice, int rating, List<String> brands, List<String> colors, List<String> sizes, List<String> origins, List<String> genders) {
+        List<EsProductDto> esProducts = productIndexerService.searchProducts(page, limit, search, categoryId, sortBy, minPrice, maxPrice, rating, brands, colors, sizes, origins, genders);
         return productMapper.toUserProductDtos(esProducts);
     }
 

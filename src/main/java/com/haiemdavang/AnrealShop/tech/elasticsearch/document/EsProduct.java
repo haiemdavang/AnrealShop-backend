@@ -8,7 +8,6 @@ import org.springframework.data.annotation.Id;
 import org.springframework.data.elasticsearch.annotations.Document;
 import org.springframework.data.elasticsearch.annotations.Field;
 import org.springframework.data.elasticsearch.annotations.FieldType;
-import org.springframework.data.elasticsearch.annotations.Setting;
 
 import java.time.Instant;
 import java.util.List;
@@ -18,7 +17,6 @@ import java.util.List;
 @AllArgsConstructor
 @NoArgsConstructor
 @Document(indexName = "products", createIndex = false)
-@Setting(shards = 1)
 public class EsProduct {
     @Id
     @Field(type = FieldType.Keyword)
