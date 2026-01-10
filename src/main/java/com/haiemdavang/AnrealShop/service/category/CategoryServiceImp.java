@@ -67,10 +67,10 @@ public class CategoryServiceImp implements ICategoryService {
     }
 
     @Override
-    @Cacheable(value = "categories", key = "#root.method.name")
+//    @Cacheable(value = "categories", key = "#root.method.name")
     public List<CategoryModalSelectedDto> getCategoryMyShop() {
 //        Shop shop = securityUtils.getCurrentUserShop();
-        return categoryRepository.findAll().stream()
+        return categoryRepository.findAllByIsDeletedFalse().stream()
                 .map(categoryMapper::toCategoryModalSelectedDto)
                 .toList();
     }
