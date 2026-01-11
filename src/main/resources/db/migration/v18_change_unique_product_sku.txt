@@ -1,0 +1,4 @@
+ALTER TABLE product_skus
+DROP INDEX idx_productsku_sku_unique;
+ALTER TABLE product_skus
+ADD CONSTRAINT uk_product_sku UNIQUE (product_id, sku);

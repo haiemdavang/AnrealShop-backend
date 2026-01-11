@@ -50,7 +50,7 @@ public class ProductController {
         return ResponseEntity.ok(response);
     }
 
-    @PostMapping("")
+    @PostMapping()
     public ResponseEntity<?> createProduct(@Valid @RequestBody BaseProductRequest baseProductRequest) {
         productService.createProduct(baseProductRequest);
         return ResponseEntity.ok(Map.of("message", "Product created successfully"));
