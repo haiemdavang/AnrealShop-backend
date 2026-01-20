@@ -54,14 +54,16 @@ public class CategoryServiceImp implements ICategoryService {
 
     @Override
     public List<BaseCategoryDto> getCategorySuggest(String keyword) {
-        List<EsCategory> categories = esCategoryIndexerService.getCategoriesByKeyword(keyword);
+//        List<EsCategory> categories = esCategoryIndexerService.getCategoriesByKeyword(keyword);
+        List<Category> categories = categoryRepository.getSuggestByKeyWord(keyword);
         return categories.stream().map(categoryMapper::toBaseCategoryDto)
                 .toList();
     }
 
     @Override
     public Set<BaseCategoryDto> getCategorySuggestByProductName(String keyword) {
-        Set<EsCategory> categories = esCategoryIndexerService.getCategoriesByProductName(keyword, null);
+//        Set<EsCategory> categories = esCategoryIndexerService.getCategoriesByProductName(keyword, null);
+        List<Category> categories = categoryRepository.getSuggestByProductName(keyword);
         return categories.stream().map(categoryMapper::toBaseCategoryDto)
                 .collect(Collectors.toSet());
     }
