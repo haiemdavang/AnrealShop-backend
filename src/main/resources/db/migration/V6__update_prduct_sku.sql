@@ -1,2 +1,0 @@
--- ALTER TABLE product_skus
---     DROP INDEX idx_productsku_sku_unique;
