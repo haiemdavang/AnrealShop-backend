@@ -17,40 +17,40 @@ import java.util.Set;
 @ToString(exclude = {"attributeKey", "productSkus"})
 @EqualsAndHashCode(of = "id")
 @Entity
-@Table(name = "attribute_values",
+@Table(name = "gia_tri_thuoc_tinh",
         uniqueConstraints = {
-                @UniqueConstraint(name = "uk_attrvalue_key_value", columnNames  = "attribute_key_id, value")
+                @UniqueConstraint(name = "uk_giatrithuoctinh_khoa_giatri", columnNames  = {"id_thuoc_tinh", "gia_tri"})
         }
 )
 public class AttributeValue {
 
     @Id
     @GeneratedValue(strategy = GenerationType.UUID)
-    @Column(length = 36, updatable = false, nullable = false)
+    @Column(name = "id_gia_tri_thuoc_tinh", length = 36, updatable = false, nullable = false)
     private String id;
 
     @ManyToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "attribute_key_id", nullable = false)
+    @JoinColumn(name = "id_thuoc_tinh", nullable = false)
     private AttributeKey attributeKey;
 
-    @Column(nullable = false)
+    @Column(name = "gia_tri", nullable = false)
     private String value;
 
-    @Column(name = "display_order", columnDefinition = "INT DEFAULT 0")
+    @Column(name = "thu_tu_hien_thi", columnDefinition = "INT DEFAULT 0")
     private int displayOrder = 0;
 
-    @Column(name = "is_Default", columnDefinition = "BOOLEAN DEFAULT FALSE")
+    @Column(name = "mac_dinh", columnDefinition = "BOOLEAN DEFAULT FALSE")
     private boolean isDefault = false;
 
-    @Column(columnDefinition = "TEXT")
+    @Column(name = "du_lieu_mo_ta", columnDefinition = "TEXT")
     private String metadata; // Tam thoi bo qua, co the dung den sau nha cac pro
 
     @CreationTimestamp
-    @Column(name = "created_at", updatable = false)
+    @Column(name = "ngay_tao", updatable = false)
     private LocalDateTime createdAt;
 
     @UpdateTimestamp
-    @Column(name = "updated_at")
+    @Column(name = "ngay_cap_nhat")
     private LocalDateTime updatedAt;
 
     @ManyToMany(mappedBy = "attributes", fetch = FetchType.LAZY)

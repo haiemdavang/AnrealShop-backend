@@ -4,7 +4,7 @@ import jakarta.persistence.*;
 import lombok.*;
 
 @Entity
-@Table(name = "shop_category_items")
+@Table(name = "danh_muc_cua_hang_item")
 @Data
 @NoArgsConstructor
 @AllArgsConstructor
@@ -12,17 +12,16 @@ import lombok.*;
 @EqualsAndHashCode(of = "id")
 public class ShopCategoryItem {
     @EmbeddedId
-    @Column(name = "shop_category_item_id", nullable = false, length = 36)
     private ShopCategoryItemId id;
 
     @MapsId("shopCategoriesId")
     @ManyToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "shop_categories_id", nullable = false)
+    @JoinColumn(name = "id_danh_muc_cua_hang", nullable = false)
     private ShopCategory shopCategory;
 
     @MapsId("categoryId")
     @ManyToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "category_id", nullable = false)
+    @JoinColumn(name = "id_danh_muc", nullable = false)
     private Category category;
 
     public ShopCategoryItem(ShopCategory shopCategory, Category category) {

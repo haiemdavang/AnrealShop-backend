@@ -6,7 +6,7 @@ import lombok.*;
 import java.util.Set;
 
 @Entity
-@Table(name = "shop_categories")
+@Table(name = "danh_muc_cua_hang")
 @Data
 @NoArgsConstructor
 @AllArgsConstructor
@@ -15,11 +15,11 @@ public class ShopCategory {
 
     @Id
     @GeneratedValue(strategy = GenerationType.UUID)
-    @Column(length = 36, updatable = false, nullable = false)
+    @Column(name = "id_danh_muc_cua_hang", length = 36, updatable = false, nullable = false)
     private String id;
 
     @ManyToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "shop_id", nullable = false)
+    @JoinColumn(name = "id_cua_hang", nullable = false)
     private Shop shop;
 
     @OneToMany(mappedBy = "shopCategory", cascade = CascadeType.ALL, orphanRemoval = true, fetch = FetchType.LAZY)

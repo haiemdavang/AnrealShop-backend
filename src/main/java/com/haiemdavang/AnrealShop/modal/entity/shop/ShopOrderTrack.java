@@ -14,7 +14,7 @@ import java.time.LocalDateTime;
 @ToString(exclude = "shopOrder")
 @EqualsAndHashCode(of = "id")
 @Entity
-@Table(name = "shop_order_tracks")
+@Table(name = "theo_doi_don_hang_cua_hang")
 public class ShopOrderTrack {
 
     @EmbeddedId
@@ -22,12 +22,11 @@ public class ShopOrderTrack {
 
     @ManyToOne(fetch = FetchType.LAZY)
     @MapsId("shopOrderId")
-    @JoinColumn(name = "shop_order_id", insertable = false, updatable = false)
+    @JoinColumn(name = "id_don_hang_cua_hang", insertable = false, updatable = false)
     private ShopOrder shopOrder;
 
     @Enumerated(EnumType.STRING)
-    @Column(name = "status", nullable = false)
-    @Builder.Default
+    @Column(name = "trang_thai", nullable = false)
     private ShopOrderStatus status = ShopOrderStatus.INIT_PROCESSING;
 
     public LocalDateTime getUpdatedAt() {

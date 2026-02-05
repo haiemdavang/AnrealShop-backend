@@ -18,49 +18,49 @@ import java.util.Set;
 @ToString(exclude = {"product", "attributes"})
 @EqualsAndHashCode(of = "id")
 @Entity
-@Table(name = "product_skus", indexes = {
-        @Index(name = "idx_productsku_sku_unique", columnList = "sku", unique = true)
+@Table(name = "san_pham_sku", indexes = {
+        @Index(name = "idx_sanphamsku_sku_unique", columnList = "ma_sku", unique = true)
 })
 public class ProductSku {
 
     @Id
     @GeneratedValue(strategy = GenerationType.UUID)
-    @Column(length = 36, updatable = false, nullable = false)
+    @Column(name = "id_san_pham_sku", length = 36, updatable = false, nullable = false)
     private String id;
 
     @ManyToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "product_id", nullable = false)
+    @JoinColumn(name = "id_san_pham", nullable = false)
     private Product product;
 
-    @Column(nullable = false, length = 50)
+    @Column(name = "ma_sku", nullable = false, length = 50)
     private String sku;
 
-    @Column(nullable = false)
+    @Column(name = "gia", nullable = false)
     private Long price;
 
     @Builder.Default
-    @Column(nullable = false)
+    @Column(name = "da_ban", nullable = false)
     private int sold = 0;
 
-    @Column(columnDefinition = "INT DEFAULT 0")
+    @Column(name = "so_luong", columnDefinition = "INT DEFAULT 0")
     private int quantity = 0;
 
     @CreationTimestamp
-    @Column(name = "created_at", updatable = false)
+    @Column(name = "ngay_tao", updatable = false)
     private LocalDateTime createdAt;
 
     @UpdateTimestamp
-    @Column(name = "updated_at")
+    @Column(name = "ngay_cap_nhat")
     private LocalDateTime updatedAt;
 
     @ManyToMany(fetch = FetchType.LAZY, cascade = {CascadeType.MERGE, CascadeType.PERSIST})
     @JoinTable(
-            name = "sku_attributes",
-            joinColumns = @JoinColumn(name = "sku_id"),
-            inverseJoinColumns = @JoinColumn(name = "attribute_value_id")
+            name = "sku_thuoc_tinh",
+            joinColumns = @JoinColumn(name = "id_san_pham_sku"),
+            inverseJoinColumns = @JoinColumn(name = "id_gia_tri_thuoc_tinh")
     )
     private Set<AttributeValue> attributes;
 
-    @Column(name = "image_urls")
+    @Column(name = "anh_dai_dien")
     private String thumbnailUrl;
 }

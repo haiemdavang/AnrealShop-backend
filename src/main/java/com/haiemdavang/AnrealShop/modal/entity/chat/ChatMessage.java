@@ -17,34 +17,34 @@ import java.time.LocalDateTime;
 @ToString(exclude = {"room", "sender"})
 @EqualsAndHashCode(of = "id")
 @Entity
-@Table(name = "chat_messages")
+@Table(name = "tin_nhan")
 public class ChatMessage {
 
     @Id
     @GeneratedValue(strategy = GenerationType.UUID)
-    @Column(length = 36, updatable = false, nullable = false)
+    @Column(name = "id_tin_nhan", length = 36, updatable = false, nullable = false)
     private String id;
 
     @ManyToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "room_id", nullable = false)
+    @JoinColumn(name = "id_phong_chat", nullable = false)
     private ChatRoom room;
 
     @ManyToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "sender_id", nullable = false)
+    @JoinColumn(name = "id_nguoi_dung", nullable = false)
     private User sender;
 
     @Enumerated(EnumType.STRING)
-    @Column(nullable = false, columnDefinition = "ENUM('TEXT', 'MEDIA')")
+    @Column(name = "loai_tin_nhan", nullable = false)
     private MessageType type;
 
-    @Column(columnDefinition = "TEXT")
+    @Column(name = "noi_dung", columnDefinition = "TEXT")
     private String content;
 
-    @Column(name = "is_read", columnDefinition = "BOOLEAN DEFAULT FALSE")
+    @Column(name = "da_doc", columnDefinition = "BOOLEAN DEFAULT FALSE")
     private boolean isRead = false;
 
     @CreationTimestamp
-    @Column(name = "created_at", updatable = false, columnDefinition = "TIMESTAMP DEFAULT CURRENT_TIMESTAMP")
+    @Column(name = "ngay_tao", updatable = false, columnDefinition = "TIMESTAMP DEFAULT CURRENT_TIMESTAMP")
     private LocalDateTime createdAt;
 
 }

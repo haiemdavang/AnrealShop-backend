@@ -12,14 +12,14 @@ import lombok.*;
 @ToString(exclude = "districts")
 @EqualsAndHashCode(of = "id")
 @Entity
-@Table(name = "provinces")
+@Table(name = "tinh")
 public class Province {
 
     @Id
-    @Column(length = 36, updatable = false, nullable = false)
+    @Column(name = "id_tinh", length = 36, updatable = false, nullable = false)
     private String id;
 
-    @Column(nullable = false, length = 100)
+    @Column(name = "ten_tinh", nullable = false, length = 100)
     private String name;
 
     // @OneToMany(mappedBy = "province", fetch = FetchType.LAZY, cascade = CascadeType.ALL)

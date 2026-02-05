@@ -15,47 +15,47 @@ import java.util.Set;
 @Data
 @JsonIgnoreProperties({"hibernateLazyInitializer", "handler"})
 @ToString(onlyExplicitlyIncluded = true)
-@Table(name = "categories")
+@Table(name = "danh_muc")
 public class Category {
     @Id
     @ToString.Include
     @GeneratedValue(strategy = GenerationType.UUID)
-    @Column(length = 36, updatable = false, nullable = false)
+    @Column(name = "id_danh_muc", length = 36, updatable = false, nullable = false)
     private String id;
 
-    @Column(nullable = false, length = 100)
+    @Column(name = "ten_danh_muc", nullable = false, length = 100)
     private String name;
 
     @ManyToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "parent_id")
+    @JoinColumn(name = "id_danh_muc_cha")
     private Category parent;
 
-    @Column(columnDefinition = "TEXT")
+    @Column(name = "mo_ta", columnDefinition = "TEXT")
     private String description;
 
-    @Column(length = 100)
+    @Column(name = "duong_dan", length = 100)
     private String urlSlug;
 
-    @Column
+    @Column(name = "cap")
     private int level;
 
-    @Column(columnDefinition = "TEXT")
+    @Column(name = "duong_dan_day_du", columnDefinition = "TEXT")
     private String urlPath;
 
-    @Column(name = "is_deleted", nullable = false, columnDefinition = "BOOLEAN DEFAULT FALSE")
+    @Column(name = "da_xoa", nullable = false, columnDefinition = "BOOLEAN DEFAULT FALSE")
     private boolean isDeleted;
 
-    @Column(name = "is_visible", nullable = false, columnDefinition = "BOOLEAN DEFAULT TRUE")
+    @Column(name = "hien_thi", nullable = false, columnDefinition = "BOOLEAN DEFAULT TRUE")
     private boolean isVisible;
 
-    @Column(name = "has_children", nullable = false, columnDefinition = "BOOLEAN DEFAULT FALSE")
+    @Column(name = "co_con", nullable = false, columnDefinition = "BOOLEAN DEFAULT FALSE")
     private boolean hasChildren;
 
-    @Column(name = "product_count", nullable = false, columnDefinition = "INT DEFAULT 0")
+    @Column(name = "tong_san_pham", nullable = false, columnDefinition = "INT DEFAULT 0")
     private int productCount;
 
     @CreationTimestamp
-    @Column(name = "created_at", updatable = false)
+    @Column(name = "ngay_tao", updatable = false)
     private LocalDateTime createdAt;
 
     @OneToMany(mappedBy = "category", fetch = FetchType.LAZY)

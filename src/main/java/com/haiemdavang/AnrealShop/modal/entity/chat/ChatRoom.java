@@ -15,15 +15,15 @@ import java.util.Set;
 @ToString(exclude = {"participants", "messages"})
 @EqualsAndHashCode(of = "id")
 @Entity
-@Table(name = "chat_rooms")
+@Table(name = "phong_chat")
 public class ChatRoom {
 
     @Id
     @GeneratedValue(strategy = GenerationType.UUID)
-    @Column(length = 36, updatable = false, nullable = false)
+    @Column(name = "id_phong_chat", length = 36, updatable = false, nullable = false)
     private String id;
 
-    @Column(name = "last_active", columnDefinition = "TIMESTAMP DEFAULT CURRENT_TIMESTAMP")
+    @Column(name = "hoat_dong_gan_nhat", columnDefinition = "TIMESTAMP DEFAULT CURRENT_TIMESTAMP")
     private LocalDateTime lastActive;
 
     @OneToMany(mappedBy = "chatRoom", cascade = CascadeType.ALL, orphanRemoval = true, fetch = FetchType.LAZY)

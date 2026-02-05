@@ -16,26 +16,26 @@ import java.time.LocalDateTime;
 @ToString(exclude = "review")
 @EqualsAndHashCode(of = "id")
 @Entity
-@Table(name = "product_review_media")
+@Table(name = "danh_gia_san_pham_media")
 public class ProductReviewMedia {
 
     @Id
     @GeneratedValue(strategy = GenerationType.UUID)
-    @Column(length = 36, updatable = false, nullable = false)
+    @Column(name = "id_media_danh_gia_san_pham", length = 36, updatable = false, nullable = false)
     private String id;
 
     @ManyToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "review_id", nullable = false)
+    @JoinColumn(name = "id_danh_gia_san_pham", nullable = false)
     private ProductReview review; // Đánh giá mà media này thuộc về
 
-    @Column(name = "media_url", nullable = false, length = 255)
+    @Column(name = "duong_dan_media", nullable = false, length = 255)
     private String mediaUrl; // URL của hình ảnh/video
 
     @Enumerated(EnumType.STRING) // Lưu tên Enum ("IMAGE", "VIDEO")
-    @Column(name = "media_type", length = 10, columnDefinition = "ENUM('IMAGE', 'VIDEO') DEFAULT 'IMAGE'")
+    @Column(name = "loai_media", length = 10, columnDefinition = "ENUM('IMAGE', 'VIDEO') DEFAULT 'IMAGE'")
     private MediaType mediaType = MediaType.IMAGE;
 
     @CreationTimestamp
-    @Column(name = "created_at", updatable = false)
+    @Column(name = "ngay_tao", updatable = false)
     private LocalDateTime createdAt;
 }

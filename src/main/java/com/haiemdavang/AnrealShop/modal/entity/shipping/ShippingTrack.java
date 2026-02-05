@@ -14,7 +14,7 @@ import java.time.LocalDateTime;
 @ToString(exclude = "shipping")
 @EqualsAndHashCode(of = "id")
 @Entity
-@Table(name = "shipping_tracks")
+@Table(name = "theo_doi_van_chuyen")
 public class ShippingTrack {
 
     @EmbeddedId
@@ -22,15 +22,14 @@ public class ShippingTrack {
 
     @ManyToOne(fetch = FetchType.LAZY)
     @MapsId("shippingId")
-    @JoinColumn(name = "shipping_id", insertable = false, updatable = false)
+    @JoinColumn(name = "id_van_chuyen", insertable = false, updatable = false)
     private Shipping shipping;
 
     @Enumerated(EnumType.STRING)
-    @Column(name = "status", nullable = false)
-    @Builder.Default
+    @Column(name = "trang_thai", nullable = false)
     private ShippingStatus status = ShippingStatus.ORDER_CREATED;
 
-    @Column(name = "note")
+    @Column(name = "ghi_chu")
     private String note;
 
     public LocalDateTime getUpdatedAt() {

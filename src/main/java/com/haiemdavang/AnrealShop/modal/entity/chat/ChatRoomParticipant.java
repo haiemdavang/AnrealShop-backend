@@ -12,7 +12,7 @@ import lombok.*;
 @ToString(exclude = {"chatRoom", "user"})
 @EqualsAndHashCode(of = "id")
 @Entity
-@Table(name = "chat_room_participants")
+@Table(name = "phong_chat_thanh_vien")
 public class ChatRoomParticipant {
 
     @EmbeddedId
@@ -20,12 +20,12 @@ public class ChatRoomParticipant {
 
     @ManyToOne(fetch = FetchType.LAZY)
     @MapsId("chatRoomId")
-    @JoinColumn(name = "chat_room_id", insertable = false, updatable = false)
+    @JoinColumn(name = "id_phong_chat")
     private ChatRoom chatRoom;
 
     @ManyToOne(fetch = FetchType.LAZY)
     @MapsId("userId")
-    @JoinColumn(name = "user_id", insertable = false, updatable = false)
+    @JoinColumn(name = "id_nguoi_dung")
     private User user;
 
     public ChatRoomParticipant(ChatRoom chatRoom, User user) {
