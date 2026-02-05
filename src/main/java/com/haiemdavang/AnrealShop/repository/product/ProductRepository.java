@@ -18,9 +18,10 @@ public interface ProductRepository extends JpaRepository<Product, String>, JpaSp
 
     @Query(
             value = """
-                select restrict_status as id, count(id) as count from products
-                where shop_id = :shopId and deleted = false
-                group by restrict_status""",
+                    SELECT trang_thai_han_che AS id, COUNT(id_san_pham) AS count\s
+                                                FROM san_pham
+                                                WHERE id_cua_hang = :shopId AND da_xoa = false
+                                                GROUP BY trang_thai_han_che""",
             nativeQuery = true
     )
     Set<IProductStatus> getMetaSumMyProductByStatus(String shopId);
@@ -69,27 +70,27 @@ public interface ProductRepository extends JpaRepository<Product, String>, JpaSp
     @Query(
             value = """
                     SELECT
-                                            status_list.id,
-                                            COUNT(products.id) AS count
-                                          FROM
-                                            (
-                                              SELECT 'ACTIVE' AS id
-                                              UNION ALL
-                                              SELECT 'PENDING'
-                                              UNION ALL
-                                              SELECT 'VIOLATION'
-                                            ) AS status_list
-                                          LEFT JOIN
-                                            products ON (
-                                              products.deleted = false AND (
-                                                (status_list.id = 'ACTIVE'  AND products.restricted_reason IS NOT NULL AND products.restrict_status != 'VIOLATION') OR
-                                                (status_list.id = 'PENDING' AND products.restrict_status = 'PENDING' AND products.restricted_reason IS NULL) OR
-                                                (status_list.id = 'VIOLATION' AND products.restrict_status = 'VIOLATION')
-                                              )
-                                              and products.created_at >= :startDateTime AND products.created_at <= :enDateTime
-                                            )
-                                          GROUP BY
-                                            status_list.id;""",
+                               status_list.id,
+                               COUNT(p.id_san_pham) AS count
+                           FROM
+                               (
+                                   SELECT 'ACTIVE' AS id
+                                   UNION ALL
+                                   SELECT 'PENDING'
+                                   UNION ALL
+                                   SELECT 'VIOLATION'
+                               ) AS status_list
+                           LEFT JOIN
+                               san_pham p ON (
+                                   p.da_xoa = false AND (
+                                       (status_list.id = 'ACTIVE' AND p.ly_do_han_che IS NOT NULL AND p.trang_thai_han_che != 'VIOLATION') OR
+                                       (status_list.id = 'PENDING' AND p.trang_thai_han_che = 'PENDING' AND p.ly_do_han_che IS NULL) OR
+                                       (status_list.id = 'VIOLATION' AND p.trang_thai_han_che = 'VIOLATION')
+                                   )
+                                   AND p.ngay_tao >= :startDateTime AND p.ngay_tao <= :enDateTime
+                               )
+                           GROUP BY
+                               status_list.id""",
             nativeQuery = true
     )
     Set<IProductStatus> getMetaSumByStatusForAdmin(LocalDateTime startDateTime, LocalDateTime enDateTime);
