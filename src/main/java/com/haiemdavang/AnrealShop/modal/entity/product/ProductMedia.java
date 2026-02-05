@@ -12,23 +12,23 @@ import lombok.NoArgsConstructor;
 @Builder
 @Entity
 @Data
-@Table(name = "product_media")
+@Table(name = "media_san_pham")
 public class ProductMedia {
     @Id
-    @Column(length = 36, updatable = false, nullable = false)
+    @Column(name = "id_media_san_pham", length = 36, updatable = false, nullable = false)
     private String id;
 
     @ManyToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "product_id", nullable = false)
+    @JoinColumn(name = "id_san_pham", nullable = false)
     private Product product;
 
-    @Column(nullable = false, length = 255)
+    @Column(name = "duong_dan", nullable = false, length = 255)
     private String url;
 
-    @Column(nullable = false, length = 255)
+    @Column(name = "anh_dai_dien", nullable = false, length = 255)
     private String thumbnailUrl;
 
     @Enumerated(EnumType.STRING)
-    @Column(nullable = false)
+    @Column(name = "loai_media", nullable = false)
     private MediaType type = MediaType.IMAGE;
 }

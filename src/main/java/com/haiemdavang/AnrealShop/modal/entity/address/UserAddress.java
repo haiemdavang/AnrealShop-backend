@@ -12,40 +12,40 @@ import lombok.*;
 @ToString(exclude = {"user", "province", "district", "ward"})
 @EqualsAndHashCode(of = "id")
 @Entity
-@Table(name = "user_addresses")
+@Table(name = "dia_chi_nguoi_dung")
 public class UserAddress {
 
     @Id
     @GeneratedValue(strategy = GenerationType.UUID)
-    @Column(length = 36, updatable = false, nullable = false)
+    @Column(name = "id_dia_chi_nguoi_dung", length = 36, updatable = false, nullable = false)
     private String id;
 
     @ManyToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "user_id", nullable = false)
+    @JoinColumn(name = "id_nguoi_dung", nullable = false)
     private User user;
 
-    @Column(name = "receiver_name", nullable = false, length = 100)
+    @Column(name = "nguoi_nhan", nullable = false, length = 100)
     private String receiverName;
 
-    @Column(name = "phone_number", nullable = false, length = 20)
+    @Column(name = "so_dien_thoai", nullable = false, length = 20)
     private String phoneNumber;
 
     @ManyToOne(fetch = FetchType.EAGER)
-    @JoinColumn(name = "province_id", nullable = false)
+    @JoinColumn(name = "id_tinh", nullable = false)
     private Province province;
 
     @ManyToOne(fetch = FetchType.EAGER)
-    @JoinColumn(name = "district_id", nullable = false)
+    @JoinColumn(name = "id_huyen", nullable = false)
     private District district;
 
     @ManyToOne(fetch = FetchType.EAGER)
-    @JoinColumn(name = "ward_id", nullable = false)
+    @JoinColumn(name = "id_xa", nullable = false)
     private Ward ward;
 
-    @Column(columnDefinition = "TEXT", nullable = false)
+    @Column(name = "chi_tiet", columnDefinition = "TEXT", nullable = false)
     private String detail;
 
-    @Column(name = "primary_address", columnDefinition = "BOOLEAN DEFAULT FALSE")
+    @Column(name = "dia_chi_mac_dinh", columnDefinition = "BOOLEAN DEFAULT FALSE")
     private boolean primaryAddress = false;
 
 }

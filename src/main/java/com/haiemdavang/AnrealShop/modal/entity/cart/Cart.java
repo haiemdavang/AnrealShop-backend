@@ -19,20 +19,20 @@ import java.util.Set;
 @ToString(exclude = {"user", "items"})
 @EqualsAndHashCode(of = "id")
 @Entity
-@Table(name = "carts")
+@Table(name = "gio_hang")
 public class Cart {
 
     @Id
     @GeneratedValue(strategy = GenerationType.UUID)
-    @Column(length = 36, updatable = false, nullable = false)
+    @Column(name = "id_gio_hang", length = 36, updatable = false, nullable = false)
     private String id;
 
     @ManyToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "user_id", nullable = false)
+    @JoinColumn(name = "id_nguoi_dung", nullable = false)
     private User user;
 
     @UpdateTimestamp
-    @Column(name = "updated_at")
+    @Column(name = "ngay_cap_nhat")
     private LocalDateTime updatedAt;
 
     @OneToMany(mappedBy = "cart", cascade = CascadeType.ALL, orphanRemoval = true, fetch = FetchType.LAZY)

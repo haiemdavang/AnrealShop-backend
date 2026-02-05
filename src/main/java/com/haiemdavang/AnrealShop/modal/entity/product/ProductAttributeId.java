@@ -11,9 +11,9 @@ import lombok.*;
 @EqualsAndHashCode
 public class ProductAttributeId {
 
-    @Column(name = "product_id", length = 36)
+    @Column(name = "id_san_pham", length = 36)
     private String productId;
 
-    @Column(name = "attribute_value_id", length = 36)
+    @Column(name = "id_gia_tri_thuoc_tinh", length = 36)
     private String attributeValueId;
 }

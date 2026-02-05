@@ -14,9 +14,9 @@ import java.io.Serializable;
 @Embeddable
 public class ChatRoomParticipantId implements Serializable {
 
-    @Column(name = "chat_room_id", nullable = false, length = 36)
+    @Column(name = "id_phong_chat", nullable = false, length = 36)
     private String chatRoomId;
 
-    @Column(name = "user_id", nullable = false, length = 36)
+    @Column(name = "id_nguoi_dung", nullable = false, length = 36)
     private String userId;
 }

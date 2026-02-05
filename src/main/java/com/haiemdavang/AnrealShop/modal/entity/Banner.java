@@ -1,4 +1,5 @@
 package com.haiemdavang.AnrealShop.modal.entity;
+
 import jakarta.persistence.*;
 import lombok.*;
 import org.hibernate.annotations.CreationTimestamp;
@@ -14,44 +15,44 @@ import java.time.LocalDateTime;
 @ToString
 @EqualsAndHashCode(of = "id")
 @Entity
-@Table(name = "banners")
+@Table(name = "banner")
 public class Banner {
 
     @Id
     @GeneratedValue(strategy = GenerationType.UUID)
-    @Column(length = 36, updatable = false, nullable = false)
+    @Column(name = "id_banner", length = 36, updatable = false, nullable = false)
     private String id;
 
-    @Column(name = "image_url", nullable = false, length = 255)
+    @Column(name = "duong_dan_anh", nullable = false, length = 255)
     private String imageUrl;
 
-    @Column(name = "redirect_url", length = 255)
+    @Column(name = "duong_dan_chuyen_huong", length = 255)
     private String redirectUrl;
 
-    @Column(name = "title", length = 100) // Tiêu đề cho banner, có thể dùng cho SEO hoặc alt text
+    @Column(name = "tieu_de", length = 100) // Tiêu đề cho banner, có thể dùng cho SEO hoặc alt text
     private String title;
 
-    @Column(name = "description", columnDefinition = "TEXT") // Mô tả ngắn về banner
+    @Column(name = "mo_ta", columnDefinition = "TEXT") // Mô tả ngắn về banner
     private String description;
 
-    @Column(name = "is_active", columnDefinition = "BOOLEAN DEFAULT TRUE")
+    @Column(name = "dang_hoat_dong", columnDefinition = "BOOLEAN DEFAULT TRUE")
     private boolean isActive = true; // Đánh dấu banner có đang hoạt động để hiển thị hay không
 
-    @Column(name = "display_order", columnDefinition = "INT DEFAULT 0")
+    @Column(name = "thu_tu_hien_thi", columnDefinition = "INT DEFAULT 0")
     private int displayOrder = 0; // Thứ tự hiển thị của banner (nếu có nhiều banner)
 
-    @Column(name = "start_date")
+    @Column(name = "ngay_bat_dau")
     private LocalDateTime startDate; // Ngày bắt đầu hiển thị banner
 
-    @Column(name = "end_date")
+    @Column(name = "ngay_ket_thuc")
     private LocalDateTime endDate; // Ngày kết thúc hiển thị banner
 
     @CreationTimestamp
-    @Column(name = "created_at", updatable = false, columnDefinition = "TIMESTAMP DEFAULT CURRENT_TIMESTAMP")
+    @Column(name = "ngay_tao", updatable = false, columnDefinition = "TIMESTAMP DEFAULT CURRENT_TIMESTAMP")
     private LocalDateTime createdAt;
 
     @UpdateTimestamp
-    @Column(name = "updated_at")
+    @Column(name = "ngay_cap_nhat")
     private LocalDateTime updatedAt;
 
 }

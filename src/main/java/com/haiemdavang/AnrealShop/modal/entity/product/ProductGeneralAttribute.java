@@ -4,7 +4,7 @@ import jakarta.persistence.*;
 import lombok.*;
 
 @Entity
-@Table(name = "product_general_attributes")
+@Table(name = "san_pham_thuoc_tinh_chung")
 @Getter
 @Setter
 @NoArgsConstructor
@@ -18,11 +18,11 @@ public class ProductGeneralAttribute {
 
     @ManyToOne(fetch = FetchType.LAZY)
     @MapsId("productId")
-    @JoinColumn(name = "product_id", nullable = false)
+    @JoinColumn(name = "id_san_pham", nullable = false)
     private Product product;
 
     @ManyToOne(fetch = FetchType.LAZY)
     @MapsId("attributeValueId")
-    @JoinColumn(name = "attribute_value_id", nullable = false)
+    @JoinColumn(name = "id_gia_tri_thuoc_tinh", nullable = false)
     private AttributeValue attributeValue;
 }
