@@ -18,21 +18,21 @@ import java.util.Set;
 @ToString(exclude = {"product", "attributes"})
 @EqualsAndHashCode(of = "id")
 @Entity
-@Table(name = "san_pham_sku", indexes = {
+@Table(name = "san_phamsku", indexes = {
         @Index(name = "idx_sanphamsku_sku_unique", columnList = "ma_sku", unique = true)
 })
 public class ProductSku {
 
     @Id
     @GeneratedValue(strategy = GenerationType.UUID)
-    @Column(name = "id_san_pham_sku", length = 36, updatable = false, nullable = false)
+    @Column(name = "id_san_phamsku", length = 36, updatable = false, nullable = false)
     private String id;
 
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "id_san_pham", nullable = false)
     private Product product;
 
-    @Column(name = "ma_sku", nullable = false, length = 50)
+    @Column(name = "masku", nullable = false, length = 50)
     private String sku;
 
     @Column(name = "gia", nullable = false)
@@ -56,7 +56,7 @@ public class ProductSku {
     @ManyToMany(fetch = FetchType.LAZY, cascade = {CascadeType.MERGE, CascadeType.PERSIST})
     @JoinTable(
             name = "sku_thuoc_tinh",
-            joinColumns = @JoinColumn(name = "id_san_pham_sku"),
+            joinColumns = @JoinColumn(name = "id_san_phamsku"),
             inverseJoinColumns = @JoinColumn(name = "id_gia_tri_thuoc_tinh")
     )
     private Set<AttributeValue> attributes;

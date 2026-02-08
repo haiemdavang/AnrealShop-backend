@@ -35,7 +35,7 @@ public class HistoryLogin {
     @Column(name = "thoi_gian_dang_xuat")
     private LocalDateTime logoutAt;
 
-    @Column(name = "dia_chi_ip", nullable = false, length = 45)
+    @Column(name = "dia_chiip", nullable = false, length = 45)
     private String ipAddress;
 
     @Column(name = "user_agent")

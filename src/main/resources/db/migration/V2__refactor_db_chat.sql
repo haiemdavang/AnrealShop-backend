@@ -1,0 +1,28 @@
+-- ALTER TABLE phong_chat ADD COLUMN id_nguoi_dung VARCHAR(36) NOT NULL;
+-- ALTER TABLE phong_chat ADD COLUMN id_cua_hang VARCHAR(36) NOT NULL;
+--
+-- ALTER TABLE phong_chat
+--     ADD CONSTRAINT fk_chatroom_customer FOREIGN KEY (id_nguoi_dung) REFERENCES nguoi_dung(id_nguoi_dung);
+--
+-- ALTER TABLE phong_chat
+--     ADD CONSTRAINT fk_chatroom_shop FOREIGN KEY (id_cua_hang) REFERENCES cua_hang(id_cua_hang);
+--
+-- -- 3. Ràng buộc quan trọng: Mỗi cặp User-Shop chỉ có 1 ID phòng duy nhất
+-- ALTER TABLE phong_chat
+--     ADD CONSTRAINT uq_user_shop_pair UNIQUE (id_nguoi_dung, id_cua_hang);
+--
+--
+-- -- 1. Xóa cột id_nguoi_dung (sender) vì bạn đã quyết định dùng SenderRole thay thế
+-- ALTER TABLE tin_nhan DROP COLUMN IF EXISTS id_nguoi_dung;
+--
+-- -- 2. Thêm cột ben_gui (SenderRole)
+-- ALTER TABLE tin_nhan ADD COLUMN ben_gui VARCHAR(20) NOT NULL;
+--
+-- -- 3. Đảm bảo cột loại tin nhắn và nội dung khớp với định nghĩa
+-- -- Nếu cột cũ tên là 'type' hoặc 'message_type', hãy đổi tên:
+-- -- ALTER TABLE tin_nhan RENAME COLUMN old_name TO loai_tin_nhan;
+--
+-- -- 4. Thêm default cho trạng thái đã đọc nếu chưa có
+-- ALTER TABLE tin_nhan ALTER COLUMN da_doc SET DEFAULT FALSE;
+--
+-- DROP TABLE IF EXISTS phong_chat_thanh_vien;

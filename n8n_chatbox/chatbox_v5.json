@@ -1,0 +1,580 @@
+{
+  "name": "TTCM CNM",
+  "nodes": [
+    {
+      "parameters": {
+        "schemaType": "manual",
+        "inputSchema": "{\n\t\"type\": \"object\",\n\t\"properties\": {\n\t\t\"is_fashion\": {\n\t\t\t\"type\": \"boolean\"\n\t\t},\n\t\t\"query_type\": {\n\t\t\t\"type\": \"string\",\n\t\t\t\"enum\": [\"greeting\", \"product_search\", \"product_info\", \"review\", \"category\", \"statistics\", \"comparison\", \"recommendation\", \"sale\", \"shop_info\", \"other\"]\n\t\t},\n\t\t\"sql_query\": {\n\t\t\t\"type\": \"string\"\n\t\t},\n\t\t\"intent\": {\n\t\t\t\"type\": \"string\"\n\t\t}\n\t}\n}"
+      },
+      "type": "@n8n/n8n-nodes-langchain.outputParserStructured",
+      "typeVersion": 1.3,
+      "position": [
+        736,
+        656
+      ],
+      "id": "a99babd5-ac6c-419e-9537-345baeb2f365",
+      "name": "Structured Output Parser"
+    },
+    {
+      "parameters": {
+        "promptType": "define",
+        "text": "={{ $('Webhook').first().json.body.chatInput }}",
+        "hasOutputParser": true,
+        "options": {
+          "systemMessage": "1. VAI TRÒ VÀ NHIỆM VỤ\nBạn là một chuyên gia cơ sở dữ liệu PostgreSQL cấp cao của hệ thống thương mại điện tử thời trang Anrealshop.\n\nNhiệm vụ: Chuyển đổi ngôn ngữ tự nhiên của người dùng thành câu lệnh SQL chính xác tuyệt đối dựa trên Schema tiếng Việt đã cung cấp.\n\nMục tiêu: Trả về kết quả dưới dạng JSON chuẩn để hệ thống backend có thể thực thi ngay lập tức.\n\n2. CHI TIẾT CẤU TRÚC DATABASE (SCHEMA TIẾNG VIỆT)\n2.1. Bảng Trọng Tâm (Core Tables)\nsan_pham (p): Chứa thông tin sản phẩm.\n\nCột: id_san_pham, ten_san_pham, gia_goc, gia_giam, mo_ta, mo_ta_ngan, da_ban, diem_danh_giatb, tong_danh_gia, anh_dai_dien, hien_thi (bool), da_xoa (bool), id_cua_hang, id_danh_muc.\n\nTrạng thái hạn chế (trang_thai_han_che): 'ALL', 'ACTIVE', 'VIOLATION', 'PENDING', 'HIDDEN'.\n\ndanh_muc (c): Phân loại sản phẩm.\n\nCột: id_danh_muc, ten_danh_muc, id_danh_muc_cha, cap, tong_san_pham, hien_thi (bool), da_xoa (bool).\n\ncua_hang (s): Thông tin người bán.\n\nCột: id_cua_hang, ten_cua_hang, diem_danh_giatb, luot_theo_doi, tongsp, doanh_thu, da_xoa (bool).\n\ndanh_gia_san_pham (dg): Review từ khách hàng.\n\nCột: id_danh_gia_san_pham, binh_luan, diem_danh_gia (1-5), id_san_pham, id_nguoi_dung.\n\n2.2. Bảng Hỗ Trợ & Thuộc Tính\nsan_phamsku (sku): Các biến thể sản phẩm (size, màu). Cột: id_san_phamsku, gia, so_luong, masku.\n\nthuoc_tinh, gia_tri_thuoc_tinh: Thông số kỹ thuật (Màu sắc, Chất liệu).\n\nmedia_san_pham: Ảnh/Video chi tiết sản phẩm (loai_media: 'IMAGE', 'VIDEO').\n\n2.3. Bảng Giao Dịch & Địa Chỉ\ndon_hang, don_hang_cua_hang, item_don_hang: Quy trình đặt hàng.\n\ntinh, huyen, xa: Đơn vị hành chính Việt Nam.\n\n3. NGUYÊN TẮC VIẾT SQL (BẮT BUỘC)\n3.1. Logic Lọc Dữ Liệu\nSản phẩm hiển thị: Luôn kèm điều kiện p.hien_thi = true AND p.da_xoa = false AND p.trang_thai_han_che = 'ACTIVE'.\n\nDanh mục hiển thị: Luôn kèm c.hien_thi = true AND c.da_xoa = false.\n\nCửa hàng hoạt động: Luôn kèm s.da_xoa = false.\n\n3.2. Xử Lý Giá & Tính Toán (PostgreSQL Syntax)\nGiá hiện tại: Sử dụng CASE WHEN p.gia_giam > 0 THEN p.gia_giam ELSE p.gia_goc END AS gia_hien_tai.\n\nPhần trăm giảm giá: ROUND((1 - CAST(p.gia_giam AS NUMERIC) / p.gia_goc) * 100).\n\nTìm kiếm tiếng Việt: Sử dụng toán tử ILIKE để không phân biệt hoa thường (VD: ten_san_pham ILIKE '%áo thun%').\n\n3.3. Quy Tắc Phân Trang & Giới Hạn (LIMIT)\nCâu hỏi \"Nhất\" (Cực trị): ORDER BY ... LIMIT 1.\n\nCâu hỏi tìm kiếm/liệt kê sản phẩm: LIMIT 3.\n\nCâu hỏi về danh mục/shop: LIMIT 5.\n\n4. ĐỊNH DẠNG PHẢN HỒI (JSON ONLY)\nBạn chỉ được trả về một đối tượng JSON duy nhất với cấu trúc:\n\nJSON\n\n{\n  \"is_fashion\": boolean,\n  \"query_type\": \"greeting|product_search|product_info|review|category|statistics|recommendation|sale|shop_info|other\",\n  \"sql_query\": \"Chuỗi SQL PostgreSQL hoàn chỉnh trên 1 dòng\",\n  \"intent\": \"Mô tả ngắn gọn bằng tiếng Việt ý định người dùng\"\n}\n5. CÁC VÍ DỤ MẪU CHI TIẾT\nVí dụ 1: Tìm sản phẩm rẻ nhất của shop \"Anreal\"\nSQL: SELECT p.id_san_pham, p.ten_san_pham, (CASE WHEN p.gia_giam > 0 THEN p.gia_giam ELSE p.gia_goc END) AS gia_hien_tai FROM san_pham p JOIN cua_hang s ON p.id_cua_hang = s.id_cua_hang WHERE s.ten_cua_hang ILIKE '%Anreal%' AND p.hien_thi = true AND p.da_xoa = false AND p.trang_thai_han_che = 'ACTIVE' ORDER BY gia_hien_tai ASC LIMIT 1\n\nVí dụ 2: Top 3 danh mục có nhiều sản phẩm nhất\nSQL: SELECT id_danh_muc, ten_danh_muc, tong_san_pham FROM danh_muc WHERE hien_thi = true AND da_xoa = false ORDER BY tong_san_pham DESC LIMIT 3\n\nVí dụ 3: Đánh giá gần đây của sản phẩm có ID 'abc-123'\nSQL: SELECT dg.binh_luan, dg.diem_danh_gia, n.ho_ten FROM danh_gia_san_pham dg JOIN nguoi_dung n ON dg.id_nguoi_dung = n.id_nguoi_dung WHERE dg.id_san_pham = 'abc-123' ORDER BY dg.ngay_tao DESC LIMIT 3\n\nVí dụ 4: Thống kê doanh thu và tổng sản phẩm của toàn sàn\nSQL: SELECT SUM(doanh_thu) AS tong_doanh_thu, SUM(tongsp) AS tong_so_san_pham FROM cua_hang WHERE da_xoa = false\n\n6. LƯU Ý NGỮ CẢNH\nNếu người dùng hỏi về \"nó\", \"sản phẩm này\" -> Kiểm tra lịch sử hội thoại để lấy id_san_pham tương ứng.\n\nNếu câu hỏi không liên quan đến thời trang/mua sắm -> Set \"is_fashion\": false và \"sql_query\": \"\".\n\nLuôn ưu tiên các cột anh_dai_dien và ten_san_pham trong câu lệnh SELECT để hiển thị cho người dùng.\n\n\"BẮT BUỘC: Chỉ được phép tạo câu lệnh SELECT. Tuyệt đối không sử dụng INSERT, UPDATE, DELETE, DROP, TRUNCATE. Nếu yêu cầu vi phạm, hãy trả về sql_query: \"\"."
+        }
+      },
+      "type": "@n8n/n8n-nodes-langchain.agent",
+      "typeVersion": 3.1,
+      "position": [
+        496,
+        400
+      ],
+      "id": "d6549356-ada4-465e-b2f6-f1bceaa533ec",
+      "name": "AI Agent Classifier"
+    },
+    {
+      "parameters": {
+        "description": "Call this tool to retrieve the postgress database schema for 'anrealshop_vi_pr'. Use it to get table structures and column names for 'products', 'categories', and 'users' before generating any SQL queries.",
+        "workflowId": {
+          "__rl": true,
+          "value": "IWKi4bUFTbU41yDF",
+          "mode": "list",
+          "cachedResultUrl": "/workflow/IWKi4bUFTbU41yDF",
+          "cachedResultName": "Get Database Schema CNM"
+        },
+        "workflowInputs": {
+          "mappingMode": "defineBelow",
+          "value": {},
+          "matchingColumns": [],
+          "schema": [],
+          "attemptToConvertTypes": false,
+          "convertFieldsToString": false
+        }
+      },
+      "type": "@n8n/n8n-nodes-langchain.toolWorkflow",
+      "typeVersion": 2.2,
+      "position": [
+        192,
+        64
+      ],
+      "id": "79fc1d86-a867-4560-aa13-033e2c707c9f",
+      "name": "Call 'Get Database Schema CNM'"
+    },
+    {
+      "parameters": {
+        "description": "Use this tool to retrieve real sample data (in JSON format) from the following tables: products, categories, users, and product_reviews. Call this tool whenever you need to understand the data schema, specific values for status columns (e.g., visible, restrict_status, deleted), or to preview actual customer reviews. This context is essential for generating accurate and executable MySQL queries for the Anrealshop database.",
+        "workflowId": {
+          "__rl": true,
+          "value": "CUkKD1TQGMxgOve0",
+          "mode": "list",
+          "cachedResultUrl": "/workflow/CUkKD1TQGMxgOve0",
+          "cachedResultName": "Get Data Sample CNM"
+        },
+        "workflowInputs": {
+          "mappingMode": "defineBelow",
+          "value": {},
+          "matchingColumns": [],
+          "schema": [],
+          "attemptToConvertTypes": false,
+          "convertFieldsToString": false
+        }
+      },
+      "type": "@n8n/n8n-nodes-langchain.toolWorkflow",
+      "typeVersion": 2.2,
+      "position": [
+        432,
+        80
+      ],
+      "id": "12e60e1e-2c0d-47b3-96f4-acde58132702",
+      "name": "Call 'Get Data Sample CNM'"
+    },
+    {
+      "parameters": {
+        "rules": {
+          "values": [
+            {
+              "conditions": {
+                "options": {
+                  "caseSensitive": true,
+                  "leftValue": "",
+                  "typeValidation": "strict",
+                  "version": 3
+                },
+                "conditions": [
+                  {
+                    "leftValue": "={{ $json.output.is_fashion }}",
+                    "rightValue": true,
+                    "operator": {
+                      "type": "boolean",
+                      "operation": "equals"
+                    },
+                    "id": "ea580479-4330-441a-b38c-f768940b4730"
+                  },
+                  {
+                    "leftValue": "={{ $json.output.query_type }}",
+                    "rightValue": "greeting",
+                    "operator": {
+                      "type": "string",
+                      "operation": "notEquals"
+                    },
+                    "id": "query-type-check"
+                  }
+                ],
+                "combinator": "and"
+              },
+              "renameOutput": true,
+              "outputKey": "NeedSQL"
+            },
+            {
+              "conditions": {
+                "options": {
+                  "caseSensitive": true,
+                  "leftValue": "",
+                  "typeValidation": "strict",
+                  "version": 3
+                },
+                "conditions": [
+                  {
+                    "leftValue": "={{ $json.output.query_type }}",
+                    "rightValue": "greeting",
+                    "operator": {
+                      "type": "string",
+                      "operation": "equals"
+                    },
+                    "id": "greeting-check"
+                  }
+                ],
+                "combinator": "and"
+              },
+              "renameOutput": true,
+              "outputKey": "Greeting"
+            },
+            {
+              "conditions": {
+                "options": {
+                  "caseSensitive": true,
+                  "leftValue": "",
+                  "typeValidation": "strict",
+                  "version": 3
+                },
+                "conditions": [
+                  {
+                    "id": "4b335ff9-f178-4c25-b98e-96bdb5e49b60",
+                    "leftValue": "={{ $json.output.is_fashion }}",
+                    "rightValue": false,
+                    "operator": {
+                      "type": "boolean",
+                      "operation": "equals"
+                    }
+                  }
+                ],
+                "combinator": "and"
+              },
+              "renameOutput": true,
+              "outputKey": "NotFashion"
+            }
+          ]
+        },
+        "options": {}
+      },
+      "type": "n8n-nodes-base.switch",
+      "typeVersion": 3.4,
+      "position": [
+        832,
+        400
+      ],
+      "id": "95e26b4e-62ec-4699-919e-faae26b512bb",
+      "name": "Switch"
+    },
+    {
+      "parameters": {
+        "httpMethod": "POST",
+        "path": "chat-box",
+        "responseMode": "responseNode",
+        "options": {}
+      },
+      "type": "n8n-nodes-base.webhook",
+      "typeVersion": 2.1,
+      "position": [
+        -96,
+        432
+      ],
+      "id": "a703d344-76ac-4469-b9ea-bc95efbec90d",
+      "name": "Webhook",
+      "webhookId": "7cab7178-c3b4-4aa8-b794-499d98d49c58"
+    },
+    {
+      "parameters": {
+        "options": {}
+      },
+      "type": "n8n-nodes-base.respondToWebhook",
+      "typeVersion": 1.5,
+      "position": [
+        1600,
+        496
+      ],
+      "id": "9835e37d-6988-4a0d-80f4-28345b79873f",
+      "name": "Respond for Greeting"
+    },
+    {
+      "parameters": {
+        "jsCode": "const greetings = [\n  'Xin chào ! Mình là trợ lý ảo của Anrealshop. Mình có thể giúp bạn tìm kiếm sản phẩm thời trang, tư vấn style, hoặc trả lời các thắc mắc về shop. Bạn cần hỗ trợ gì ?',\n  'Chào bạn ! Rất vui được gặp bạn tại Anrealshop. Mình sẵn sàng giúp bạn tìm kiếm áo, quần, giày dép hoặc phụ kiện. Bạn muốn xem gì hôm nay ?',\n  'Hello! Chào mừng bạn đến Anrealshop. Mình có thể giúp bạn tìm các sản phẩm bán chạy, hàng mới về, hoặc sản phẩm đang sale. Hãy hỏi mình nhé!'\n];\n\nconst randomGreeting = greetings[Math.floor(Math.random() * greetings.length)];\n\nreturn {\n  json: {\n    message: randomGreeting,\n    type: \"Greeting\"\n  }\n};"
+      },
+      "type": "n8n-nodes-base.code",
+      "typeVersion": 2,
+      "position": [
+        1360,
+        528
+      ],
+      "id": "9f905c9c-b0f4-4b4e-b2ce-b7a46306c023",
+      "name": "Format for Greeting"
+    },
+    {
+      "parameters": {
+        "jsCode": "const message = `Xin lỗi bạn, Anrealshop là shop chuyên về thời trang nên mình không thể hỗ trợ câu hỏi này.\n\nMình có thể giúp bạn với các vấn đề như:\n- Tìm kiếm sản phẩm (áo, quần, giày, phụ kiện...)\n- Xem sản phẩm bán chạy, hàng mới về\n- Tìm sản phẩm theo giá, theo danh mục\n- Xem đánh giá sản phẩm\n- Các chương trình khuyến mãi, sale\n\nBạn có muốn mình giúp gì khác không?`;\n\nreturn {\n  json: {\n    message: message,\n    type: \"NotFashion\"\n  }\n};"
+      },
+      "type": "n8n-nodes-base.code",
+      "typeVersion": 2,
+      "position": [
+        1344,
+        704
+      ],
+      "id": "c047cee7-5097-4148-8602-d308b339f1be",
+      "name": "Format for NotFashion"
+    },
+    {
+      "parameters": {
+        "options": {}
+      },
+      "type": "n8n-nodes-base.respondToWebhook",
+      "typeVersion": 1.5,
+      "position": [
+        1568,
+        672
+      ],
+      "id": "8aa7124a-5369-4001-8e52-d9b10d620ca7",
+      "name": "Respond for NotFashion"
+    },
+    {
+      "parameters": {
+        "options": {}
+      },
+      "type": "n8n-nodes-base.respondToWebhook",
+      "typeVersion": 1.5,
+      "position": [
+        2752,
+        336
+      ],
+      "id": "1f507c6f-4137-4330-b895-293afe1a3858",
+      "name": "Respond to Normal Question"
+    },
+    {
+      "parameters": {
+        "promptType": "define",
+        "text": "={{ $json.data }}",
+        "options": {
+          "systemMessage": "VAI TRÒ\nBạn là chuyên viên tư vấn thời trang của Anrealshop. Nhiệm vụ của bạn là tiếp nhận dữ liệu từ database (PostgreSQL) và chuyển đổi chúng thành tin nhắn tư vấn thân thiện, lịch sự và có cấu trúc rõ ràng cho khách hàng.\n\nNGUYÊN TẮC FORMAT QUAN TRỌNG\n1. PHÂN TÁCH DANH SÁCH (KHÔNG DÙNG EMOJI)\n\nTên sản phẩm/đối tượng chính: Luôn đánh số thứ tự (1., 2., 3.).\n\n\nThông tin chi tiết: Dùng duy nhất dấu gạch ngang \"-\" ở đầu dòng để liệt kê các thuộc tính.\n\n2. CẤU TRÚC SẢN PHẨM (Áp dụng trường từ Database mới)\n1. [ten_san_pham]\n   - Giá: [gia_hien_tai]đ\n   - Đánh giá: [diem_danh_giatb]/5 ([tong_danh_gia] đánh giá) hoặc \"Chưa có đánh giá\"\n   - Đã bán: [da_ban]\n   - Shop: [ten_cua_hang] hoặc \"Chưa có thông tin\"\n   - Danh mục: [ten_danh_muc] hoặc \"Chưa phân loại\"\n   [IMAGE:anh_dai_dien]\n``` [cite: 35, 59, 88]\n\n## 3. ĐỊNH DẠNG HÌNH ẢNH (BẮT BUỘC)\n* Dùng format: `[IMAGE:url_hình_ảnh]`[cite: 59, 82].\n* **Vị trí:** Phải đặt NGAY SAU khối thông tin văn bản của từng sản phẩm[cite: 59, 82].\n* **Tuyệt đối:** Không gom ảnh lên đầu hay xuống cuối tin nhắn nếu có nhiều sản phẩm[cite: 59, 82].\n\n## 4. ĐỊNH DẠNG GIÁ & CON SỐ\n* **Tiền tệ:** Dùng dấu chấm ngăn cách hàng nghìn và kết thúc bằng chữ \"đ\" (Ví dụ: 250.000đ).\n* **Khuyến mãi:** Nếu có `gia_giam`, hiển thị theo định dạng: `[gia_giam]đ (Giảm [x]% từ [gia_goc]đ)`.\n\n---\n\n# FORMAT THEO LOẠI QUERY\n\n## product_search / recommendation / sale (Danh sách sản phẩm)\n* **Mở đầu:** \"Dạ, Anrealshop tìm thấy [số] sản phẩm [từ khóa] phù hợp với mình ạ:\"\n* **Nội dung:** Liệt kê tối đa 3 sản phẩm theo cấu trúc tại mục 2[cite: 59, 64].\n* **Kết thúc:** \"Bạn muốn xem thêm mẫu nào khác không ạ?\"\n\n## Kết quả \"Nhất\" (rẻ nhất, bán chạy nhất, mới nhất)\n* **Mở đầu:** \"Dạ, đây là sản phẩm [nhất] mà mình đang quan tâm ạ:\"\n* **Nội dung:** Hiển thị 1 sản phẩm duy nhất.\n* **Kết thúc:** \"Sản phẩm này đang rất hot, mình có cần hỗ trợ đặt hàng không ạ?\"\n\n## category (Danh mục)\n* **Mở đầu:** \"Dạ, hiện tại Anrealshop có các nhóm hàng nổi bật này ạ:\"\n* **Nội dung:** [cite: 17]\n    1. [ten_danh_muc]\n       - Số sản phẩm: [tong_san_pham]\n       - Mô tả: [mo_ta hoặc \"Chưa có mô tả\"]\n* **Kết thúc:** \"Mình muốn khám phá sản phẩm thuộc danh mục nào ạ?\"\n\n## shop_info (Thông tin cửa hàng)\n* **Nội dung:** [cite: 35]\n    1. [ten_cua_hang]\n       - Đánh giá: [diem_danh_giatb]/5\n       - Tổng sản phẩm: [tongsp]\n       - Lượt theo dõi: [luot_theo_doi]\n       - Mô tả: [mo_ta hoặc \"Chưa có mô tả\"]\n    [IMAGE:anh_dai_dien]\n\n## statistics (Thống kê sàn/shop)\n* **Nội dung:**\n    - Tổng số lượng sản phẩm: [số] \n    - Khoảng giá: Từ [giá_min]đ đến [giá_max]đ \n    - Tổng lượt đã bán trên hệ thống: [số] \n\n---\n\n# XỬ LÝ CÁC CASE ĐẶC BIỆT (EDGE CASES)\n\n1.  **Dữ liệu thiếu (Null/Empty):** [cite: 35, 59]\n    - `ten_cua_hang`: \"Chưa có thông tin\"\n    - `ten_danh_muc`: \"Chưa phân loại\"\n    - `diem_danh_giatb` hoặc `tong_danh_gia` bằng 0: \"Chưa có đánh giá\"\n    - `mo_ta`: \"Đang cập nhật nội dung\"\n2.  **Không tìm thấy kết quả:**\n    - \"Dạ, rất tiếc Anrealshop chưa tìm thấy sản phẩm nào khớp với yêu cầu của mình. Bạn thử thay đổi từ khóa (ví dụ: 'áo thun' thay vì 'áo phông') để mình tìm lại cho nhé!\"\n3.  **Sản phẩm có nhiều ảnh chi tiết:**\n    - Chỉ lấy `anh_dai_dien` (thumbnail) để format. Nếu có `media_san_pham` bổ sung, không liệt kê hết để tránh làm loãng tin nhắn[cite: 59, 82].\n4.  **Trạng thái hạn chế (VIOLATION/HIDDEN):**\n    - Nếu dữ liệu trả về có trạng thái này, tuyệt đối không hiển thị và báo: \"Sản phẩm hiện không còn khả dụng ạ.\" \n\n# VĂN PHONG & NGÔN NGỮ\n* **Ngôn ngữ:** Tiếng Việt.\n* **Sắc thái:** Thân thiện, phục vụ (luôn dùng \"Dạ\", \"ạ\").\n* **Độ dài:** Ngắn gọn, súc tích, tập trung vào giá và hình ảnh.\n* **Lưu ý:** Chỉ trả về TEXT thuần, không dùng code block, không dùng emoji trong các danh sách liệt kê chi tiết.\n\n---"
+        }
+      },
+      "type": "@n8n/n8n-nodes-langchain.agent",
+      "typeVersion": 3.1,
+      "position": [
+        1856,
+        256
+      ],
+      "id": "99056c78-3dfa-4097-b885-65c1d262c37c",
+      "name": "AI Agent Format",
+      "alwaysOutputData": true
+    },
+    {
+      "parameters": {
+        "jsCode": "const results = $input.all();\nconst classifierOutput = $('AI Agent Classifier').first().json.output;\nconst queryType = classifierOutput.query_type || 'unknown';\nconst userIntent = classifierOutput.intent || '';\n\nif (!results || results.length === 0) {\n  return {\n    json: {\n      data: JSON.stringify({\n        error: true,\n        message: \"Dạ, Anrealshop hiện chưa tìm thấy thông tin phù hợp với yêu cầu của mình ạ.\",\n        items: []\n      })\n    }\n  };\n}\n\n// Chuyển đổi và xử lý logic giá/ảnh từ DB mới\nconst processedItems = results.map(item => {\n  const data = item.json;\n  \n  // Tính toán giá hiển thị dựa trên schema mới \n  const currentPrice = (data.gia_giam && data.gia_giam > 0) ? data.gia_giam : data.gia_goc;\n  const discountPercent = data.gia_giam > 0 ? Math.round((1 - data.gia_giam / data.gia_goc) * 100) : 0;\n\n  return {\n    id: data.id_san_pham || data.id_cua_hang || data.id_danh_muc,\n    name: data.ten_san_pham || data.ten_cua_hang || data.ten_danh_muc,\n    price: currentPrice,\n    original_price: data.gia_goc,\n    discount: discountPercent,\n    rating: data.diem_danh_giatb ? parseFloat(data.diem_danh_giatb).toFixed(1) : 0,\n    total_reviews: data.tong_danh_gia || 0,\n    sold: data.da_ban || 0,\n    thumbnail: data.anh_dai_dien,\n    shop_name: data.ten_cua_hang,\n    category_name: data.ten_danh_muc,\n    description: data.mo_ta_ngan || data.mo_ta\n  };\n});\n\nreturn {\n  json: {\n    data: JSON.stringify({\n      error: false,\n      queryType: queryType,\n      intent: userIntent,\n      items: processedItems\n    })\n  }\n};"
+      },
+      "type": "n8n-nodes-base.code",
+      "typeVersion": 2,
+      "position": [
+        1488,
+        352
+      ],
+      "id": "370568ab-b43f-4cda-9c6f-05c082cae4cc",
+      "name": "Format data"
+    },
+    {
+      "parameters": {
+        "jsCode": "// 1. Lấy dữ liệu thô đã được chuẩn hóa từ node \"Format data\"\nlet inputData = { items: [] };\ntry {\n  const rawData = $('Format data').first().json.data;\n  inputData = typeof rawData === 'string' ? JSON.parse(rawData) : rawData;\n} catch (e) {\n  console.error(\"Lỗi parse inputData:\", e);\n}\n\n// 2. Lấy nội dung tin nhắn từ AI Agent Format (Xử lý đa luồng output)\nconst aiOutput = $input.first().json;\nlet message = aiOutput.output?.message || aiOutput.output || aiOutput.text || aiOutput.message || \"\";\n\n// 3. Logic dự phòng (Fallback) nếu AI không trả về message\nif (!message || message.trim() === '') {\n  if (inputData.items && inputData.items.length > 0) {\n    message = `Dạ, Anrealshop tìm thấy ${inputData.items.length} kết quả phù hợp:\\n\\n`;\n    inputData.items.forEach((item, idx) => {\n      const formattedPrice = new Intl.NumberFormat('vi-VN').format(item.price) + 'đ';\n      message += `${idx + 1}. ${item.name}\\n`;\n      message += `   - Giá: ${formattedPrice}\\n`;\n      if (item.rating > 0) {\n        message += `   - Đánh giá: ${item.rating}/5 (${item.total_reviews} lượt)\\n`;\n      }\n      if (item.thumbnail) message += `   [IMAGE:${item.thumbnail}]\\n`;\n      message += '\\n';\n    });\n  } else {\n    message = \"Dạ, hiện tại em chưa tìm thấy thông tin phù hợp. Anh/Chị có thể thử lại với từ khóa khác không ạ?\";\n  }\n}\n\n// 4. Trích xuất danh sách URL hình ảnh từ Tag [IMAGE:url]\nconst imageTagRegex = /\\[IMAGE:(https?:\\/\\/[^\\]\\s]+)\\]/gi;\nlet imageUrls = [];\nlet match;\n\nwhile ((match = imageTagRegex.exec(message)) !== null) {\n  imageUrls.push(match[1]);\n}\n\n// 5. Nếu trong text không có tag, lấy từ dữ liệu thumbnail của item đầu tiên làm dự phòng\nif (imageUrls.length === 0 && inputData.items?.[0]?.thumbnail) {\n  imageUrls.push(inputData.items[0].thumbnail);\n}\n\n// 6. Làm sạch tin nhắn (Tùy chọn: Giữ tag IMAGE nếu Frontend tự xử lý, hoặc xóa bỏ để tránh rác text)\n// Ở đây chúng ta giữ nguyên để FE nhận biết vị trí ảnh, hoặc xóa tag nếu chỉ muốn gửi text thuần.\n// message = message.replace(imageTagRegex, \"\").trim(); \n\nreturn {\n  json: {\n    message: message,\n    type: inputData.error ? \"Error\" : \"Normal\",\n    queryType: inputData.queryType,\n    imageUrl: imageUrls[0] || null, // Ảnh chính\n    imageUrls: imageUrls.slice(0, 5) // Danh sách tối đa 5 ảnh\n  }\n};"
+      },
+      "type": "n8n-nodes-base.code",
+      "typeVersion": 2,
+      "position": [
+        2208,
+        256
+      ],
+      "id": "3a5d5f77-c69d-4887-b0ae-8fb1d7f96440",
+      "name": "Code format final"
+    },
+    {
+      "parameters": {
+        "sessionIdType": "customKey",
+        "sessionKey": "={{ $('Webhook').first().json.body.userId }}",
+        "collectionName": "history_chat_memory",
+        "databaseName": "n8n_anreal"
+      },
+      "type": "@n8n/n8n-nodes-langchain.memoryMongoDbChat",
+      "typeVersion": 1,
+      "position": [
+        544,
+        640
+      ],
+      "id": "cd32a18d-15dc-44e2-a530-89a5e4e1ca5c",
+      "name": "MongoDB Chat Memory",
+      "credentials": {
+        "mongoDb": {
+          "id": "qGfVCM2YOEHeNdlx",
+          "name": "MongoDB account"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "sessionIdType": "customKey",
+        "sessionKey": "={{ $('Webhook').first().json.body.userId }}",
+        "collectionName": "history_chat_format",
+        "databaseName": "n8n_anreal"
+      },
+      "type": "@n8n/n8n-nodes-langchain.memoryMongoDbChat",
+      "typeVersion": 1,
+      "position": [
+        1984,
+        544
+      ],
+      "id": "a0cd708a-b4a6-487a-af1c-58e6e64ff6e3",
+      "name": "MongoDB Chat Memory Format",
+      "credentials": {
+        "mongoDb": {
+          "id": "qGfVCM2YOEHeNdlx",
+          "name": "MongoDB account"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "modelName": "models/gemini-2.0-flash-lite",
+        "options": {}
+      },
+      "type": "@n8n/n8n-nodes-langchain.lmChatGoogleGemini",
+      "typeVersion": 1,
+      "position": [
+        1264,
+        64
+      ],
+      "id": "f10787de-a25f-4e0e-bb3f-f08dcd90d92b",
+      "name": "Google Gemini Chat Model",
+      "credentials": {
+        "googlePalmApi": {
+          "id": "VoFhpKFi7IBBAFM0",
+          "name": "Google Gemini(PaLM) Api account"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "operation": "executeQuery",
+        "query": "={{ $json.output.sql_query }}",
+        "options": {}
+      },
+      "type": "n8n-nodes-base.postgres",
+      "typeVersion": 2.6,
+      "position": [
+        1216,
+        320
+      ],
+      "id": "73be8412-4e56-498f-9267-7d02eb017db6",
+      "name": "Execute a SQL query1",
+      "credentials": {
+        "postgres": {
+          "id": "jjKVu6wZ5HXjjEQJ",
+          "name": "Postgres account"
+        }
+      }
+    }
+  ],
+  "pinData": {},
+  "connections": {
+    "Structured Output Parser": {
+      "ai_outputParser": [
+        [
+          {
+            "node": "AI Agent Classifier",
+            "type": "ai_outputParser",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "AI Agent Classifier": {
+      "main": [
+        [
+          {
+            "node": "Switch",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Switch": {
+      "main": [
+        [
+          {
+            "node": "Execute a SQL query1",
+            "type": "main",
+            "index": 0
+          }
+        ],
+        [
+          {
+            "node": "Format for Greeting",
+            "type": "main",
+            "index": 0
+          }
+        ],
+        [
+          {
+            "node": "Format for NotFashion",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Webhook": {
+      "main": [
+        [
+          {
+            "node": "AI Agent Classifier",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Format for Greeting": {
+      "main": [
+        [
+          {
+            "node": "Respond for Greeting",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Format for NotFashion": {
+      "main": [
+        [
+          {
+            "node": "Respond for NotFashion",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "AI Agent Format": {
+      "main": [
+        [
+          {
+            "node": "Code format final",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Format data": {
+      "main": [
+        [
+          {
+            "node": "AI Agent Format",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Code format final": {
+      "main": [
+        [
+          {
+            "node": "Respond to Normal Question",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "MongoDB Chat Memory": {
+      "ai_memory": [
+        [
+          {
+            "node": "AI Agent Classifier",
+            "type": "ai_memory",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "MongoDB Chat Memory Format": {
+      "ai_memory": [
+        [
+          {
+            "node": "AI Agent Format",
+            "type": "ai_memory",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Google Gemini Chat Model": {
+      "ai_languageModel": [
+        [
+          {
+            "node": "AI Agent Classifier",
+            "type": "ai_languageModel",
+            "index": 0
+          },
+          {
+            "node": "AI Agent Format",
+            "type": "ai_languageModel",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Execute a SQL query1": {
+      "main": [
+        [
+          {
+            "node": "Format data",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    }
+  },
+  "active": false,
+  "settings": {
+    "executionOrder": "v1",
+    "binaryMode": "separate",
+    "availableInMCP": false
+  },
+  "versionId": "71496910-8816-41f3-95f0-93dd80c56130",
+  "meta": {
+    "templateCredsSetupCompleted": true,
+    "instanceId": "237ab68cb212ee95b79798097a393c2dbdb20f443eceffd13972f91ef21dcbd2"
+  },
+  "id": "qmnSWhTO2CUO8P-tkn_kd",
+  "tags": []
+}

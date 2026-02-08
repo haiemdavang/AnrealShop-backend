@@ -1,6 +1,8 @@
 package com.haiemdavang.AnrealShop.modal.entity.chat;
 
 
+import com.haiemdavang.AnrealShop.modal.entity.shop.Shop;
+import com.haiemdavang.AnrealShop.modal.entity.user.User;
 import jakarta.persistence.*;
 import lombok.*;
 
@@ -12,10 +14,12 @@ import java.util.Set;
 @NoArgsConstructor
 @AllArgsConstructor
 @Builder
-@ToString(exclude = {"participants", "messages"})
+@ToString(exclude = {"customer", "shop", "messages"})
 @EqualsAndHashCode(of = "id")
 @Entity
-@Table(name = "phong_chat")
+@Table(name = "phong_chat", uniqueConstraints = {
+        @UniqueConstraint(columnNames = {"id_nguoi_dung", "id_cua_hang"})
+})
 public class ChatRoom {
 
     @Id
@@ -26,8 +30,13 @@ public class ChatRoom {
     @Column(name = "hoat_dong_gan_nhat", columnDefinition = "TIMESTAMP DEFAULT CURRENT_TIMESTAMP")
     private LocalDateTime lastActive;
 
-    @OneToMany(mappedBy = "chatRoom", cascade = CascadeType.ALL, orphanRemoval = true, fetch = FetchType.LAZY)
-    private Set<ChatRoomParticipant> participants;
+    @ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "id_nguoi_dung", nullable = false)
+    private User customer;
+
+    @ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "id_cua_hang", nullable = false)
+    private Shop shop;
 
     @OneToMany(mappedBy = "room", cascade = CascadeType.ALL, fetch = FetchType.LAZY)
     private Set<ChatMessage> messages;
