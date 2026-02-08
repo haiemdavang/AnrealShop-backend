@@ -114,3 +114,9 @@ jwt:
 ghn:
   token: ${GHN_TOKEN:your_ghn_token}
   shop_id: ${GHN_SHOPID:your_ghn_shop_id}
+
+
+n8n:
+  webhook:
+    base-url: ${N8N_BASE_URL:http://localhost:5678}
+    chatbot-path: /webhook/chat-box

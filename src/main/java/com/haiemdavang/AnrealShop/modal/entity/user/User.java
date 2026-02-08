@@ -20,66 +20,66 @@ import java.util.Set;
 @ToString(exclude = {"role", "shops"})
 @EqualsAndHashCode(of = "id")
 @Entity
-@Table(name = "users", indexes = {
-        @Index(name = "idx_user_username", columnList = "username", unique = true),
-        @Index(name = "idx_user_email", columnList = "email", unique = true)
+@Table(name = "nguoi_dung", indexes = {
+        @Index(name = "idx_nguoidung_tendangnhap", columnList = "ten_dang_nhap", unique = true),
+        @Index(name = "idx_nguoidung_email", columnList = "email", unique = true)
 })
-@SQLDelete(sql = "UPDATE users SET deleted = true, updated_at = CURRENT_TIMESTAMP WHERE id = ?")
-@Where(clause = "deleted = false")
+@SQLDelete(sql = "UPDATE nguoi_dung SET da_xoa = true, ngay_cap_nhat = CURRENT_TIMESTAMP WHERE id_nguoi_dung = ?")
+@Where(clause = "da_xoa = false")
 public class User {
 
     @Id
-    @GeneratedValue(strategy = GenerationType.UUID) // UUID được tạo tự động bởi Hibernate
-    @Column(length = 36, updatable = false, nullable = false)
+    @GeneratedValue(strategy = GenerationType.UUID)
+    @Column(name = "id_nguoi_dung", length = 36, updatable = false, nullable = false)
     private String id;
 
-    @Column(nullable = false, unique = true, length = 50)
+    @Column(name = "ten_dang_nhap", nullable = false, unique = true, length = 50)
     private String username;
 
-    @Column(nullable = false, unique = true, length = 100)
+    @Column(name = "email", nullable = false, unique = true, length = 100)
     private String email;
 
-    @Column(length = 255)
+    @Column(name = "mat_khau", length = 255)
     private String password;
 
-    @Column(name = "full_name", length = 100)
+    @Column(name = "ho_ten", length = 100)
     private String fullName;
 
-    @Column(name = "phone_number", length = 20)
+    @Column(name = "so_dien_thoai", length = 20)
     private String phoneNumber;
 
-    @Column(name = "avatar_url", length = 255)
+    @Column(name = "anh_dai_dien", length = 255)
     private String avatarUrl;
 
     @Enumerated(EnumType.STRING)
-    @Column(columnDefinition = "ENUM('MALE', 'FEMALE', 'OTHER')")
+    @Column(name = "gioi_tinh", columnDefinition = "ENUM('MALE', 'FEMALE', 'OTHER')")
     private GenderType gender;
 
     @CreationTimestamp
-    @Column(name = "created_at", updatable = false, columnDefinition = "TIMESTAMP DEFAULT CURRENT_TIMESTAMP")
+    @Column(name = "ngay_tao", updatable = false, columnDefinition = "TIMESTAMP DEFAULT CURRENT_TIMESTAMP")
     private LocalDateTime createdAt;
 
     @UpdateTimestamp
-    @Column(name = "updated_at")
+    @Column(name = "ngay_cap_nhat")
     private LocalDateTime updatedAt;
 
     @ManyToOne(fetch = FetchType.EAGER)
-    @JoinColumn(name = "role_id")
+    @JoinColumn(name = "id_vai_tro")
     private Role role;
 
-    @Column(name = "from_social", columnDefinition = "BOOLEAN DEFAULT FALSE")
+    @Column(name = "tu_mangxh", columnDefinition = "BOOLEAN DEFAULT FALSE")
     private boolean fromSocial = false;
 
-    @Column(name = "dob", columnDefinition = "DATE")
+    @Column(name = "ngay_sinh", columnDefinition = "DATE")
     private LocalDate dob;
 
-    @Column(columnDefinition = "BOOLEAN DEFAULT FALSE")
+    @Column(name = "da_xac_thuc", columnDefinition = "BOOLEAN DEFAULT FALSE")
     private boolean verify = false;
 
-    @Column(columnDefinition = "BOOLEAN DEFAULT FALSE")
+    @Column(name = "da_xoa", columnDefinition = "BOOLEAN DEFAULT FALSE")
     private boolean deleted = false;
 
-    @Column(name = "delete_reason", columnDefinition = "TEXT")
+    @Column(name = "ly_do_xoa", columnDefinition = "TEXT")
     private String deleteReason;
 
 

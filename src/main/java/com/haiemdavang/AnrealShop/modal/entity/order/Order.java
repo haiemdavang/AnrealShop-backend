@@ -22,46 +22,45 @@ import java.util.Set;
 @ToString(exclude = {"user", "shippingAddress", "payment", "orderItems", "shopOrders"})
 @EqualsAndHashCode(of = "id")
 @Entity
-@Table(name = "orders")
+@Table(name = "don_hang")
 public class Order {
 
     @Id
     @GeneratedValue(strategy = GenerationType.UUID)
-    @Column(length = 36, updatable = false, nullable = false)
+    @Column(name = "id_don_hang", length = 36, updatable = false, nullable = false)
     private String id;
 
     @ManyToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "user_id", nullable = false)
+    @JoinColumn(name = "id_nguoi_dung", nullable = false)
     private User user;
 
     @ManyToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "address_id", nullable = false)
+    @JoinColumn(name = "id_dia_chi_nguoi_dung", nullable = false)
     private UserAddress shippingAddress;
 
     @OneToOne(fetch = FetchType.LAZY, cascade = {CascadeType.PERSIST, CascadeType.MERGE, CascadeType.REFRESH})
-    @JoinColumn(name = "payment_id", referencedColumnName = "id")
+    @JoinColumn(name = "id_thanh_toan", referencedColumnName = "id_thanh_toan")
     private Payment payment;
 
     @CreationTimestamp
-    @Column(name = "created_at", updatable = false, columnDefinition = "TIMESTAMP DEFAULT CURRENT_TIMESTAMP")
+    @Column(name = "ngay_tao", updatable = false, columnDefinition = "TIMESTAMP DEFAULT CURRENT_TIMESTAMP")
     private LocalDateTime createdAt;
 
     @UpdateTimestamp
-    @Column(name = "updated_at")
+    @Column(name = "ngay_cap_nhat")
     private LocalDateTime updatedAt;
 
      @Enumerated(EnumType.STRING)
-     @Column(name = "status", nullable = false)
-     @Builder.Default
+     @Column(name = "trang_thai", nullable = false)
      private OrderStatus status = OrderStatus.PROCESSING;
 
-     @Column(name = "sub_total_amount")
+     @Column(name = "tam_tinh")
      private Long subTotalAmount;
 
-     @Column(name = "total_shipping_fee")
+     @Column(name = "tong_phi_van_chuyen")
      private Long totalShippingFee;
 
-     @Column(name = "grand_total_amount", nullable = false)
+     @Column(name = "tong_tien", nullable = false)
      private Long grandTotalAmount;
 
     @OneToMany(mappedBy = "order", cascade = CascadeType.ALL, orphanRemoval = true, fetch = FetchType.LAZY)

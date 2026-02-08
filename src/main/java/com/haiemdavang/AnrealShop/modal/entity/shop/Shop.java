@@ -20,58 +20,58 @@ import java.util.Set;
 @ToString(exclude = {"user", "shopCategories"})
 @EqualsAndHashCode(of = "id")
 @Entity
-@Table(name = "shops")
-@SQLDelete(sql = "UPDATE shops SET deleted = true, updated_at = CURRENT_TIMESTAMP WHERE id = ?")
-@Where(clause = "deleted = false")
+@Table(name = "cua_hang")
+@SQLDelete(sql = "UPDATE cua_hang SET da_xoa = true, ngay_cap_nhat = CURRENT_TIMESTAMP WHERE id_cua_hang = ?")
+@Where(clause = "da_xoa = false")
 public class Shop {
 
     @Id
-    @Column(length = 36)
+    @Column(name = "id_cua_hang", length = 36)
     @GeneratedValue(strategy = GenerationType.UUID)
     private String id;
 
-    @Column(nullable = false, length = 100)
+    @Column(name = "ten_cua_hang", nullable = false, length = 100)
     private String name;
 
-    @Column(columnDefinition = "TEXT")
+    @Column(name = "mo_ta", columnDefinition = "TEXT")
     private String description;
 
-    @Column(columnDefinition = "TEXT")
+    @Column(name = "duong_dan", columnDefinition = "TEXT")
     private String urlSlug;
 
-    @Column(name = "avatar_url", length = 255)
+    @Column(name = "anh_dai_dien", length = 255)
     private String avatarUrl;
 
     @ManyToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "user_id", nullable = false)
+    @JoinColumn(name = "id_nguoi_dung", nullable = false)
     private User user;
 
     @CreationTimestamp
-    @Column(name = "created_at", updatable = false, columnDefinition = "TIMESTAMP DEFAULT CURRENT_TIMESTAMP")
+    @Column(name = "ngay_tao", updatable = false, columnDefinition = "TIMESTAMP DEFAULT CURRENT_TIMESTAMP")
     private LocalDateTime createdAt;
 
-    @Column(name = "product_count", columnDefinition = "INT DEFAULT 0")
+    @Column(name = "tongsp", columnDefinition = "INT DEFAULT 0")
     private int productCount;
 
-    @Column(columnDefinition = "BIGINT DEFAULT 0")
+    @Column(name = "doanh_thu", columnDefinition = "BIGINT DEFAULT 0")
     private long revenue;
 
-    @Column(name = "average_rating", columnDefinition = "FLOAT DEFAULT 0")
+    @Column(name = "diem_danh_giatb", columnDefinition = "FLOAT DEFAULT 0")
     private float averageRating;
 
-    @Column(name = "total_reviews", columnDefinition = "INT DEFAULT 0")
+    @Column(name = "tong_danh_gia", columnDefinition = "INT DEFAULT 0")
     private int totalReviews;
 
-    @Column(name = "follower_count", columnDefinition = "INT DEFAULT 0")
+    @Column(name = "luot_theo_doi", columnDefinition = "INT DEFAULT 0")
     private int followerCount;
 
-    @Column(columnDefinition = "BOOLEAN DEFAULT FALSE")
+    @Column(name = "da_xoa", columnDefinition = "BOOLEAN DEFAULT FALSE")
     private boolean deleted = false;
 
     @OneToMany(mappedBy = "shop", cascade = CascadeType.ALL, orphanRemoval = true, fetch = FetchType.LAZY)
     private Set<ShopCategory> shopCategories;
 
      @UpdateTimestamp
-     @Column(name = "updated_at")
+     @Column(name = "ngay_cap_nhat")
      private LocalDateTime updatedAt;
 }

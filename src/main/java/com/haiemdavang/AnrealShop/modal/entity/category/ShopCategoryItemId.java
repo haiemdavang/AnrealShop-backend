@@ -13,9 +13,9 @@ import java.io.Serializable;
 @Embeddable
 public class ShopCategoryItemId implements Serializable {
 
-    @Column(name = "shop_categories_id", nullable = false, length = 36)
+    @Column(name = "id_danh_muc_cua_hang", nullable = false, length = 36)
     private String shopCategoriesId;
 
-    @Column(name = "category_id", nullable = false, length = 36)
+    @Column(name = "id_danh_muc", nullable = false, length = 36)
     private String categoryId;
 }

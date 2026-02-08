@@ -13,39 +13,37 @@ import java.time.LocalDateTime;
 @AllArgsConstructor
 @ToString(exclude = {"user"})
 @EqualsAndHashCode(of = "id")
-@Table(name = "history_login", indexes = {
-        @Index(name = "idx_history_login_username", columnList = "user_id"),
-        @Index(name = "idx_history_login_loginAt", columnList = "loginAt"),
+@Table(name = "lich_su_dang_nhap", indexes = {
+        @Index(name = "idx_lichsudangnhap_nguoidung", columnList = "id_nguoi_dung"),
+        @Index(name = "idx_lichsudangnhap_thoigiandangnhap", columnList = "thoi_gian_dang_nhap")
 })
 public class HistoryLogin {
 
     @Id
     @GeneratedValue(strategy = GenerationType.UUID)
-    @Column(length = 36, updatable = false, nullable = false)
+    @Column(name = "id_lich_su_dang_nhap", length = 36, updatable = false, nullable = false)
     private String id;
 
     @ManyToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "user_id", nullable = false)
+    @JoinColumn(name = "id_nguoi_dung", nullable = false)
     private User user;
 
     @CreationTimestamp
-    @Column(nullable = false, name = "login_at")
+    @Column(name = "thoi_gian_dang_nhap", nullable = false)
     private LocalDateTime loginAt;
 
-    @Column(name = "logout_at")
+    @Column(name = "thoi_gian_dang_xuat")
     private LocalDateTime logoutAt;
 
-    @Column(nullable = false, length = 45, name = "ip_address")
+    @Column(name = "dia_chiip", nullable = false, length = 45)
     private String ipAddress;
 
     @Column(name = "user_agent")
     private String userAgent;
 
-    @Column(length = 100)
+    @Column(name = "vi_tri", length = 100)
     private String location;
 
-    @Column(length = 100, unique = true)
+    @Column(name = "thiet_bi", length = 100, unique = true)
     private String device;
-
-
 }

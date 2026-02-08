@@ -12,7 +12,7 @@ import lombok.NoArgsConstructor;
 
 @Entity
 @JsonIgnoreProperties({"hibernateLazyInitializer", "handler"})
-@Table(name = "display_categories")
+@Table(name = "hien_thi_danh_muc")
 @Data
 @NoArgsConstructor
 @AllArgsConstructor
@@ -21,27 +21,27 @@ public class DisplayCategory {
 
     @Id
     @GeneratedValue(strategy = GenerationType.UUID)
-    @Column(length = 36, updatable = false, nullable = false)
+    @Column(name = "id_hien_thi_danh_muc", length = 36, updatable = false, nullable = false)
     private String id;
 
     @ManyToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "category_id", nullable = false)
+    @JoinColumn(name = "id_danh_muc", nullable = false)
     private Category category;
 
-    @Column(name = "thumbnail_url")
+    @Column(name = "anh_dai_dien")
     private String thumbnailUrl = "https://res.cloudinary.com/dlcjc36ow/image/upload/v1747916255/ImagError_jsv7hr.png";
 
     @Builder.Default
-    @Column(name = "media_type")
+    @Column(name = "loai_media")
     @Enumerated(EnumType.STRING)
     private MediaType mediaType = MediaType.IMAGE;
 
     @Builder.Default
-    @Column(name = "position")
+    @Column(name = "vi_tri")
     @Enumerated(EnumType.STRING)
     private CategoryDisplayPosition position = CategoryDisplayPosition.SIDEBAR;
 
     @Builder.Default
-    @Column(name = "display_order", nullable = false)
+    @Column(name = "thu_tu_hien_thi", nullable = false)
     private int displayOrder = 0;
 }

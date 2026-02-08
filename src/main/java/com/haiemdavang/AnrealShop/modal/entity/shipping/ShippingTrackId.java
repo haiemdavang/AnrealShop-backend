@@ -15,10 +15,10 @@ import java.time.LocalDateTime;
 @Embeddable
 public class ShippingTrackId implements Serializable {
 
-    @Column(name = "shipping_id", nullable = false, length = 36)
+    @Column(name = "id_van_chuyen", nullable = false, length = 36)
     private String shippingId;
 
-    @Column(name = "updated_at", nullable = false)
+    @Column(name = "cap_nhat_luc", nullable = false)
     @Builder.Default
     private LocalDateTime updatedAt = LocalDateTime.now();
 }

@@ -38,53 +38,52 @@ import java.util.Set;
         }
 )
 @Entity
-@Table(name = "order_items")
+@Table(name = "item_don_hang")
 public class OrderItem {
 
     @Id
     @GeneratedValue(strategy = GenerationType.UUID)
-    @Column(length = 36, updatable = false, nullable = false)
+    @Column(name = "id_item_don_hang", length = 36, updatable = false, nullable = false)
     private String id;
 
     @ManyToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "order_id", nullable = false)
+    @JoinColumn(name = "id_don_hang", nullable = false)
     private Order order;
 
     @ManyToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "product_sku_id", nullable = false)
+    @JoinColumn(name = "id_san_phamsku", nullable = false)
     private ProductSku productSku;
 
     @ManyToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "shop_order_id", nullable = false)
+    @JoinColumn(name = "id_don_hang_cua_hang", nullable = false)
     private ShopOrder shopOrder;
 
-    @Column(nullable = false)
+    @Column(name = "so_luong", nullable = false)
     private int quantity;
 
-    @Column(nullable = false)
+    @Column(name = "gia", nullable = false)
     private Long price;
 
-    @Column(columnDefinition = "BOOLEAN DEFAULT FALSE")
+    @Column(name = "thanh_cong", columnDefinition = "BOOLEAN DEFAULT FALSE")
     private boolean success = false;
 
-    @Column(name = "cancel_reason", columnDefinition = "TEXT")
+    @Column(name = "ly_do_huy", columnDefinition = "TEXT")
     private String cancelReason;
 
     @Enumerated(EnumType.STRING)
-    @Column(name = "canceled_by")
+    @Column(name = "huy_boi")
     private CancelBy canceledBy;
 
     @Enumerated(EnumType.STRING)
-    @Column(name = "status")
-    @Builder.Default
+    @Column(name = "trang_thai")
     private OrderTrackStatus status = OrderTrackStatus.PROCESSING;
 
     @CreationTimestamp
-    @Column(name = "created_at", updatable = false)
+    @Column(name = "ngay_tao", updatable = false)
     private LocalDateTime createdAt;
 
     @UpdateTimestamp
-    @Column(name = "updated_at")
+    @Column(name = "ngay_cap_nhat")
     private LocalDateTime updatedAt;
 
 

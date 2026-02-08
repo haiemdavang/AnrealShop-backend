@@ -11,18 +11,18 @@ import lombok.*;
 @ToString(exclude = {"province", "wards"})
 @EqualsAndHashCode(of = "id")
 @Entity
-@Table(name = "districts")
+@Table(name = "huyen")
 public class District {
 
     @Id
-    @Column(length = 36, updatable = false, nullable = false)
+    @Column(name = "id_huyen", length = 36, updatable = false, nullable = false)
     private String id;
 
-    @Column(nullable = false, length = 100)
+    @Column(name = "ten_huyen", nullable = false, length = 100)
     private String name;
 
     @ManyToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "province_id", nullable = false)
+    @JoinColumn(name = "id_tinh", nullable = false)
     private Province province;
 
 // @OneToMany(mappedBy = "district", fetch = FetchType.LAZY, cascade = CascadeType.ALL)

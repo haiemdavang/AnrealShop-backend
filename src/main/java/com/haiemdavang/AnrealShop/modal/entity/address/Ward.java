@@ -11,17 +11,17 @@ import lombok.*;
 @ToString(exclude = "district")
 @EqualsAndHashCode(of = "id")
 @Entity
-@Table(name = "wards")
+@Table(name = "xa")
 public class Ward {
 
     @Id
-    @Column(length = 36, updatable = false, nullable = false)
+    @Column(name = "id_xa", length = 36, updatable = false, nullable = false)
     private String id;
 
-    @Column(nullable = false, length = 100)
+    @Column(name = "ten_xa", nullable = false, length = 100)
     private String name;
 
     @ManyToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "district_id", nullable = false)
+    @JoinColumn(name = "id_huyen", nullable = false)
     private District district;
 }

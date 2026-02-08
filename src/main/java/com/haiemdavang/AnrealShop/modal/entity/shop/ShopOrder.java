@@ -39,52 +39,52 @@ import java.util.Set;
         }
 )
 @Entity
-@Table(name = "shop_orders")
+@Table(name = "don_hang_cua_hang")
 public class ShopOrder {
 
     @Id
     @GeneratedValue(strategy = GenerationType.UUID)
-    @Column(length = 36, updatable = false, nullable = false)
+    @Column(name = "id_don_hang_cua_hang", length = 36, updatable = false, nullable = false)
     private String id;
 
     @ManyToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "user_id", nullable = false)
+    @JoinColumn(name = "id_nguoi_dung", nullable = false)
     private User user;
 
     @ManyToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "order_id", nullable = false)
+    @JoinColumn(name = "id_don_hang", nullable = false)
     private Order order;
 
     @ManyToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "address_id", nullable = false)
+    @JoinColumn(name = "id_dia_chi_shop", nullable = false)
     private ShopAddress shippingAddress;
 
     @ManyToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "shop_id", nullable = false)
+    @JoinColumn(name = "id_cua_hang", nullable = false)
     private Shop shop;
 
-    @Column(name = "shipping_fee", nullable = false)
+    @Column(name = "phi_giao_hang", nullable = false)
     @Builder.Default
     private Long shippingFee = 0L;
 
     @Enumerated(EnumType.STRING)
-    @Column(name = "status")
+    @Column(name = "trang_thai")
     @Builder.Default
     private ShopOrderStatus status = ShopOrderStatus.INIT_PROCESSING;
 
 
-    @Column(nullable = false, name = "total_amount")
+    @Column(name = "tong_tien", nullable = false)
     private Long totalAmount;
 
-    @Column(nullable = false, name = "total_weight")
+    @Column(name = "tong_khoi_luong", nullable = false)
     private Long totalWeight;
 
     @CreationTimestamp
-    @Column(name = "created_at", updatable = false, columnDefinition = "TIMESTAMP DEFAULT CURRENT_TIMESTAMP")
+    @Column(name = "ngay_tao", updatable = false, columnDefinition = "TIMESTAMP DEFAULT CURRENT_TIMESTAMP")
     private LocalDateTime createdAt;
 
     @UpdateTimestamp
-    @Column(name = "updated_at", columnDefinition = "TIMESTAMP DEFAULT CURRENT_TIMESTAMP")
+    @Column(name = "ngay_cap_nhat", columnDefinition = "TIMESTAMP DEFAULT CURRENT_TIMESTAMP")
     private LocalDateTime updatedAt;
 
     @OneToMany(mappedBy = "shopOrder", cascade = CascadeType.ALL, orphanRemoval = true, fetch = FetchType.LAZY)

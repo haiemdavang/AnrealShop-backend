@@ -16,29 +16,29 @@ import java.util.Set;
 @ToString(exclude = {"cart", "productSku"})
 @EqualsAndHashCode(of = "id")
 @Entity
-@Table(name = "cart_items")
+@Table(name = "gio_hang_item")
 public class CartItem {
 
     @Id
     @GeneratedValue(strategy = GenerationType.UUID)
-    @Column(length = 36, updatable = false, nullable = false)
+    @Column(name = "id_gio_hang_item", length = 36, updatable = false, nullable = false)
     private String id;
 
     @ManyToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "cart_id", nullable = false)
+    @JoinColumn(name = "id_gio_hang", nullable = false)
     private Cart cart;
 
     @ManyToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "product_sku_id", nullable = false)
+    @JoinColumn(name = "id_san_phamsku", nullable = false)
     private ProductSku productSku;
 
-    @Column(nullable = false)
+    @Column(name = "gia", nullable = false)
     private Long price;
 
-    @Column(columnDefinition = "INT DEFAULT 1")
+    @Column(name = "so_luong", columnDefinition = "INT DEFAULT 1")
     private int quantity = 1;
 
-    @Column(columnDefinition = "BOOLEAN DEFAULT TRUE")
+    @Column(name = "duoc_chon", columnDefinition = "BOOLEAN DEFAULT TRUE")
     private boolean selected = true;
 
 

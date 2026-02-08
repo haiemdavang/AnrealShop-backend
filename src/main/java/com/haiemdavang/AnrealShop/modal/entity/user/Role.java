@@ -13,21 +13,21 @@ import java.util.Set;
 @ToString(exclude = "users")
 @EqualsAndHashCode(of = "id")
 @Entity
-@Table(name = "roles", indexes = {
-        @Index(name = "idx_role_name", columnList = "name", unique = true)
+@Table(name = "vai_tro", indexes = {
+        @Index(name = "idx_vaitro_ten", columnList = "ten_vai_tro", unique = true)
 })
 public class Role {
 
     @Id
     @GeneratedValue(strategy = GenerationType.UUID)
-    @Column(length = 36, updatable = false, nullable = false)
+    @Column(name = "id_vai_tro", length = 36, updatable = false, nullable = false)
     private String id;
 
     @Enumerated(EnumType.STRING)
-    @Column(nullable = false, unique = true, length = 10, columnDefinition = "ENUM('USER', 'ADMIN')")
+    @Column(name = "ten_vai_tro", nullable = false, unique = true, length = 10, columnDefinition = "ENUM('USER', 'ADMIN')")
     private RoleName name;
 
-    @Column(length = 255)
+    @Column(name = "mo_ta", length = 255)
     private String description;
 
     @OneToMany(mappedBy = "role", fetch = FetchType.LAZY)

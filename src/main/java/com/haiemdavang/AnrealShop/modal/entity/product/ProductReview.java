@@ -19,40 +19,40 @@ import java.util.List;
 @ToString(exclude = {"user", "product", "orderItem", "mediaList"})
 @EqualsAndHashCode(of = "id")
 @Entity
-@Table(name = "product_reviews", indexes = {
-        @Index(name = "idx_productreview_user_product", columnList = "user_id, product_id")
+@Table(name = "danh_gia_san_pham", indexes = {
+        @Index(name = "idx_danhgiasanpham_user_product", columnList = "id_nguoi_dung, id_san_pham")
 })
 public class ProductReview {
 
     @Id
     @GeneratedValue(strategy = GenerationType.UUID)
-    @Column(length = 36, updatable = false, nullable = false)
+    @Column(name = "id_danh_gia_san_pham", length = 36, updatable = false, nullable = false)
     private String id;
 
     @ManyToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "user_id", nullable = false)
+    @JoinColumn(name = "id_nguoi_dung", nullable = false)
     private User user;
 
     @ManyToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "product_id", nullable = false)
+    @JoinColumn(name = "id_san_pham", nullable = false)
     private Product product;
 
     @OneToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "order_item_id", unique = true)
+    @JoinColumn(name = "id_item_don_hang", unique = true)
     private OrderItem orderItem; // Liên kết tới mục đơn hàng (để xác minh đã mua)
 
-    @Column(nullable = false) // Ví dụ: 1, 2, 3, 4, 5
+    @Column(name = "diem_danh_gia", nullable = false) // Ví dụ: 1, 2, 3, 4, 5
     private int rating; // Điểm đánh giá// Một OrderItem chỉ có một ProductReview
 
-    @Column(columnDefinition = "TEXT")
+    @Column(name = "binh_luan", columnDefinition = "TEXT")
     private String comment; // Nội dung bình luận
 
     @CreationTimestamp
-    @Column(name = "created_at", updatable = false)
+    @Column(name = "ngay_tao", updatable = false)
     private LocalDateTime createdAt;
 
     @UpdateTimestamp
-    @Column(name = "updated_at")
+    @Column(name = "ngay_cap_nhat")
     private LocalDateTime updatedAt;
 
     @OneToMany(mappedBy = "review", cascade = CascadeType.ALL, orphanRemoval = true, fetch = FetchType.EAGER)

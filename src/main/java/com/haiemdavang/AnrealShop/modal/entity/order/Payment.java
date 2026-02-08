@@ -20,40 +20,39 @@ import java.time.LocalDateTime;
 @Builder
 @EqualsAndHashCode(of = "id")
 @Entity
-@Table(name = "payments")
+@Table(name = "thanh_toan")
 public class Payment {
 
     @Id
     @GeneratedValue(strategy = GenerationType.UUID)
-    @Column(length = 36, updatable = false, nullable = false)
+    @Column(name = "id_thanh_toan", length = 36, updatable = false, nullable = false)
     private String id;
 
-    @Column(nullable = false)
+    @Column(name = "so_tien", nullable = false)
     private Long amount;
 
     @Enumerated(EnumType.STRING)
-    @Column(columnDefinition = "ENUM('VNPAY', 'CASH_ON_DELIVERY', 'MOMO')")
+    @Column(name = "cong_thanh_toan", columnDefinition = "ENUM('VNPAY', 'CASH_ON_DELIVERY', 'MOMO')")
     private PaymentGateway gateway;
 
     @Enumerated(EnumType.STRING)
-    @Column(length = 50)
+    @Column(name = "loai_thanh_toan", length = 50)
     private PaymentType type;
 
 
     @Enumerated(EnumType.STRING)
-    @Column(nullable = false, columnDefinition = "ENUM('PENDING', 'COD', 'COMPLETED', 'EXPIRED', 'CANCELLED', 'REFUNDED', 'FAILED') DEFAULT 'PENDING'")
-    @Builder.Default
+    @Column(name = "trang_thai", nullable = false, columnDefinition = "ENUM('PENDING', 'COD', 'COMPLETED', 'EXPIRED', 'CANCELLED', 'REFUNDED', 'FAILED') DEFAULT 'PENDING'")
     private PaymentStatus status = PaymentStatus.PENDING;
 
-    @Column(name = "expire_at")
+    @Column(name = "het_han_luc")
     private LocalDateTime expireAt;
 
     @CreationTimestamp
-    @Column(name = "created_at", updatable = false)
+    @Column(name = "ngay_tao", updatable = false)
     private LocalDateTime createdAt;
 
     @UpdateTimestamp
-    @Column(name = "updated_at")
+    @Column(name = "ngay_cap_nhat")
     private LocalDateTime updatedAt;
 
 

@@ -17,50 +17,47 @@ import java.util.Set;
 @ToString(exclude = {"shop", "attributeValues"})
 @EqualsAndHashCode(of = "id")
 @Entity
-@Table(name = "attribute_keys", indexes = {
-        @Index(name = "idx_attribute_key_name", columnList = "key_name", unique = true)
+@Table(name = "thuoc_tinh", indexes = {
+        @Index(name = "idx_thuoctinh_tenkhoa", columnList = "ten_khoa", unique = true)
 })
 public class AttributeKey {
 
     @Id
     @GeneratedValue(strategy = GenerationType.UUID)
-    @Column(length = 36, updatable = false, nullable = false)
+    @Column(name = "id_thuoc_tinh", length = 36, updatable = false, nullable = false)
     private String id;
 
-    @Column(name = "key_name", nullable = false, length = 50)
-    private String keyName; //tam thoi chua dung den nghe cu Hải
+    @Column(name = "ten_khoa", nullable = false, length = 50)
+    private String keyName;
 
-    @Column(name = "display_name", nullable = false, length = 100)
+    @Column(name = "ten_hien_thi", nullable = false, length = 100)
     private String displayName;
 
-    @Column(name = "is_default", columnDefinition = "BOOLEAN DEFAULT FALSE")
+    @Column(name = "mac_dinh", columnDefinition = "BOOLEAN DEFAULT FALSE")
     private boolean isDefault = false;
 
-    @Column(name = "display_order")
+    @Column(name = "thu_tu_hien_thi")
     private int displayOrder = 0;
 
-    @Column(name = "is_multi_selected", columnDefinition = "BOOLEAN DEFAULT FALSE")
+    @Column(name = "chon_nhieu", columnDefinition = "BOOLEAN DEFAULT FALSE")
     private boolean isMultiSelected = false;
 
-    @Column(name = "is_for_sku", columnDefinition = "BOOLEAN DEFAULT FALSE")
+    @Column(name = "dung_chosku", columnDefinition = "BOOLEAN DEFAULT FALSE")
     private boolean isForSku = false;
 
     @CreationTimestamp
-    @Column(name = "created_at", updatable = false)
+    @Column(name = "ngay_tao", updatable = false)
     private LocalDateTime createdAt;
 
     @UpdateTimestamp
-    @Column(name = "updated_at")
+    @Column(name = "ngay_cap_nhat")
     private LocalDateTime updatedAt;
-
-    @OneToMany(mappedBy = "attributeKey", cascade = CascadeType.ALL, orphanRemoval = true, fetch = FetchType.LAZY)
-    private Set<AttributeValue> attributeValues;
 
     @ManyToMany(fetch = FetchType.LAZY, cascade = {CascadeType.MERGE})
     @JoinTable(
-            name = "shop_attribute_keys",
-            joinColumns = @JoinColumn(name = "attribute_key_id"),
-            inverseJoinColumns = @JoinColumn(name = "shop_id")
+            name = "cua_hang_thuoc_tinh",
+            joinColumns = @JoinColumn(name = "id_thuoc_tinh"),
+            inverseJoinColumns = @JoinColumn(name = "id_cua_hang")
     )
     private Set<Shop> shops;
 }

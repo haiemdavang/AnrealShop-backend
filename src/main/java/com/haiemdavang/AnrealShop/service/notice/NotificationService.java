@@ -1,5 +1,6 @@
 package com.haiemdavang.AnrealShop.service.notice;
 
+import com.haiemdavang.AnrealShop.dto.chat.ChatMessageResponse;
 import com.haiemdavang.AnrealShop.dto.notice.NoticeMessage;
 import com.haiemdavang.AnrealShop.dto.notice.NoticeMyShopTemplate;
 import com.haiemdavang.AnrealShop.dto.notice.NoticeTemplate;
@@ -22,6 +23,7 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.util.List;
+import java.util.Map;
 
 @Slf4j
 @Service
@@ -37,7 +39,33 @@ public class NotificationService {
 
     private final NoticeMapper noticeMapper;
 
-  
+    // ==================== Chat Methods ====================
+
+    /**
+     * Gửi tin nhắn chat đến user qua WebSocket
+     */
+    public void sendChatMessage(String username, ChatMessageResponse message) {
+        messagingTemplate.convertAndSendToUser(
+                username,
+                WebSocketConfig.DESTINATION_CHAT,
+                message
+        );
+    }
+
+    /**
+     * Gửi thông báo typing đến user qua WebSocket
+     */
+    public void sendTypingNotification(String username, Map<String, Object> payload) {
+        messagingTemplate.convertAndSendToUser(
+                username,
+                WebSocketConfig.DESTINATION_CHAT + "/typing",
+                payload
+        );
+    }
+
+    // ==================== Notice Methods ====================
+
+
 //    @Transactional
 //    public void asyncSendNoticeMessage(SimpleNoticeMessage noticeMessage) {
 //        switch (noticeMessage.getNoticeScope()) {
