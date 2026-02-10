@@ -62,3 +62,11 @@ n8n:
     base-url: ${N8N_BASE_URL:http://localhost:5678}
     chatbot-path: /webhook/chat-box
     timeout: 30
+
+# Spring Cloud GCP Configuration for Virtual Try-On
+spring.cloud.gcp:
+  project-id: ${GOOGLE_CLOUD_PROJECT_ID:your-project-id}
+  credentials:
+    location: ${GOOGLE_APPLICATION_CREDENTIALS:}
+  location: us-central1
+
