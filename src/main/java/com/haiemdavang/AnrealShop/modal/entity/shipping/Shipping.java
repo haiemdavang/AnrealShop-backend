@@ -31,7 +31,7 @@ public class Shipping {
     private String id;
 
     @ManyToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "id_dia_chi_shop", nullable = false)
+    @JoinColumn(name = "id_dia_chi_cua_hang", nullable = false)
     private ShopAddress addressFrom;
 
     @ManyToOne(fetch = FetchType.LAZY)
@@ -43,7 +43,7 @@ public class Shipping {
     private String shipperName = "";
 
     @Builder.Default
-    @Column(name = "sdt_don_vi_giao", length = 20, nullable = false)
+    @Column(name = "sdtdon_vi_giao", length = 20, nullable = false)
     private String shipperPhone  = "";
 
     @Builder.Default

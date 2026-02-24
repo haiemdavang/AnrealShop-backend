@@ -56,7 +56,7 @@ public class ShopOrder {
     private Order order;
 
     @ManyToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "id_dia_chi_shop", nullable = false)
+    @JoinColumn(name = "id_dia_chi_cua_hang", nullable = false)
     private ShopAddress shippingAddress;
 
     @ManyToOne(fetch = FetchType.LAZY)

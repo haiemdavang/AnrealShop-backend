@@ -9,6 +9,9 @@ target/
 .env
 .env.postgres
 .env.**
+secret/gg-account-key.json
+**/gg-account-key.json
+secret/
 ### STS ###
 .apt_generated
 .classpath

@@ -557,6 +557,7 @@ public class ProductServiceImp implements IProductService {
                 ProductMedia newMedia = ProductMedia.builder()
                         .id(mediaId)
                         .url(mediaDto.getUrl())
+                        .thumbnailUrl(mediaDto.getThumbnailUrl())
                         .type(MediaType.valueOf(mediaDto.getType()))
                         .product(product)
                         .build();
