@@ -3,14 +3,18 @@ package com.haiemdavang.AnrealShop.dto.user;
 import com.fasterxml.jackson.annotation.JsonInclude;
 import com.haiemdavang.AnrealShop.dto.address.AddressDto;
 import com.haiemdavang.AnrealShop.modal.enums.GenderType;
+import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
+import lombok.NoArgsConstructor;
 
 import java.time.LocalDate;
 import java.time.LocalDateTime;
 
 @Data
 @Builder
+@AllArgsConstructor
+@NoArgsConstructor
 @JsonInclude(JsonInclude.Include.NON_NULL)
 public class UserDto {
     private String id;

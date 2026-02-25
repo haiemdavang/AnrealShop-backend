@@ -18,6 +18,8 @@ import com.haiemdavang.AnrealShop.service.IUserService;
 import com.haiemdavang.AnrealShop.tech.mail.service.IMailService;
 import com.haiemdavang.AnrealShop.utils.ApplicationInitHelper;
 import lombok.RequiredArgsConstructor;
+import org.springframework.cache.annotation.CacheEvict;
+import org.springframework.cache.annotation.Cacheable;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
@@ -60,6 +62,10 @@ public class UserServiceImp implements IUserService {
 
     @Override
     @Transactional
+    @CacheEvict(
+            value = "userInfo",
+            key = "T(com.haiemdavang.AnrealShop.tech.redis.config.RedisTemplate).PREFIX_USER.getValue() + #email"
+    )
     public UserDto updateProfile(String email, ProfileRequest profileRequest) {
         User user = findByEmail(email);
         user = userMapper.updateUserFromProfileRequest(user, profileRequest);
@@ -88,6 +94,10 @@ public class UserServiceImp implements IUserService {
     }
 
     @Override
+    @Cacheable(
+            value = "userInfo",
+            key = "T(com.haiemdavang.AnrealShop.tech.redis.config.RedisTemplate).PREFIX_USER.getValue() + #username"
+    )
     public UserDto findDtoByEmail(String username) {
         UserDto userDto =  userMapper.toUserDto(findByEmail(username));
         userDto.setHasShop(shopServiceImp.isExistByUserId(userDto.getId()));
@@ -96,8 +106,13 @@ public class UserServiceImp implements IUserService {
         return userDto;
     }
 
+
     @Override
     @Transactional
+    @CacheEvict(
+            value = "userInfo",
+            key = "T(com.haiemdavang.AnrealShop.tech.redis.config.RedisTemplate).PREFIX_USER.getValue() + #email"
+    )
     public UserDto verifyEmail(String email, String code) {
         if (code == null || code.isEmpty() || !mailService.verifyOTP(code, email)) {
             throw new BadRequestException("INVALID_VERIFICATION_CODE");
