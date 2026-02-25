@@ -1,4 +1,5 @@
 server:
+  forward-headers-strategy: framework
   base_url: https://api.haiemdavang.id.vn
   fe:
     base_url: https://shop.haiemdavang.id.vn
