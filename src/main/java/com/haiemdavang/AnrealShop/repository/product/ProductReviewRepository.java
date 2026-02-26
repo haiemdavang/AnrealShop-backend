@@ -9,6 +9,8 @@ import java.util.Set;
 
 @Repository
 public interface ProductReviewRepository extends JpaRepository<ProductReview, String> {
-    @EntityGraph(attributePaths = "user, product, mediaList")
+    @EntityGraph(attributePaths = {"user", "product", "mediaList"})
     Set<ProductReview> findByProductId(String productId);
+
+    boolean existsByOrderItemId(String orderItemId);
 }

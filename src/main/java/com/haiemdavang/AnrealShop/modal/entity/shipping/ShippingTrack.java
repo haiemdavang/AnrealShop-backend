@@ -26,6 +26,7 @@ public class ShippingTrack {
     private Shipping shipping;
 
     @Enumerated(EnumType.STRING)
+    @Builder.Default
     @Column(name = "trang_thai", nullable = false)
     private ShippingStatus status = ShippingStatus.ORDER_CREATED;
 

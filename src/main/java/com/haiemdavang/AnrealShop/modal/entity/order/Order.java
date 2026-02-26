@@ -50,6 +50,7 @@ public class Order {
     @Column(name = "ngay_cap_nhat")
     private LocalDateTime updatedAt;
 
+    @Builder.Default
      @Enumerated(EnumType.STRING)
      @Column(name = "trang_thai", nullable = false)
      private OrderStatus status = OrderStatus.PROCESSING;

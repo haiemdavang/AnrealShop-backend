@@ -12,6 +12,7 @@ import org.springframework.stereotype.Repository;
 
 import java.util.Collection;
 import java.util.List;
+import java.util.Optional;
 
 @NonNullApi
 @Repository
@@ -37,5 +38,12 @@ public interface OrderItemRepository extends JpaRepository<OrderItem, String> , 
     })
     List<OrderItem> findByShopOrderIdInAndStatus(Collection<String> shopOrderIds, OrderTrackStatus status);
 
+    @EntityGraph(attributePaths = {
+            "order",
+            "order.user",
+            "productSku",
+            "productSku.product",
+    })
+    Optional<OrderItem> findWithOrderAndProductById(String id);
 
 }
