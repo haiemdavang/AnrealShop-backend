@@ -26,6 +26,7 @@ import com.haiemdavang.AnrealShop.repository.order.OrderRepository;
 import com.haiemdavang.AnrealShop.repository.order.ShopOrderSpecification;
 import com.haiemdavang.AnrealShop.security.SecurityUtils;
 import com.haiemdavang.AnrealShop.service.IProductService;
+import com.haiemdavang.AnrealShop.service.IReviewService;
 import com.haiemdavang.AnrealShop.service.IShipmentService;
 import com.haiemdavang.AnrealShop.service.payment.IPaymentService;
 import com.haiemdavang.AnrealShop.service.payment.VNPayService;
@@ -53,6 +54,7 @@ public class UserOrderServiceImp implements IUserOrderService {
     private final IPaymentService paymentService;
     private final IShipmentService shipmentService;
     private final IProductService productService;
+    private final IReviewService reviewService;
     private final VNPayService vnPayService;
     private final SecurityUtils securityUtils;
 
@@ -140,11 +142,23 @@ public class UserOrderServiceImp implements IUserOrderService {
                 Collectors.toMap(Map.Entry::getKey, Map.Entry::getValue)
         );
 
+        // Batch lấy danh sách order item đã được review
+        Set<String> allOrderItemIds = orderItems.stream()
+                .map(OrderItem::getId)
+                .collect(Collectors.toSet());
+        Set<String> reviewedOrderItemIds = reviewService.getReviewedOrderItemIds(allOrderItemIds);
+
         for (String idShopOrder : mapOrderItems.keySet()){
             ShopOrder shopOrder = mapShopOrders.get(idShopOrder);
             Set<OrderItem> orderItemsOfShopOrder = mapOrderItems.get(idShopOrder);
             if (shopOrder == null || orderItemsOfShopOrder == null) continue;
             UserOrderItemDto orderItemDto = orderMapper.toUserOrderItemDto(shopOrder, orderItemsOfShopOrder);
+
+            // Đánh dấu isReviewed cho từng product item
+            orderItemDto.getProductOrderItemDtoSet().forEach(item ->
+                    item.setReviewed(reviewedOrderItemIds.contains(item.getOrderItemId()))
+            );
+
             orderItemDtoSet.add(orderItemDto);
         }
 

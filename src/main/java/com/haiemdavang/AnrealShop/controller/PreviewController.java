@@ -1,6 +1,5 @@
 package com.haiemdavang.AnrealShop.controller;
 
-import com.haiemdavang.AnrealShop.dto.product.ProductReviewDto;
 import com.haiemdavang.AnrealShop.dto.review.CreateReviewRequest;
 import com.haiemdavang.AnrealShop.dto.review.ReviewListResponse;
 import com.haiemdavang.AnrealShop.service.IReviewService;
@@ -17,9 +16,9 @@ public class PreviewController {
     private final IReviewService reviewService;
 
     @PostMapping
-    public ResponseEntity<ProductReviewDto> createReview(@Valid @RequestBody CreateReviewRequest request) {
-        ProductReviewDto review = reviewService.createReview(request);
-        return ResponseEntity.ok(review);
+    public ResponseEntity<String> createReview(@Valid @RequestBody CreateReviewRequest request) {
+        reviewService.createReview(request);
+        return ResponseEntity.ok("SUCCESS");
     }
 
     @GetMapping("/product/{productId}")

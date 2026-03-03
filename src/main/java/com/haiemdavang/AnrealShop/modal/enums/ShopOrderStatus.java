@@ -12,6 +12,7 @@ public enum ShopOrderStatus {
     PREPARING("Chờ lấy hàng"),
     SHIPPING("Đang giao"),
     DELIVERED("Đã giao"),
+    SUCCESS("Thành công"),
     CLOSED("Hủy/Hoàn/Trả");
 
     private final String displayName;

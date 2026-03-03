@@ -1,5 +1,6 @@
 package com.haiemdavang.AnrealShop.repository.order;
 
+import com.haiemdavang.AnrealShop.dto.order.OrderItemReviewProjection;
 import com.haiemdavang.AnrealShop.modal.entity.order.OrderItem;
 import com.haiemdavang.AnrealShop.modal.enums.OrderTrackStatus;
 import io.micrometer.common.lang.NonNullApi;
@@ -8,6 +9,8 @@ import org.springframework.data.jpa.domain.Specification;
 import org.springframework.data.jpa.repository.EntityGraph;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.JpaSpecificationExecutor;
+import org.springframework.data.jpa.repository.Query;
+import org.springframework.data.repository.query.Param;
 import org.springframework.stereotype.Repository;
 
 import java.util.Collection;
@@ -38,12 +41,15 @@ public interface OrderItemRepository extends JpaRepository<OrderItem, String> , 
     })
     List<OrderItem> findByShopOrderIdInAndStatus(Collection<String> shopOrderIds, OrderTrackStatus status);
 
-    @EntityGraph(attributePaths = {
-            "order",
-            "order.user",
-            "productSku",
-            "productSku.product",
-    })
-    Optional<OrderItem> findWithOrderAndProductById(String id);
+    @Query("SELECT oi.id AS orderItemId, " +
+            "oi.status AS status, " +
+            "o.user.id AS userId, " +
+            "ps.product.id AS productId, " +
+            "oi.shopOrder.id AS shopOrderId " +
+            "FROM OrderItem oi " +
+            "JOIN oi.order o " +
+            "JOIN oi.productSku ps " +
+            "WHERE oi.id = :id")
+    Optional<OrderItemReviewProjection> findWithOrderAndProductById(@Param("id") String id);
 
 }

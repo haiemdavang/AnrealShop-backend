@@ -1,5 +1,6 @@
 package com.haiemdavang.AnrealShop.service.serviceImp;
 
+import com.haiemdavang.AnrealShop.dto.order.OrderItemReviewProjection;
 import com.haiemdavang.AnrealShop.dto.product.ProductMediaDto;
 import com.haiemdavang.AnrealShop.dto.product.ProductReviewDto;
 import com.haiemdavang.AnrealShop.dto.review.CreateReviewRequest;
@@ -14,18 +15,24 @@ import com.haiemdavang.AnrealShop.modal.entity.product.ProductReviewMedia;
 import com.haiemdavang.AnrealShop.modal.entity.user.User;
 import com.haiemdavang.AnrealShop.modal.enums.MediaType;
 import com.haiemdavang.AnrealShop.modal.enums.OrderTrackStatus;
+import com.haiemdavang.AnrealShop.modal.entity.shop.ShopOrder;
+import com.haiemdavang.AnrealShop.modal.enums.ShopOrderStatus;
 import com.haiemdavang.AnrealShop.repository.order.OrderItemRepository;
+import com.haiemdavang.AnrealShop.repository.order.ShopOrderRepository;
 import com.haiemdavang.AnrealShop.repository.product.ProductRepository;
 import com.haiemdavang.AnrealShop.repository.product.ProductReviewRepository;
 import com.haiemdavang.AnrealShop.security.SecurityUtils;
 import com.haiemdavang.AnrealShop.service.IReviewService;
+import jakarta.persistence.EntityManager;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import java.util.Collection;
 import java.util.List;
 import java.util.Set;
+import java.util.stream.Collectors;
 
 @Slf4j
 @Service
@@ -34,27 +41,29 @@ public class ReviewServiceImp implements IReviewService {
 
     private final ProductReviewRepository productReviewRepository;
     private final OrderItemRepository orderItemRepository;
+    private final ShopOrderRepository shopOrderRepository;
     private final ProductRepository productRepository;
     private final ProductMapper productMapper;
     private final PreviewMapper previewMapper;
     private final SecurityUtils securityUtils;
+    private final EntityManager entityManager;
 
     @Override
     @Transactional
-    public ProductReviewDto createReview(CreateReviewRequest request) {
+    public void createReview(CreateReviewRequest request) {
         User currentUser = securityUtils.getCurrentUser();
 
-        // 1. Tìm OrderItem
-        OrderItem orderItem = orderItemRepository.findWithOrderAndProductById(request.getOrderItemId())
+        // 1. Tìm OrderItem qua projection (chỉ lấy các trường cần thiết)
+        OrderItemReviewProjection projection = orderItemRepository.findWithOrderAndProductById(request.getOrderItemId())
                 .orElseThrow(() -> new BadRequestException("ORDER_ITEM_NOT_FOUND"));
 
         // 2. Kiểm tra OrderItem có thuộc về user hiện tại không
-        if (!orderItem.getOrder().getUser().getId().equals(currentUser.getId())) {
+        if (!projection.getUserId().equals(currentUser.getId())) {
             throw new BadRequestException("ORDER_ITEM_NOT_BELONG_TO_USER");
         }
 
         // 3. Kiểm tra đơn hàng đã giao (DELIVERED) chưa
-        if (orderItem.getStatus() != OrderTrackStatus.DELIVERED) {
+        if (projection.getStatus() != OrderTrackStatus.DELIVERED) {
             throw new BadRequestException("ORDER_ITEM_NOT_DELIVERED");
         }
 
@@ -63,14 +72,15 @@ public class ReviewServiceImp implements IReviewService {
             throw new BadRequestException("ORDER_ITEM_ALREADY_REVIEWED");
         }
 
-        // 5. Lấy Product từ OrderItem
-        Product product = orderItem.getProductSku().getProduct();
+        // 5. Lấy reference entities (không query DB, chỉ tạo proxy)
+        Product product = entityManager.getReference(Product.class, projection.getProductId());
+        OrderItem orderItemRef = entityManager.getReference(OrderItem.class, projection.getOrderItemId());
 
         // 6. Tạo ProductReview
         ProductReview review = ProductReview.builder()
                 .user(currentUser)
                 .product(product)
-                .orderItem(orderItem)
+                .orderItem(orderItemRef)
                 .rating(request.getRating())
                 .comment(request.getComment())
                 .build();
@@ -89,10 +99,15 @@ public class ReviewServiceImp implements IReviewService {
         // 8. Lưu review
         productReviewRepository.save(review);
 
+        orderItemRef.setStatus(OrderTrackStatus.SUCCESS);
+        orderItemRepository.save(orderItemRef);
+
         // 9. Cập nhật averageRating và totalReviews cho product
         updateProductRating(product);
 
-        return productMapper.toProductReviewDto(review);
+        // 10. Kiểm tra tất cả order items (DELIVERED) của shop order đã được review chưa → cập nhật SUCCESS
+        ShopOrder shopOrderRef = entityManager.getReference(ShopOrder.class, projection.getShopOrderId());
+        this.checkAndUpdateShopOrderStatusSuccess(shopOrderRef);
     }
 
     @Override
@@ -113,6 +128,14 @@ public class ReviewServiceImp implements IReviewService {
         return builder.reviews(reviewDtos).build();
     }
 
+    @Override
+    public Set<String> getReviewedOrderItemIds(Collection<String> orderItemIds) {
+        if (orderItemIds == null || orderItemIds.isEmpty()) {
+            return Set.of();
+        }
+        return productReviewRepository.findReviewedOrderItemIds(orderItemIds);
+    }
+
     private void updateProductRating(Product product) {
         Set<ProductReview> allReviews = productReviewRepository.findByProductId(product.getId());
         int totalReviews = allReviews.size();
@@ -126,4 +149,32 @@ public class ReviewServiceImp implements IReviewService {
         product.setTotalReviews(totalReviews);
         productRepository.save(product);
     }
+
+    private void checkAndUpdateShopOrderStatusSuccess(ShopOrder shopOrder) {
+        ShopOrder fullShopOrder = shopOrderRepository.findWithOrderItemById(shopOrder.getId());
+
+        if (fullShopOrder.getStatus() != ShopOrderStatus.DELIVERED) {
+            return;
+        }
+
+        Set<String> deliveredOrderItemIds = fullShopOrder.getOrderItems().stream()
+                .filter(item -> item.getStatus() == OrderTrackStatus.SUCCESS)
+                .map(OrderItem::getId)
+                .collect(Collectors.toSet());
+
+        if (deliveredOrderItemIds.isEmpty()) {
+            return;
+        }
+
+        // Kiểm tra tất cả order items DELIVERED đều đã có review
+        Set<String> reviewedIds = productReviewRepository.findReviewedOrderItemIds(deliveredOrderItemIds);
+
+        if (reviewedIds.containsAll(deliveredOrderItemIds)) {
+            fullShopOrder.setStatus(ShopOrderStatus.SUCCESS);
+            shopOrderRepository.save(fullShopOrder);
+            log.info("ShopOrder {} đã được cập nhật thành SUCCESS vì tất cả order items đã được đánh giá", fullShopOrder.getId());
+        }
+    }
+
+
 }
