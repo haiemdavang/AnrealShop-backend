@@ -136,6 +136,15 @@ public class ReviewServiceImp implements IReviewService {
         return productReviewRepository.findReviewedOrderItemIds(orderItemIds);
     }
 
+    @Override
+    public List<ProductReviewDto> getMyReviews() {
+        User currentUser = securityUtils.getCurrentUser();
+        List<ProductReview> reviews = productReviewRepository.findByUserIdOrderByCreatedAtDesc(currentUser.getId());
+        return reviews.stream()
+                .map(productMapper::toProductReviewDtoFull)
+                .toList();
+    }
+
     private void updateProductRating(Product product) {
         Set<ProductReview> allReviews = productReviewRepository.findByProductId(product.getId());
         int totalReviews = allReviews.size();

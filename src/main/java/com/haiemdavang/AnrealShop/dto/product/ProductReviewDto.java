@@ -22,6 +22,7 @@ public class ProductReviewDto {
     private String userAvatarUrl;
     private String productId;
     private String productName;
+    private String productImage;
     private String orderItemId;
     private int rating;
     private String comment;

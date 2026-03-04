@@ -22,4 +22,7 @@ public interface ProductReviewRepository extends JpaRepository<ProductReview, St
 
     @Query("SELECT pr.orderItem.id FROM ProductReview pr WHERE pr.orderItem.id IN :orderItemIds")
     Set<String> findReviewedOrderItemIds(Collection<String> orderItemIds);
+
+    @EntityGraph(attributePaths = {"product", "mediaList"})
+    List<ProductReview> findByUserIdOrderByCreatedAtDesc(String userId);
 }

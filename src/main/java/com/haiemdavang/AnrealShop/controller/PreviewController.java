@@ -1,5 +1,6 @@
 package com.haiemdavang.AnrealShop.controller;
 
+import com.haiemdavang.AnrealShop.dto.product.ProductReviewDto;
 import com.haiemdavang.AnrealShop.dto.review.CreateReviewRequest;
 import com.haiemdavang.AnrealShop.dto.review.ReviewListResponse;
 import com.haiemdavang.AnrealShop.service.IReviewService;
@@ -7,6 +8,8 @@ import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
+
+import java.util.List;
 
 @RequiredArgsConstructor
 @RestController
@@ -19,6 +22,12 @@ public class PreviewController {
     public ResponseEntity<String> createReview(@Valid @RequestBody CreateReviewRequest request) {
         reviewService.createReview(request);
         return ResponseEntity.ok("SUCCESS");
+    }
+
+    @GetMapping("/my-reviews")
+    public ResponseEntity<List<ProductReviewDto>> getMyReviews() {
+        List<ProductReviewDto> reviews = reviewService.getMyReviews();
+        return ResponseEntity.ok(reviews);
     }
 
     @GetMapping("/product/{productId}")
