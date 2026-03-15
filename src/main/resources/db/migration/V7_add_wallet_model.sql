@@ -1,0 +1,653 @@
+-- -- ========================================================
+-- -- BẢNG VÍ ĐIỆN TỬ (vi_dien_tu)
+-- -- ========================================================
+-- CREATE TABLE public.vi_dien_tu (
+--     id varchar(36) NOT NULL,
+--     ma_chu_so_huu varchar(36) NOT NULL,
+--     loai_chu_so_huu varchar(20) NOT NULL,
+--     so_du_kha_dung bigint NOT NULL DEFAULT 0,
+--     loai_tien_te varchar(10) DEFAULT 'VND',
+--     mat_khau_thanh_toan varchar(255) DEFAULT NULL,
+--     trang_thai varchar(20) DEFAULT 'DANG_HOAT_DONG',
+--     ngay_tao timestamp(6) DEFAULT CURRENT_TIMESTAMP,
+--     ngay_cap_nhat timestamp(6) DEFAULT CURRENT_TIMESTAMP,
+--     CONSTRAINT vi_dien_tu_pkey PRIMARY KEY (id),
+--     CONSTRAINT uk_vi_chu_so_huu UNIQUE (ma_chu_so_huu, loai_chu_so_huu),
+--     CONSTRAINT vi_dien_tu_loai_chu_so_huu_check CHECK ((loai_chu_so_huu)::text = ANY ((ARRAY['NGUOI_DUNG'::character varying, 'CUA_HANG'::character varying])::text[])),
+--     CONSTRAINT vi_dien_tu_trang_thai_check CHECK ((trang_thai)::text = ANY ((ARRAY['DANG_HOAT_DONG'::character varying, 'TAM_KHOA'::character varying, 'BI_VO_HIEU_HOA'::character varying])::text[]))
+-- );
+-- ALTER TABLE public.vi_dien_tu OWNER TO postgres;
+-- GRANT ALL ON TABLE public.vi_dien_tu TO postgres;
+--
+-- -- ========================================================
+-- -- BẢNG XÁC THỰC NGƯỜI DÙNG (xac_thuc_nguoi_dung)
+-- -- ========================================================
+-- CREATE TABLE public.xac_thuc_nguoi_dung (
+--     id varchar(36) NOT NULL,
+--     ma_nguoi_dung varchar(36) NOT NULL,
+--     ho_ten_that varchar(100) NOT NULL,
+--     so_giay_to varchar(20) NOT NULL,
+--     loai_giay_to varchar(20) NOT NULL,
+--     ngay_sinh date DEFAULT NULL,
+--     anh_mat_truoc varchar(255) DEFAULT NULL,
+--     anh_mat_sau varchar(255) DEFAULT NULL,
+--     anh_chan_dung varchar(255) DEFAULT NULL,
+--     trang_thai varchar(20) DEFAULT 'CHO_DUYET',
+--     ly_do_tu_choi text,
+--     ngay_phe_duyet timestamp(6) DEFAULT NULL,
+--     ngay_tao timestamp(6) DEFAULT CURRENT_TIMESTAMP,
+--     ngay_cap_nhat timestamp(6) DEFAULT CURRENT_TIMESTAMP,
+--     CONSTRAINT xac_thuc_nguoi_dung_pkey PRIMARY KEY (id),
+--     CONSTRAINT uk_so_giay_to UNIQUE (so_giay_to),
+--     CONSTRAINT fk_xacthuc_nguoidung FOREIGN KEY (ma_nguoi_dung) REFERENCES public.nguoi_dung(id_nguoi_dung),
+--     CONSTRAINT xac_thuc_loai_giay_to_check CHECK ((loai_giay_to)::text = ANY ((ARRAY['CCCD'::character varying, 'HO_CHIEU'::character varying])::text[])),
+--     CONSTRAINT xac_thuc_trang_thai_check CHECK ((trang_thai)::text = ANY ((ARRAY['CHO_DUYET'::character varying, 'DA_XAC_THUC'::character varying, 'BI_TU_CHOI'::character varying])::text[]))
+-- );
+--
+---- -- ========================================================
+-- -- BẢNG LỊCH SỬ GIAO DỊCH VÍ (lich_su_giao_dich_vi)
+-- -- ========================================================
+-- CREATE TABLE public.lich_su_giao_dich_vi (
+--     id varchar(36) NOT NULL,
+--     ma_vi varchar(36) NOT NULL,
+--     loai_giao_dich varchar(30) NOT NULL,
+--     so_tien bigint NOT NULL,
+--     so_du_truoc bigint NOT NULL DEFAULT 0,
+--     so_du_sau bigint NOT NULL DEFAULT 0,
+--     trang_thai varchar(20) NOT NULL DEFAULT 'THANH_CONG',
+--     ma_tham_chieu varchar(100) DEFAULT NULL,
+--     mo_ta text DEFAULT NULL,
+--     ngay_tao timestamp(6) DEFAULT CURRENT_TIMESTAMP,
+--     CONSTRAINT lich_su_giao_dich_vi_pkey PRIMARY KEY (id),
+--     CONSTRAINT fk_giaodich_vi FOREIGN KEY (ma_vi) REFERENCES public.vi_dien_tu(id),
+--     CONSTRAINT lich_su_loai_giao_dich_check CHECK (
+--         (loai_giao_dich)::text = ANY ((ARRAY[
+--             'NAP_TIEN'::character varying,
+--             'RUT_TIEN'::character varying,
+--             'THANH_TOAN'::character varying,
+--             'NHAN_TIEN'::character varying,
+--             'HOAN_TIEN'::character varying
+--         ])::text[])
+--     ),
+--     CONSTRAINT lich_su_trang_thai_check CHECK (
+--         (trang_thai)::text = ANY ((ARRAY[
+--             'THANH_CONG'::character varying,
+--             'THAT_BAI'::character varying,
+--             'DANG_XU_LY'::character varying
+--         ])::text[])
+--     )
+-- );
+--
+-- CREATE INDEX idx_giaodich_ma_vi ON public.lich_su_giao_dich_vi(ma_vi);
+-- CREATE INDEX idx_giaodich_ngay_tao ON public.lich_su_giao_dich_vi(ngay_tao);
+-- CREATE INDEX idx_giaodich_loai ON public.lich_su_giao_dich_vi(loai_giao_dich);
+--
+-- ALTER TABLE public.lich_su_giao_dich_vi OWNER TO postgres;
+-- GRANT ALL ON TABLE public.lich_su_giao_dich_vi TO postgres;
+--
+--
+--
+--
+--
+--
+--
+--
+--
+--
+--
+--
+--
+--
+--
+--
+--
+--
+--
+--
+--
+--
+--
+--
+--
+--
+--
+--
+--
+--
+--
+--
+--
+--
+--
+--
+--
+--
+--
+--
+--
+--
+--
+--
+--
+--
+--
+--
+--
+--
+--
+--
+--
+--
+--
+--
+--
+--
+--
+--
+--
+--
+--
+--
+--
+--
+--
+--
+--
+--
+--
+--
+--
+--
+--
+--
+--
+--
+--
+--
+--
+--
+--
+--
+--
+--
+--
+--
+--
+--
+--
+--
+--
+--
+--
+--
+--
+--
+--
+--
+--
+--
+--
+--
+--
+--
+--
+--
+--
+--
+--
+--
+--
+--
+--
+--
+--
+--
+--
+--
+--
+--
+--
+--
+--
+--
+--
+--
+--
+--
+--
+--
+--
+--
+--
+--
+--
+--
+--
+--
+--
+--
+--
+--
+--
+--
+--
+--
+--
+--
+--
+--
+--
+--
+--
+--
+--
+--
+--
+--
+--
+--
+--
+--
+--
+--
+--
+--
+--
+--
+--
+--
+--
+--
+--
+--
+--
+--
+--
+--
+--
+--
+--
+--
+--
+--
+--
+--
+--
+--
+--
+--
+--
+--
+--
+--
+--
+--
+--
+--
+--
+--
+--
+--
+--
+--
+--
+--
+--
+--
+--
+--
+--
+--
+--
+--
+--
+--
+--
+--
+--
+--
+--
+--
+--
+--
+--
+--
+--
+--
+--
+--
+--
+--
+--
+--
+--
+--
+--
+--
+--
+--
+--
+--
+--
+--
+--
+--
+--
+--
+--
+--
+--
+--
+--
+--
+--
+--
+--
+--
+--
+--
+--
+--
+--
+--
+--
+--
+--
+--
+--
+--
+--
+--
+--
+--
+--
+--
+--
+--
+--
+--
+--
+--
+--
+--
+--
+--
+--
+--
+--
+--
+--
+--
+--
+--
+--
+--
+--
+--
+--
+--
+--
+--
+--
+--
+--
+--
+--
+--
+--
+--
+--
+--
+--
+--
+--
+--
+--
+--
+--
+--
+--
+--
+--
+--
+--
+--
+--
+--
+--
+--
+--
+--
+--
+--
+--
+--
+--
+--
+--
+--
+--
+--
+--
+--
+--
+--
+--
+--
+--
+--
+--
+--
+--
+--
+--
+--
+--
+--
+--
+--
+--
+--
+--
+--
+--
+--
+--
+--
+--
+--
+--
+--
+--
+--
+--
+--
+--
+--
+--
+--
+--
+--
+--
+--
+--
+--
+--
+--
+--
+--
+--
+--
+--
+--
+--
+--
+--
+--
+--
+--
+--
+--
+--
+--
+--
+--
+--
+--
+--
+--
+--
+--
+--
+--
+--
+--
+--
+--
+--
+--
+--
+--
+--
+--
+--
+--
+--
+--
+--
+--
+--
+--
+--
+--
+--
+--
+--
+--
+--
+--
+--
+--
+--
+--
+--
+--
+--
+--
+--
+--
+--
+--
+--
+--
+--
+--
+--
+--
+--
+--
+--
+--
+--
+--
+--
+--
+--
+--
+--
+--
+--
+--
+--
+--
+--
+--
+--
+--
+--
+--
+--
+--
+--
+--
+--
+--
+--
+--
+--
+--
+--
+--
+--
+--
+--
+--
+--
+--
+--
+--
+--
+--
+--
+--
+--
+--
+--
+--
+--
+--
+--
+--
+--
+--
+--
+--
+--
+--
+--
+--
+--
+--
+--
+--
+--
+--
+--
+--
+--
+--
+--
+--
+--
+--
+--
+--
+--
+--
+--
+--
+--
+--
+--
+--
+--
+--
+--
+--
+--
+--
+--
+--
+--
+--
+--
+--
+--
+--
+--
+--
+--
+--
+--
+-- ALTER TABLE public.xac_thuc_nguoi_dung OWNER TO postgres;
+-- GRANT ALL ON TABLE public.xac_thuc_nguoi_dung TO postgres;

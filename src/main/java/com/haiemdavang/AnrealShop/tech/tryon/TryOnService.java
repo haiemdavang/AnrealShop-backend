@@ -35,7 +35,7 @@ public class TryOnService {
     @org.springframework.beans.factory.annotation.Value("${spring.cloud.gcp.project-id}")
     private String projectId;
 
-    @org.springframework.beans.factory.annotation.Value("${spring.cloud.gcp.location:us-central1}")
+    @org.springframework.beans.factory.annotation.Value("${spring.cloud.gcp.credentials.location:us-central1}")
     private String location;
 
     private static final String MODEL_NAME = "virtual-try-on-001";

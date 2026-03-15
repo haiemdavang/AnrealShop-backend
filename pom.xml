@@ -188,6 +188,10 @@
 			<groupId>com.google.cloud</groupId>
 			<artifactId>google-cloud-aiplatform</artifactId>
 		</dependency>
+		<dependency>
+			<groupId>com.google.cloud</groupId>
+			<artifactId>google-cloud-vision</artifactId>
+		</dependency>
 	</dependencies>
 
 	<build>
