@@ -4,6 +4,7 @@ import com.haiemdavang.AnrealShop.dto.attribute.ProductAttributeDto;
 import com.haiemdavang.AnrealShop.dto.attribute.ProductAttributeSingleValueDto;
 import com.haiemdavang.AnrealShop.dto.SortEnum;
 import com.haiemdavang.AnrealShop.dto.product.*;
+import com.haiemdavang.AnrealShop.dto.review.ReviewListResponse;
 import com.haiemdavang.AnrealShop.tech.elasticsearch.document.EsProduct;
 import com.haiemdavang.AnrealShop.tech.elasticsearch.service.ProductIndexerService;
 import com.haiemdavang.AnrealShop.exception.BadRequestException;
@@ -32,6 +33,7 @@ import com.haiemdavang.AnrealShop.repository.product.ProductSpecification;
 import com.haiemdavang.AnrealShop.security.SecurityUtils;
 import com.haiemdavang.AnrealShop.service.ICategoryService;
 import com.haiemdavang.AnrealShop.service.IProductService;
+import com.haiemdavang.AnrealShop.service.IReviewService;
 import com.haiemdavang.AnrealShop.utils.ApplicationInitHelper;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -64,6 +66,7 @@ public class ProductServiceImp implements IProductService {
     private final ProductIndexerService productIndexerService;
 
     private final SecurityUtils securityUtils;
+    private final IReviewService reviewService;
 
     private final AttributeMapper attributeMapper;
     private final AttributeServiceImp attributeServiceImp;
@@ -163,8 +166,7 @@ public class ProductServiceImp implements IProductService {
     }
 
     @Override
-    public ProductDetailDto getProductById(String id, boolean isReview) {
-//        isReview chua trien khai nghe haidev
+    public ProductDetailDto getProductById(String id, boolean isReview, int reviewSize) {
         Product product = productRepository.findFullInfoByIdOrSlug(id)
                 .orElseThrow(() -> new BadRequestException("PRODUCT_NOT_FOUND"));
         List<ProductAttributeSingleValueDto> productAttributes = productGeneralAttributeRepository.findProductAttributeSingleValueDtoByProductId(id);
@@ -179,6 +181,14 @@ public class ProductServiceImp implements IProductService {
                     .toList();
         }
         response.setProductSkus(skuDtos);
+
+        // Lấy danh sách review nếu isReview = true
+        if (isReview) {
+            ReviewListResponse reviewData = reviewService.getReviewsByProductId(product.getId(), reviewSize);
+            response.setReviews(reviewData.getReviews());
+            response.setReviewSummary(reviewData.getSummary());
+        }
+
         return response;
     }
 

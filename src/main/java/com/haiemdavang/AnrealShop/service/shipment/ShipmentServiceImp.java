@@ -19,6 +19,7 @@ import com.haiemdavang.AnrealShop.modal.entity.shipping.Shipping;
 import com.haiemdavang.AnrealShop.modal.entity.shop.Shop;
 import com.haiemdavang.AnrealShop.modal.entity.shop.ShopOrder;
 import com.haiemdavang.AnrealShop.modal.enums.ShippingStatus;
+import com.haiemdavang.AnrealShop.modal.enums.ShopOrderStatus;
 import com.haiemdavang.AnrealShop.repository.order.ShopOrderRepository;
 import com.haiemdavang.AnrealShop.repository.order.ShopOrderSpecification;
 import com.haiemdavang.AnrealShop.repository.shipping.ShipSpecification;
@@ -30,10 +31,11 @@ import com.haiemdavang.AnrealShop.service.ICartService;
 import com.haiemdavang.AnrealShop.service.IProductService;
 import com.haiemdavang.AnrealShop.service.IShipmentService;
 import com.haiemdavang.AnrealShop.service.order.IOrderItemService;
+import com.haiemdavang.AnrealShop.service.order.IShopOrderService;
 import com.haiemdavang.AnrealShop.tech.kafka.dto.ShippingSyncMessage;
 import com.haiemdavang.AnrealShop.utils.ApplicationInitHelper;
-import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.context.annotation.Lazy;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
@@ -48,7 +50,6 @@ import java.util.stream.Collectors;
 
 @Slf4j
 @Service
-@RequiredArgsConstructor
 public class ShipmentServiceImp implements IShipmentService {
     private final IGHNService ighnService;
     private final ICartService cartService;
@@ -61,6 +62,25 @@ public class ShipmentServiceImp implements IShipmentService {
     private final SecurityUtils securityUtils;
     private final ShopOrderRepository shopOrderRepository;
     private final ShipmentMapper shipmentMapper;
+    private final IShopOrderService shopOrderService;
+
+    public ShipmentServiceImp(IGHNService ighnService, ICartService cartService, IAddressService addressService,
+                              IProductService productService, AddressMapper addressMapper, IOrderItemService orderItemService,
+                              ShipmentRepository shipmentRepository, SecurityUtils securityUtils,
+                              ShopOrderRepository shopOrderRepository, ShipmentMapper shipmentMapper,
+                              @Lazy IShopOrderService shopOrderService) {
+        this.ighnService = ighnService;
+        this.cartService = cartService;
+        this.addressService = addressService;
+        this.productService = productService;
+        this.addressMapper = addressMapper;
+        this.orderItemService = orderItemService;
+        this.shipmentRepository = shipmentRepository;
+        this.securityUtils = securityUtils;
+        this.shopOrderRepository = shopOrderRepository;
+        this.shipmentMapper = shipmentMapper;
+        this.shopOrderService = shopOrderService;
+    }
 
     @Override
     public List<CartShippingFee> getShippingFeeForCart(List<String> cartItemIds) {
@@ -290,5 +310,32 @@ public class ShipmentServiceImp implements IShipmentService {
                 .orElse(null);
     }
 
+    @Override
+    @Transactional
+    public void updateShipmentStatus(List<String> shopOrderIds, ShippingStatus status, String note) {
+        List<Shipping> shippings = shipmentRepository.findByShopOrderIdIn(shopOrderIds);
+        for (Shipping shipping : shippings) {
+            shipping.setStatus(status, note);
+        }
+        shipmentRepository.saveAll(shippings);
+    }
+
+    @Override
+    public List<Shipping> getListShippingByShopOrderStatus(ShopOrderStatus shopOrderStatus) {
+        return shipmentRepository.findAllByShopOrderStatus(shopOrderStatus);
+    }
+
+    @Override
+    @Transactional
+    public void processShippingStatusSync(String shippingId, ShippingStatus status, String note) {
+        log.info("Processing shipping status sync directly: shippingId={}, status={}, note={}", shippingId, status, note);
+        Shipping shipping = shipmentRepository.findById(shippingId)
+                .orElseThrow(() -> new BadRequestException("SHIPPING_NOT_FOUND"));
+        shipping.setStatus(status, note);
+        shipmentRepository.save(shipping);
+        if (status.equals(ShippingStatus.DELIVERED)) {
+            shopOrderService.updateStatus(Collections.singletonList(shipping.getShopOrder().getId()), ShopOrderStatus.DELIVERED);
+        }
+    }
 
 }

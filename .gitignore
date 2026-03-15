@@ -7,8 +7,7 @@ target/
 **/.env
 **/.env.prod
 .env
-.env.postgres
-.env.**
+.env.prod
 secret/gg-account-key.json
 **/gg-account-key.json
 secret/

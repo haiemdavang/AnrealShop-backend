@@ -419,6 +419,7 @@ public class ProductMapper {
         ProductReviewDto productReviewDto = toProductReviewDto(productReview);
         productReviewDto.setProductId(productReview.getProduct() != null ? productReview.getProduct().getId() : null);
         productReviewDto.setProductName(productReview.getProduct() != null ? productReview.getProduct().getName() : null);
+        productReviewDto.setProductImage(productReview.getProduct() != null ? productReview.getProduct().getThumbnailUrl() : null);
         productReviewDto.setUpdatedAt(productReview.getUpdatedAt());
 
         return productReviewDto;

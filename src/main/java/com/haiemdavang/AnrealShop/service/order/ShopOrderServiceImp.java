@@ -20,6 +20,7 @@ import com.haiemdavang.AnrealShop.modal.enums.ShopOrderStatus;
 import com.haiemdavang.AnrealShop.repository.order.ShopOrderRepository;
 import com.haiemdavang.AnrealShop.repository.order.ShopOrderSpecification;
 import com.haiemdavang.AnrealShop.security.SecurityUtils;
+import com.haiemdavang.AnrealShop.service.IReviewService;
 import com.haiemdavang.AnrealShop.service.IShipmentService;
 import com.haiemdavang.AnrealShop.utils.ApplicationInitHelper;
 import lombok.RequiredArgsConstructor;
@@ -45,6 +46,7 @@ public class ShopOrderServiceImp implements IShopOrderService {
     private final OrderMapper orderMapper;
     private final IOrderItemService orderItemService;
     private final IShipmentService shipmentService;
+    private final IReviewService reviewService;
     private final ShipmentMapper shipmentMapper;
 
     private final double SHIPPING_FEE_RATE = 0.2;
@@ -172,6 +174,21 @@ public class ShopOrderServiceImp implements IShopOrderService {
         orderDetailDto.setTotalCost(totalProductCost + Math.max(0L, shippingFee - getDiscountShippingFee));
         if (shipping != null)
             orderDetailDto.setOrderHistory(shipmentMapper.toHistoryTrackDto(shipping.getTrackingHistory()));
+
+        // Kiểm tra user đã đánh giá các order items trong shop order chưa (per item)
+        Set<String> orderItemIds = shopOrder.getOrderItems().stream()
+                .map(OrderItem::getId)
+                .collect(Collectors.toSet());
+        Set<String> reviewedOrderItemIds = reviewService.getReviewedOrderItemIds(orderItemIds);
+
+        // Đánh dấu isReviewed cho từng product item
+        orderDetailDto.getProductItems().forEach(item ->
+                item.setReviewed(reviewedOrderItemIds.contains(item.getOrderItemId()))
+        );
+
+        // Đánh dấu isReviewed ở cấp shop order (true nếu ít nhất 1 item đã review)
+        boolean isReviewed = !reviewedOrderItemIds.isEmpty();
+        orderDetailDto.setReviewed(isReviewed);
 
         return orderDetailDto;
     }
@@ -316,7 +333,13 @@ public class ShopOrderServiceImp implements IShopOrderService {
                     shopOrder.getOrderItems().stream()
                             .filter(ot -> ot.getStatus().equals(OrderTrackStatus.SHIPPING))
                             .forEach(ot -> ot.setStatus(OrderTrackStatus.DELIVERED));
+            case SUCCESS ->
+                    shopOrder.getOrderItems().stream()
+                            .filter(ot -> ot.getStatus().equals(OrderTrackStatus.DELIVERED))
+                            .forEach(ot -> ot.setStatus(OrderTrackStatus.SUCCESS));
         }
         return shopOrder;
     }
+
+
 }

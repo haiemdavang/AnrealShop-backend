@@ -75,6 +75,7 @@ public class OrderItem {
     private CancelBy canceledBy;
 
     @Enumerated(EnumType.STRING)
+    @Builder.Default
     @Column(name = "trang_thai")
     private OrderTrackStatus status = OrderTrackStatus.PROCESSING;
 

@@ -11,6 +11,8 @@ import com.haiemdavang.AnrealShop.modal.entity.address.ShopAddress;
 import com.haiemdavang.AnrealShop.modal.entity.address.UserAddress;
 import com.haiemdavang.AnrealShop.modal.entity.product.ProductSku;
 import com.haiemdavang.AnrealShop.modal.entity.shipping.Shipping;
+import com.haiemdavang.AnrealShop.modal.enums.ShippingStatus;
+import com.haiemdavang.AnrealShop.modal.enums.ShopOrderStatus;
 import com.haiemdavang.AnrealShop.tech.kafka.dto.ShippingSyncMessage;
 
 import java.util.List;
@@ -34,5 +36,11 @@ public interface IShipmentService {
 
     Shipping processShippingSyncMessage(ShippingSyncMessage message);
 
+    void processShippingStatusSync(String shippingId, ShippingStatus status, String note);
+
     List<CartShippingFee> getShippingFeeForCheckout(CheckoutShippingFee checkoutShippingFee);
+
+    void updateShipmentStatus(List<String> shopOrderIds, ShippingStatus status, String note);
+
+    List<Shipping> getListShippingByShopOrderStatus(ShopOrderStatus shopOrderStatus);
 }

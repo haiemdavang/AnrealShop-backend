@@ -2,6 +2,7 @@ package com.haiemdavang.AnrealShop.dto.product;
 
 import com.fasterxml.jackson.annotation.JsonInclude;
 import com.haiemdavang.AnrealShop.dto.attribute.ProductAttributeDto;
+import com.haiemdavang.AnrealShop.dto.review.ReviewSummaryDto;
 import com.haiemdavang.AnrealShop.dto.shop.BaseShopDto;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
@@ -50,6 +51,7 @@ public class ProductDetailDto {
     private List<ProductMediaDto> medias; // nullable = true
     private List<ProductAttributeDto> attributes; // nullable = true
     private List<MyShopProductSkuDto> productSkus; // nullable = true
-//    review nua ne .....
+    private List<ProductReviewDto> reviews; // nullable = true
+    private ReviewSummaryDto reviewSummary; // nullable = true
 
 }

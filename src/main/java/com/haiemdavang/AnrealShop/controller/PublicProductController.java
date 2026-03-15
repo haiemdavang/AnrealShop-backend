@@ -39,8 +39,9 @@ public class PublicProductController {
     @GetMapping("/{id}")
     public ResponseEntity<ProductDetailDto> getProductById(
             @PathVariable String id,
-            @RequestParam(required = false, defaultValue = "false") boolean isReview) {
-        ProductDetailDto productDto = productService.getProductById(id, isReview);
+            @RequestParam(required = false, defaultValue = "false") boolean isReview,
+            @RequestParam(required = false, defaultValue = "10") int reviewSize) {
+        ProductDetailDto productDto = productService.getProductById(id, isReview, reviewSize);
         return ResponseEntity.ok(productDto);
     }
 

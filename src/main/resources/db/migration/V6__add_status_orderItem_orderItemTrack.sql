@@ -1,0 +1,35 @@
+-- ALTER TABLE public.item_don_hang
+--     DROP CONSTRAINT item_don_hang_trang_thai_check;
+--
+-- -- 2. Add ràng buộc CHECK mới với danh sách đầy đủ (thêm 'SUCCESS')
+-- ALTER TABLE public.item_don_hang
+--     ADD CONSTRAINT item_don_hang_trang_thai_check
+--         CHECK (
+--             (trang_thai)::text = ANY (
+--                 ARRAY[
+--                     'PROCESSING', 'PENDING_CONFIRMATION', 'PREPARING', 'WAIT_SHIPMENT',
+--                 'SHIPPING',
+--                 'DELIVERED',
+--                 'SUCCESS',
+--                 'REFUND', 'CANCELED'
+--                     ]::text[]
+--                 )
+--             );
+--
+-- ALTER TABLE public.theo_doi_item_don_hang
+--     DROP CONSTRAINT theo_doi_item_don_hang_trang_thai_check;
+--
+-- -- 2. Add ràng buộc CHECK mới với danh sách đầy đủ (thêm 'SUCCESS')
+-- ALTER TABLE public.theo_doi_item_don_hang
+--     ADD CONSTRAINT theo_doi_item_don_hang_trang_thai_check
+--         CHECK (
+--             (trang_thai)::text = ANY (
+--                 ARRAY[
+--                     'PROCESSING', 'PENDING_CONFIRMATION', 'PREPARING', 'WAIT_SHIPMENT',
+--                     'SHIPPING',
+--                     'DELIVERED',
+--                     'SUCCESS',
+--                     'REFUND', 'CANCELED'
+--                     ]::text[]
+--                 )
+--             );
