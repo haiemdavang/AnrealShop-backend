@@ -15,10 +15,10 @@ import java.util.List;
 @Data
 @Builder
 public class EsAttribute {
-    @Field(type = FieldType.Keyword)
+    @Field(name = "key_name", type = FieldType.Keyword)
     private String keyName;
 
-    @Field(type = FieldType.Keyword)
+    @Field(name = "display_name", type = FieldType.Keyword)
     private String displayName;
 
     @Field(type = FieldType.Keyword)
