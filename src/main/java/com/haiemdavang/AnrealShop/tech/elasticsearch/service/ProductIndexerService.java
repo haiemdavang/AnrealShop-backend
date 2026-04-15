@@ -105,7 +105,7 @@ public class ProductIndexerService {
 
         queryBuilder.withQuery(QueryBuilders.bool(b -> {
             b.filter(f -> f.term(t -> t.field("visible").value(true)));
-            b.filter(f -> f.term(t -> t.field("restrict_status").value("ACTIVE")));
+            b.must(f -> f.match(t -> t.field("restrict_status").query("ACTIVE")));
 
             if (search != null && !search.trim().isEmpty()) {
                 b.must(m -> m.multiMatch(mm ->
