@@ -33,29 +33,10 @@ public class ShopController {
         return ResponseEntity.ok(shopService.findDtoByEmailUser(userDetails.getUsername()));
     }
 
-
-//
-//    @GetMapping("/{id}")
-//    public ResponseEntity<ResponseDto<UserDto>> getUserById(@PathVariable String id) {
-//        User user = userService.findById(id);
-//        UserDto userDto = userMapper.toUserDto(user);
-//        ResponseDto<UserDto> response = ResponseDto.success(
-//                userDto,
-//                "Lấy thông tin người dùng thành công"
-//        );
-//        return ResponseEntity.ok(response);
-//    }
-
-//    @PutMapping("/update-profile")
-//    public ResponseEntity<UserDto> updateProfile(@Valid @RequestBody ProfileRequest profileRequest, @AuthenticationPrincipal UserDetailSecu userDetails) {
-//        return ResponseEntity.ok(userService.updateProfile(userDetails.getEmail(), profileRequest));
-//    }
-//
-//    @DeleteMapping("/{id}")
-//    public ResponseEntity<?> deleteUser(@PathVariable String id) {
-//        userService.deleteUser(id);
-//        return ResponseEntity.ok(Map.of("message", "Xóa người dùng thành công"));
-//    }
-
+    @PutMapping("")
+    @Transactional
+    public ResponseEntity<ShopDto> updateShop(@AuthenticationPrincipal UserDetailSecu userDetails, @Valid @RequestBody com.haiemdavang.AnrealShop.dto.shop.ShopUpdateRequest request) {
+        return ResponseEntity.ok(shopService.updateShop(userDetails.getUsername(), request));
+    }
 
 }
