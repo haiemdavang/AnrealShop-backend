@@ -1,6 +1,8 @@
 package com.haiemdavang.AnrealShop.service.serviceImp;
 
+import com.haiemdavang.AnrealShop.dto.shop.ShopDetailDto;
 import com.haiemdavang.AnrealShop.dto.shop.ShopDto;
+import com.haiemdavang.AnrealShop.dto.shop.ShopUpdateRequest;
 import com.haiemdavang.AnrealShop.exception.BadRequestException;
 import com.haiemdavang.AnrealShop.mapper.ShopMapper;
 import com.haiemdavang.AnrealShop.modal.entity.shop.Shop;
@@ -55,6 +57,30 @@ public class ShopServiceImp implements IShopService {
     }
 
     @Override
+    public ShopDto findDtoById(String id) {
+        Shop shop = findById(id);
+        return shopMapper.toShopDto(shop);
+    }
+
+    @Override
+    public ShopDetailDto findShopDetailById(String id, boolean isSale) {
+        Shop shop = findById(id);
+        ShopDetailDto detail = new ShopDetailDto();
+        detail.setId(shop.getId());
+        detail.setName(shop.getName());
+        detail.setAvatarUrl(shop.getAvatarUrl());
+        detail.setShopUrl(shop.getUrlSlug());
+        if (isSale) {
+            detail.setAverageRating(shop.getAverageRating());
+            detail.setTotalReviews(shop.getTotalReviews());
+            detail.setFollowerCount(shop.getFollowerCount());
+            detail.setProductCount(shop.getProductCount());
+            detail.setDescription(shop.getDescription());
+        }
+        return detail;
+    }
+
+    @Override
     @Transactional
     public ShopDto registerUser(String username, String shopName) {
         User user = userRepository.findByEmail(username)
@@ -75,4 +101,24 @@ public class ShopServiceImp implements IShopService {
         return shopMapper.toShopDto(newShop);
     }
 
+    @Override
+    @Transactional
+    public ShopDto updateShop(String username, ShopUpdateRequest request) {
+        Shop shop = shopRepository.findByUserEmail(username)
+                .orElseThrow(() -> new BadRequestException("SHOP_NOT_FOUND"));
+
+        if (request.getName() != null && !request.getName().isEmpty()) {
+            shop.setName(request.getName());
+            shop.setUrlSlug(ApplicationInitHelper.toSlug(request.getName()));
+        }
+        if (request.getDescription() != null) {
+            shop.setDescription(request.getDescription());
+        }
+        if (request.getAvatarUrl() != null) {
+            shop.setAvatarUrl(request.getAvatarUrl());
+        }
+        
+        shop = shopRepository.save(shop);
+        return shopMapper.toShopDto(shop);
+    }
 }
