@@ -1,4 +1,3 @@
-
 spring:
   jackson:
     time-zone: Asia/Ho_Chi_Minh
@@ -46,9 +45,18 @@ spring:
     username: ${ES_USERNAME:}
     password: ${ES_PASSWORD:}
     uris: http://${ES_HOST:localhost}:${ES_PORT:9200}
+
   messages:
     basename: errorMessage/MessageString
     encoding: UTF-8
+
+  ai:
+    google:
+      genai:
+        api-key: ${GEMINI_API_KEY:}
+        chat:
+          options:
+            model: gemini-2.5-flash-lite
 
 
 server:
