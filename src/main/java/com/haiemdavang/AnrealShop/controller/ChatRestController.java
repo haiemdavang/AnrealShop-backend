@@ -3,6 +3,8 @@ package com.haiemdavang.AnrealShop.controller;
 import com.haiemdavang.AnrealShop.dto.chat.*;
 import com.haiemdavang.AnrealShop.service.chat.ChatService;
 import com.haiemdavang.AnrealShop.service.chat.ChatbotService;
+import com.haiemdavang.AnrealShop.tech.gemini.AIGenerateService;
+import com.haiemdavang.AnrealShop.tech.gemini.GeminiClient;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -11,6 +13,7 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
+import java.util.Map;
 
 @Slf4j
 @RestController
@@ -20,6 +23,16 @@ public class ChatRestController {
 
     private final ChatService chatService;
     private final ChatbotService chatbotService;
+    private final AIGenerateService aiGenerateService;
+
+    @PostMapping("/gemini")
+    public ResponseEntity<String> askGemini(@RequestBody Map<String, String> payload) {
+        String tableName = payload.get("tableName");
+        String fieldName = payload.get("fieldName");
+        String context = payload.get("context");
+        String response = aiGenerateService.generate(tableName, fieldName, context);
+        return ResponseEntity.ok(response);
+    }
 
     @GetMapping("/rooms")
     public ResponseEntity<List<ChatRoomResponse>> getCurrentUserRooms() {
