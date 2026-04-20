@@ -41,6 +41,7 @@ public class SecurityConfig {
             "/api/user/register",
             "/api/forgot-password",
             "/api/otp/**",
+            "/api/chat/gemini",
             "/swagger-ui/**",
             "/v3/api-docs/**");
     public final static List<String> PUBLIC_ORIGINS = List.of("http://localhost:5173", "https://anreal-shop.vercel.app", "https://shop.haiemdavang.id.vn", "http://localhost:4141", "https://api.haiemdavang.id.vn");
