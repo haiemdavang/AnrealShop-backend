@@ -9,7 +9,7 @@ public class ProductShortDescStrategy implements PromptStrategy {
 
     @Override
     public PromptType getType() {
-        return PromptType.PRODUCT_DESCRIPTION;
+        return PromptType.PRODUCT_SHORT_DESCRIPTION;
     }
 
     @Override

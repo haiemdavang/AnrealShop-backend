@@ -1,5 +1,6 @@
 package com.haiemdavang.AnrealShop.tech.gemini;
 
+import com.haiemdavang.AnrealShop.exception.BadRequestException;
 import com.haiemdavang.AnrealShop.tech.gemini.concreteStrategy.DefaultPromptStrategy;
 import org.springframework.stereotype.Component;
 
@@ -21,8 +22,12 @@ public class PromptStrategyFactory {
     }
 
     public PromptStrategy getStrategy(String tableName, String fieldName) {
-        PromptType type = PromptType.from(tableName, fieldName);
-        if (type == null) return defaultPromptStrategy;
-        return strategies.getOrDefault(type, defaultPromptStrategy);
+        try {
+            PromptType type = PromptType.from(tableName, fieldName);
+            if (type == null) return defaultPromptStrategy;
+            return strategies.getOrDefault(type, defaultPromptStrategy);
+        } catch (Exception e) {
+            throw new BadRequestException("FIELD_NOTFOUND");
+        }
     }
 }
