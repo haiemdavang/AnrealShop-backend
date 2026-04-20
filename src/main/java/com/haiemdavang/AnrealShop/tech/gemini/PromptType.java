@@ -4,6 +4,7 @@ import java.util.Arrays;
 
 public enum PromptType {
     PRODUCT_DESCRIPTION("product", "description"),
+    PRODUCT_SHORT_DESCRIPTION("product", "shortDescription"),
     SHOP_NAME("shop", "name"),
     SHOP_DESCRIPTION("shop", "description"),
     DEFAULT(null, null);
