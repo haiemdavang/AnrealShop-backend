@@ -15,6 +15,9 @@ import java.util.stream.Collectors;
 @Service
 public class AttributeMapper {
     public List<ProductAttributeDto> toProductAttributeDtoFromEs(List<EsAttribute> attributes) {
+        if(attributes == null || attributes.isEmpty()) {
+            return new ArrayList<>();
+        }
         return attributes.stream()
                 .map(attribute -> ProductAttributeDto.builder()
                         .attributeKeyName(attribute.getKeyName())
@@ -24,6 +27,9 @@ public class AttributeMapper {
                 .collect(Collectors.toList());
     }
     public List<ProductAttributeDto> toProductAttributeDto(List<ProductAttributeSingleValueDto> attributeSingleValueDtos) {
+        if (attributeSingleValueDtos == null || attributeSingleValueDtos.isEmpty()) {
+            return new ArrayList<>();
+        }
         return attributeSingleValueDtos.stream()
                 .collect(Collectors.groupingBy(
                         ProductAttributeSingleValueDto::getAttributeKeyName,

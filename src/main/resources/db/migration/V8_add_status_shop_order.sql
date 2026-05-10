@@ -1,0 +1,19 @@
+-- -- 1. Xóa ràng buộc cũ
+-- ALTER TABLE public.theo_doi_don_hang_cua_hang
+--     DROP CONSTRAINT IF EXISTS theo_doi_don_hang_cua_hang_trang_thai_check;
+--
+-- -- 2. Thêm lại ràng buộc mới bao gồm cả 'SUCCESS'
+-- ALTER TABLE public.theo_doi_don_hang_cua_hang
+--     ADD CONSTRAINT theo_doi_don_hang_cua_hang_trang_thai_check
+--         CHECK (
+--             trang_thai::text = ANY (ARRAY[
+--     'INIT_PROCESSING'::text,
+--     'PENDING_CONFIRMATION'::text,
+--     'CONFIRMED'::text,
+--     'PREPARING'::text,
+--     'SHIPPING'::text,
+--     'DELIVERED'::text,
+--     'SUCCESS'::text, -- Đã thêm giá trị này
+--     'CLOSED'::text
+--     ])
+--     );
