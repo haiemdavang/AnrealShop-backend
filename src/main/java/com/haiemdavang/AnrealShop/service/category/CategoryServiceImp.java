@@ -10,9 +10,8 @@ import com.haiemdavang.AnrealShop.exception.BadRequestException;
 import com.haiemdavang.AnrealShop.mapper.CategoryMapper;
 import com.haiemdavang.AnrealShop.modal.entity.category.Category;
 import com.haiemdavang.AnrealShop.repository.category.CategoryRepository;
-import com.haiemdavang.AnrealShop.service.ICategoryService;
+import com.haiemdavang.AnrealShop.service.serviceInter.ICategoryService;
 import lombok.RequiredArgsConstructor;
-import org.springframework.cache.annotation.Cacheable;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 

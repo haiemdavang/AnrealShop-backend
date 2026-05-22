@@ -2,7 +2,7 @@ package com.haiemdavang.AnrealShop.controller;
 
 import com.haiemdavang.AnrealShop.dto.favorite.FavoriteDto;
 import com.haiemdavang.AnrealShop.dto.favorite.FavoriteRequest;
-import com.haiemdavang.AnrealShop.service.IFavoriteService;
+import com.haiemdavang.AnrealShop.service.serviceInter.IFavoriteService;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Page;

@@ -9,7 +9,7 @@ import com.haiemdavang.AnrealShop.dto.shipping.search.PreparingStatus;
 import com.haiemdavang.AnrealShop.dto.shipping.search.SearchTypeShipping;
 import com.haiemdavang.AnrealShop.modal.enums.CancelBy;
 import com.haiemdavang.AnrealShop.modal.enums.ShopOrderStatus;
-import com.haiemdavang.AnrealShop.service.IShipmentService;
+import com.haiemdavang.AnrealShop.service.serviceInter.IShipmentService;
 import com.haiemdavang.AnrealShop.service.order.IShopOrderService;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;

@@ -9,7 +9,7 @@ import com.haiemdavang.AnrealShop.modal.entity.shop.Shop;
 import com.haiemdavang.AnrealShop.modal.entity.user.User;
 import com.haiemdavang.AnrealShop.repository.ShopRepository;
 import com.haiemdavang.AnrealShop.repository.user.UserRepository;
-import com.haiemdavang.AnrealShop.service.IShopService;
+import com.haiemdavang.AnrealShop.service.serviceInter.IShopService;
 import com.haiemdavang.AnrealShop.tech.redis.config.RedisTemplate;
 import com.haiemdavang.AnrealShop.tech.redis.service.IRedisService;
 import com.haiemdavang.AnrealShop.utils.ApplicationInitHelper;

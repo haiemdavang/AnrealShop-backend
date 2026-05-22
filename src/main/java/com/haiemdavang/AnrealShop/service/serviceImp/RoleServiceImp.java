@@ -4,7 +4,7 @@ import com.haiemdavang.AnrealShop.exception.AnrealShopException;
 import com.haiemdavang.AnrealShop.modal.entity.user.Role;
 import com.haiemdavang.AnrealShop.modal.enums.RoleName;
 import com.haiemdavang.AnrealShop.repository.user.RoleRepository;
-import com.haiemdavang.AnrealShop.service.IRoleService;
+import com.haiemdavang.AnrealShop.service.serviceInter.IRoleService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 

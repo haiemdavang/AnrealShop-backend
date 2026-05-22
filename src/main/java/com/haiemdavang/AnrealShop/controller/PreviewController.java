@@ -3,7 +3,7 @@ package com.haiemdavang.AnrealShop.controller;
 import com.haiemdavang.AnrealShop.dto.product.ProductReviewDto;
 import com.haiemdavang.AnrealShop.dto.review.CreateReviewRequest;
 import com.haiemdavang.AnrealShop.dto.review.ReviewListResponse;
-import com.haiemdavang.AnrealShop.service.IReviewService;
+import com.haiemdavang.AnrealShop.service.serviceInter.IReviewService;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;

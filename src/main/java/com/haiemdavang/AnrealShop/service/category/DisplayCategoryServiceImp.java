@@ -10,7 +10,7 @@ import com.haiemdavang.AnrealShop.modal.entity.category.DisplayCategory;
 import com.haiemdavang.AnrealShop.modal.enums.CategoryDisplayPosition;
 import com.haiemdavang.AnrealShop.repository.category.CategoryRepository;
 import com.haiemdavang.AnrealShop.repository.category.DisplayCategoryRepository;
-import com.haiemdavang.AnrealShop.service.IDisplayCategoryService;
+import com.haiemdavang.AnrealShop.service.serviceInter.IDisplayCategoryService;
 import com.haiemdavang.AnrealShop.tech.redis.config.RedisTemplate;
 import com.haiemdavang.AnrealShop.tech.redis.service.IRedisService;
 import lombok.RequiredArgsConstructor;

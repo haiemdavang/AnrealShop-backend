@@ -11,7 +11,7 @@ import com.haiemdavang.AnrealShop.modal.entity.shop.Shop;
 import com.haiemdavang.AnrealShop.modal.entity.user.User;
 import com.haiemdavang.AnrealShop.repository.address.*;
 import com.haiemdavang.AnrealShop.security.SecurityUtils;
-import com.haiemdavang.AnrealShop.service.IAddressService;
+import com.haiemdavang.AnrealShop.service.serviceInter.IAddressService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;

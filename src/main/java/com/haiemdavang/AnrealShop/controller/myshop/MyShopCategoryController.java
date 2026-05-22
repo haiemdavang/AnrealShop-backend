@@ -2,7 +2,7 @@ package com.haiemdavang.AnrealShop.controller.myshop;
 
 import com.haiemdavang.AnrealShop.dto.category.BaseCategoryDto;
 import com.haiemdavang.AnrealShop.dto.category.CategoryModalSelectedDto;
-import com.haiemdavang.AnrealShop.service.ICategoryService;
+import com.haiemdavang.AnrealShop.service.serviceInter.ICategoryService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.GetMapping;

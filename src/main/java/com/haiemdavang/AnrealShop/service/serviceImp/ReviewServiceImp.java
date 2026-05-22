@@ -22,7 +22,7 @@ import com.haiemdavang.AnrealShop.repository.order.ShopOrderRepository;
 import com.haiemdavang.AnrealShop.repository.product.ProductRepository;
 import com.haiemdavang.AnrealShop.repository.product.ProductReviewRepository;
 import com.haiemdavang.AnrealShop.security.SecurityUtils;
-import com.haiemdavang.AnrealShop.service.IReviewService;
+import com.haiemdavang.AnrealShop.service.serviceInter.IReviewService;
 import jakarta.persistence.EntityManager;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
