@@ -1,7 +1,7 @@
 package com.haiemdavang.AnrealShop.controller.myshop;
 
 import com.haiemdavang.AnrealShop.dto.product.*;
-import com.haiemdavang.AnrealShop.service.IProductService;
+import com.haiemdavang.AnrealShop.service.serviceInter.IProductService;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import org.springframework.format.annotation.DateTimeFormat;

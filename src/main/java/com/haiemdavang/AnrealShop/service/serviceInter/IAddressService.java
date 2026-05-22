@@ -1,4 +1,4 @@
-package com.haiemdavang.AnrealShop.service;
+package com.haiemdavang.AnrealShop.service.serviceInter;
 
 import com.haiemdavang.AnrealShop.dto.address.AddressDto;
 import com.haiemdavang.AnrealShop.dto.address.AddressRequestDto;

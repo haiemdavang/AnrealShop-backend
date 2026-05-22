@@ -10,7 +10,7 @@ import com.haiemdavang.AnrealShop.modal.entity.user.User;
 import com.haiemdavang.AnrealShop.repository.FavoriteRepository;
 import com.haiemdavang.AnrealShop.repository.product.ProductRepository;
 import com.haiemdavang.AnrealShop.security.SecurityUtils;
-import com.haiemdavang.AnrealShop.service.IFavoriteService;
+import com.haiemdavang.AnrealShop.service.serviceInter.IFavoriteService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;

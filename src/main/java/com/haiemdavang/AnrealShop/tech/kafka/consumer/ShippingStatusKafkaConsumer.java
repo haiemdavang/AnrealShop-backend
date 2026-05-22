@@ -3,7 +3,7 @@ package com.haiemdavang.AnrealShop.tech.kafka.consumer;
 import com.haiemdavang.AnrealShop.modal.entity.shipping.Shipping;
 import com.haiemdavang.AnrealShop.modal.enums.ShippingStatus;
 import com.haiemdavang.AnrealShop.modal.enums.ShopOrderStatus;
-import com.haiemdavang.AnrealShop.service.IShipmentService;
+import com.haiemdavang.AnrealShop.service.serviceInter.IShipmentService;
 import com.haiemdavang.AnrealShop.service.order.IShopOrderService;
 import com.haiemdavang.AnrealShop.tech.kafka.config.KafkaTopicConfig;
 import com.haiemdavang.AnrealShop.tech.kafka.dto.ShippingSyncMessage;

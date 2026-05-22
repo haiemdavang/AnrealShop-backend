@@ -3,7 +3,7 @@ package com.haiemdavang.AnrealShop.controller;
 import com.haiemdavang.AnrealShop.dto.category.CategoryDisplayDto;
 import com.haiemdavang.AnrealShop.exception.BadRequestException;
 import com.haiemdavang.AnrealShop.modal.enums.CategoryDisplayPosition;
-import com.haiemdavang.AnrealShop.service.IDisplayCategoryService;
+import com.haiemdavang.AnrealShop.service.serviceInter.IDisplayCategoryService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.GetMapping;

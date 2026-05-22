@@ -3,7 +3,7 @@ package com.haiemdavang.AnrealShop.controller;
 import com.haiemdavang.AnrealShop.dto.address.AddressDto;
 import com.haiemdavang.AnrealShop.dto.address.AddressRequestDto;
 import com.haiemdavang.AnrealShop.dto.address.SingleAddressDto;
-import com.haiemdavang.AnrealShop.service.IAddressService;
+import com.haiemdavang.AnrealShop.service.serviceInter.IAddressService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;

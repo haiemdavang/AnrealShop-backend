@@ -9,7 +9,7 @@ import com.haiemdavang.AnrealShop.modal.entity.user.User;
 import com.haiemdavang.AnrealShop.modal.enums.RoleName;
 import com.haiemdavang.AnrealShop.repository.user.UserRepository;
 import com.haiemdavang.AnrealShop.security.userDetails.UserDetailSecu;
-import com.haiemdavang.AnrealShop.service.IRoleService;
+import com.haiemdavang.AnrealShop.service.serviceInter.IRoleService;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.lang3.StringUtils;

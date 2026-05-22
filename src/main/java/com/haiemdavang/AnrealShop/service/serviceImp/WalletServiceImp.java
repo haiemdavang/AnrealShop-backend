@@ -24,7 +24,7 @@ import com.haiemdavang.AnrealShop.repository.wallet.TransactionHistoryRepository
 import com.haiemdavang.AnrealShop.repository.wallet.UserVerificationRepository;
 import com.haiemdavang.AnrealShop.repository.wallet.WalletRepository;
 import com.haiemdavang.AnrealShop.repository.wallet.WalletSpecification;
-import com.haiemdavang.AnrealShop.service.IWalletService;
+import com.haiemdavang.AnrealShop.service.serviceInter.IWalletService;
 import com.haiemdavang.AnrealShop.utils.ApplicationInitHelper;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;

@@ -5,7 +5,7 @@ import com.haiemdavang.AnrealShop.dto.user.RegisterRequest;
 import com.haiemdavang.AnrealShop.dto.user.ChangePasswordDto;
 import com.haiemdavang.AnrealShop.dto.user.UserDto;
 import com.haiemdavang.AnrealShop.security.userDetails.UserDetailSecu;
-import com.haiemdavang.AnrealShop.service.IUserService;
+import com.haiemdavang.AnrealShop.service.serviceInter.IUserService;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;

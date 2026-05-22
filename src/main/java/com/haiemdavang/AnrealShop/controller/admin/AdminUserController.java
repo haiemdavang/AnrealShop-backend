@@ -4,7 +4,7 @@ import com.haiemdavang.AnrealShop.dto.common.RejectRequest;
 import com.haiemdavang.AnrealShop.dto.user.AccountType;
 import com.haiemdavang.AnrealShop.dto.user.AdminUserListResponse;
 import com.haiemdavang.AnrealShop.modal.enums.CancelBy;
-import com.haiemdavang.AnrealShop.service.IUserService;
+import com.haiemdavang.AnrealShop.service.serviceInter.IUserService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.format.annotation.DateTimeFormat;
 import org.springframework.http.ResponseEntity;

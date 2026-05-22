@@ -2,7 +2,6 @@ package com.haiemdavang.AnrealShop.service.chat;
 
 import com.haiemdavang.AnrealShop.dto.chat.*;
 import com.haiemdavang.AnrealShop.exception.BadRequestException;
-import com.haiemdavang.AnrealShop.exception.ForbiddenException;
 import com.haiemdavang.AnrealShop.mapper.ChatMapper;
 import com.haiemdavang.AnrealShop.modal.entity.chat.ChatMessage;
 import com.haiemdavang.AnrealShop.modal.entity.chat.ChatRoom;
@@ -14,6 +13,7 @@ import com.haiemdavang.AnrealShop.repository.chat.ChatMessageRepository;
 import com.haiemdavang.AnrealShop.repository.chat.ChatRoomRepository;
 import com.haiemdavang.AnrealShop.repository.user.UserRepository;
 import com.haiemdavang.AnrealShop.security.SecurityUtils;
+import com.haiemdavang.AnrealShop.utils.ChatUtils;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.data.domain.Page;
@@ -56,7 +56,7 @@ public class ChatService {
         return rooms.stream()
                 .map(room -> {
                     // Xác định vai trò của user trong phòng chat
-                    SenderRole myRole = isShopOwner(room, currentUserId) ? SenderRole.SHOP : SenderRole.USER;
+                    SenderRole myRole = ChatUtils.isShopOwner(room, currentUserId) ? SenderRole.SHOP : SenderRole.USER;
 
                     // Lấy tin nhắn cuối cùng
                     ChatMessage lastMessage = chatMessageRepository
@@ -88,7 +88,7 @@ public class ChatService {
         ChatRoom room = validateAndGetRoomAccess(roomId, currentUserId);
 
         // Xác định vai trò của user
-        SenderRole myRole = isShopOwner(room, currentUserId) ? SenderRole.SHOP : SenderRole.USER;
+        SenderRole myRole = ChatUtils.isShopOwner(room, currentUserId) ? SenderRole.SHOP : SenderRole.USER;
 
         Pageable pageable = PageRequest.of(page, size);
         Page<ChatMessage> messages = chatMessageRepository.findByRoomIdOrderByCreatedAtDesc(roomId, pageable);
@@ -172,7 +172,7 @@ public class ChatService {
                 .orElseThrow(() -> new BadRequestException("ROOM_NOT_FOUND"));
 
         // Kiểm tra user có trong phòng chat không và xác định vai trò
-        SenderRole senderRole = determineSenderRole(room, sender.getId());
+        SenderRole senderRole = ChatUtils.determineSenderRole(room, sender.getId());
 
         ChatMessage message = ChatMessage.builder()
                 .room(room)
@@ -193,16 +193,11 @@ public class ChatService {
         ChatMessageResponse messageForSender = chatMapper.toMessageResponse(message, senderRole);
 
         // Tạo response cho receiver (isMe = false)
-        SenderRole receiverRole = senderRole == SenderRole.USER ? SenderRole.SHOP : SenderRole.USER;
+        SenderRole receiverRole = ChatUtils.getReceiverRole(senderRole);
         ChatMessageResponse messageForReceiver = chatMapper.toMessageResponse(message, receiverRole);
 
         // Lấy email của receiver
-        String receiverEmail;
-        if (senderRole == SenderRole.USER) {
-            receiverEmail = room.getShop().getUser().getEmail();
-        } else {
-            receiverEmail = room.getCustomer().getEmail();
-        }
+        String receiverEmail = ChatUtils.getReceiverEmail(room, senderRole);
 
         return new SaveMessageResult(messageForSender, messageForReceiver, receiverEmail);
     }
@@ -218,7 +213,7 @@ public class ChatService {
         ChatRoom room = chatRoomRepository.findById(roomId)
                 .orElseThrow(() -> new BadRequestException("ROOM_NOT_FOUND"));
 
-        if (isShopOwner(room, sender.getId())) {
+        if (ChatUtils.isShopOwner(room, sender.getId())) {
             return room.getCustomer().getEmail();
         } else {
             return room.getShop().getUser().getEmail();
@@ -236,7 +231,7 @@ public class ChatService {
         ChatRoom room = validateAndGetRoomAccess(roomId, user.getId());
 
         // Xác định vai trò của user
-        SenderRole myRole = isShopOwner(room, user.getId()) ? SenderRole.SHOP : SenderRole.USER;
+        SenderRole myRole = ChatUtils.isShopOwner(room, user.getId()) ? SenderRole.SHOP : SenderRole.USER;
 
         chatMessageRepository.markAllAsRead(roomId, myRole);
         log.debug("Marked all messages as read in room {} for {} ({})", roomId, user.getId(), myRole);
@@ -245,39 +240,13 @@ public class ChatService {
     // ==================== Helper Methods ====================
 
     /**
-     * Kiểm tra user có phải là shop owner trong phòng chat không
-     */
-    private boolean isShopOwner(ChatRoom room, String userId) {
-        return room.getShop().getUser().getId().equals(userId);
-    }
-
-    /**
      * Kiểm tra user có quyền truy cập phòng chat không và trả về room
      */
     private ChatRoom validateAndGetRoomAccess(String roomId, String userId) {
         ChatRoom room = chatRoomRepository.findById(roomId)
                 .orElseThrow(() -> new BadRequestException("ROOM_NOT_FOUND"));
 
-        boolean isCustomer = room.getCustomer().getId().equals(userId);
-        boolean isShopOwner = room.getShop().getUser().getId().equals(userId);
-
-        if (!isCustomer && !isShopOwner) {
-            throw new ForbiddenException("ACCESS_DENIED_TO_CHAT_ROOM");
-        }
-
+        ChatUtils.validateChatRoomAccess(room, userId);
         return room;
-    }
-
-    /**
-     * Xác định vai trò của sender trong phòng chat
-     */
-    private SenderRole determineSenderRole(ChatRoom room, String userId) {
-        if (room.getCustomer().getId().equals(userId)) {
-            return SenderRole.USER;
-        } else if (room.getShop().getUser().getId().equals(userId)) {
-            return SenderRole.SHOP;
-        } else {
-            throw new ForbiddenException("ACCESS_DENIED_TO_CHAT_ROOM");
-        }
     }
 }

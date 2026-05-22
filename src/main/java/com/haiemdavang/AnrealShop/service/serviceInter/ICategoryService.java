@@ -1,4 +1,4 @@
-package com.haiemdavang.AnrealShop.service;
+package com.haiemdavang.AnrealShop.service.serviceInter;
 
 import com.haiemdavang.AnrealShop.dto.category.AdminCategoryDto;
 import com.haiemdavang.AnrealShop.dto.category.BaseCategoryDto;

@@ -1,7 +1,7 @@
 package com.haiemdavang.AnrealShop.controller;
 
 import com.haiemdavang.AnrealShop.dto.shop.ShopDto;
-import com.haiemdavang.AnrealShop.service.IShopService;
+import com.haiemdavang.AnrealShop.service.serviceInter.IShopService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;

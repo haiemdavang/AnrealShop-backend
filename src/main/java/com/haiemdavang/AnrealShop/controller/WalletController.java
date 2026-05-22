@@ -11,7 +11,7 @@ import com.haiemdavang.AnrealShop.dto.wallet.WalletDto;
 import com.haiemdavang.AnrealShop.modal.enums.TransactionType;
 import com.haiemdavang.AnrealShop.modal.enums.WalletStatus;
 import com.haiemdavang.AnrealShop.security.userDetails.UserDetailSecu;
-import com.haiemdavang.AnrealShop.service.IWalletService;
+import com.haiemdavang.AnrealShop.service.serviceInter.IWalletService;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
