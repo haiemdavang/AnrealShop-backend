@@ -13,9 +13,11 @@ import com.haiemdavang.AnrealShop.repository.address.*;
 import com.haiemdavang.AnrealShop.security.SecurityUtils;
 import com.haiemdavang.AnrealShop.service.serviceInter.IAddressService;
 import lombok.RequiredArgsConstructor;
+import org.springframework.cache.annotation.CacheEvict;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import java.security.Principal;
 import java.util.*;
 import java.util.stream.Collectors;
 
@@ -114,7 +116,11 @@ public class AddressServiceImp implements IAddressService {
 
     @Override
     @Transactional
-    public AddressDto createUserAddress(AddressRequestDto addressDto) {
+    @CacheEvict(
+            value = "userInfo",
+            key = "T(com.haiemdavang.AnrealShop.tech.redis.config.RedisTemplate).PREFIX_USER.getValue() + #principal.name"
+    )
+    public AddressDto createUserAddress(AddressRequestDto addressDto, Principal principal) {
         User currentUser = securityUtils.getCurrentUser();
 
         if (addressDto.isPrimary()) {
@@ -221,7 +227,11 @@ public class AddressServiceImp implements IAddressService {
 
     @Override
     @Transactional
-    public void deleteUserAddress(String id) {
+    @CacheEvict(
+            value = "userInfo",
+            key = "T(com.haiemdavang.AnrealShop.tech.redis.config.RedisTemplate).PREFIX_USER.getValue() + #principal.name"
+    )
+    public void deleteUserAddress(String id, Principal principal) {
         User currentUser = securityUtils.getCurrentUser();
         UserAddress userAddress = userAddressRepository.findByIdAndUserId(id, currentUser.getId())
                 .orElseThrow(() -> new BadRequestException("ADDRESS_NOT_FOUND"));

@@ -8,6 +8,7 @@ import com.haiemdavang.AnrealShop.modal.entity.address.UserAddress;
 import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.NotNull;
 
+import java.security.Principal;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
@@ -25,7 +26,7 @@ public interface IAddressService {
 
     Set<SingleAddressDto> getWardList(String districtId, String keyword);
 
-    AddressDto createUserAddress(AddressRequestDto addressDto);
+    AddressDto createUserAddress(AddressRequestDto addressDto, Principal principal);
 
     AddressDto createShopAddress(AddressRequestDto addressDto);
 
@@ -33,7 +34,7 @@ public interface IAddressService {
 
     AddressDto updateShopAddress(String id, AddressRequestDto addressDto);
 
-    void deleteUserAddress(String id);
+    void deleteUserAddress(String id, Principal principal);
 
     void deleteShopAddress(String id);
 
