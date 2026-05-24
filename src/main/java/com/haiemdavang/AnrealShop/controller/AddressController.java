@@ -8,6 +8,7 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
+import java.security.Principal;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
@@ -63,8 +64,8 @@ public class AddressController {
     }
 
     @PostMapping("/user-address")
-    public ResponseEntity<AddressDto> createUserAddress(@RequestBody AddressRequestDto addressDto) {
-        AddressDto createdAddress = addressService.createUserAddress(addressDto);
+    public ResponseEntity<AddressDto> createUserAddress(@RequestBody AddressRequestDto addressDto, Principal principal) {
+        AddressDto createdAddress = addressService.createUserAddress(addressDto, principal);
         return ResponseEntity.ok(createdAddress);
     }
 
@@ -87,8 +88,8 @@ public class AddressController {
     }
 
     @DeleteMapping("/user-address/{id}")
-    public ResponseEntity<?> deleteUserAddress(@PathVariable String id) {
-        addressService.deleteUserAddress(id);
+    public ResponseEntity<?> deleteUserAddress(@PathVariable String id, Principal principal) {
+        addressService.deleteUserAddress(id, principal);
         return ResponseEntity.ok(Map.of("message", "Delete success"));
     }
 
