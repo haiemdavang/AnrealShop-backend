@@ -1,9 +1,12 @@
 package com.haiemdavang.AnrealShop.tech.mail.service;
 
+import com.haiemdavang.AnrealShop.dto.order.ProductOrderItemDto;
 import com.haiemdavang.AnrealShop.exception.AnrealShopException;
 import com.haiemdavang.AnrealShop.exception.BadRequestException;
 import com.haiemdavang.AnrealShop.exception.ForbiddenException;
+import com.haiemdavang.AnrealShop.modal.entity.shop.ShopOrder;
 import com.haiemdavang.AnrealShop.repository.user.UserRepository;
+import com.haiemdavang.AnrealShop.service.order.OrderServiceImp;
 import com.haiemdavang.AnrealShop.tech.mail.MailType;
 import com.haiemdavang.AnrealShop.tech.redis.service.IRedisService;
 import com.haiemdavang.AnrealShop.utils.MailTemplate;
@@ -17,7 +20,9 @@ import org.springframework.mail.javamail.MimeMessageHelper;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import java.util.List;
 import java.util.Random;
+import java.util.Set;
 import java.util.concurrent.TimeUnit;
 
 @Service
@@ -27,11 +32,31 @@ public class MailServiceImp implements IMailService{
     private final UserRepository userRepository;
     private final JavaMailSender javaMailSender;
     private final IRedisService redisService;
+    private final OrderServiceImp orderServiceImp;
+
     @Value("${spring.mail.username}")
     private String mailFrom;
 
+    @Value("${server.fe.base_url}")
+    private String feBaseUrl;
+
     private final String OTP_REQUEST_PREFIX = "otp_request:";
     private final String OTP_CODE_PREFIX = "otp_code:";
+
+    private void sendHtmlEmail(String to, String subject, String htmlContent) {
+        try {
+            MimeMessage mail = javaMailSender.createMimeMessage();
+            MimeMessageHelper mailHelper = new MimeMessageHelper(mail, true, "UTF-8");
+            mailHelper.setFrom(mailFrom);
+            mailHelper.setSubject(subject);
+            mailHelper.setText(htmlContent, true);
+            mailHelper.setTo(to);
+            javaMailSender.send(mail);
+        } catch (MessagingException e) {
+            log.error("Failed to send email to {}", to, e);
+            throw new AnrealShopException("EMAIL_EXCEPTION");
+        }
+    }
 
     @Override
     @Transactional
@@ -54,21 +79,11 @@ public class MailServiceImp implements IMailService{
             redisService.addValue(OTP_REQUEST_PREFIX + email, stamp + "", 12, TimeUnit.HOURS);
             throw new ForbiddenException("OTP_DENIED");
         }else {
-            MimeMessage mail = javaMailSender.createMimeMessage();
-            try {
-                MimeMessageHelper mailHelper = new MimeMessageHelper(mail, true, "UTF-8");
-                mailHelper.setFrom(mailFrom);
-                mailHelper.setSubject("Your OTP");
-                String code = getCode();
-                mailHelper.setText(MailTemplate.getEmailHTML(code, email, mailType), true);
-                mailHelper.setTo(email);
-                javaMailSender.send(mail);
-                int EXPIRATION_TIME = 1;
-                redisService.addValue(OTP_CODE_PREFIX + email, code, EXPIRATION_TIME, TimeUnit.MINUTES);
-                redisService.addValue(OTP_REQUEST_PREFIX + email, stamp + 1 + "", 2, TimeUnit.HOURS);
-            } catch (MessagingException e) {
-                throw new AnrealShopException("EMAIL_EXCEPTION");
-            }
+            String code = getCode();
+            sendHtmlEmail(email, "Your OTP", MailTemplate.getEmailHTML(code, email, mailType));
+            int EXPIRATION_TIME = 1;
+            redisService.addValue(OTP_CODE_PREFIX + email, code, EXPIRATION_TIME, TimeUnit.MINUTES);
+            redisService.addValue(OTP_REQUEST_PREFIX + email, stamp + 1 + "", 2, TimeUnit.HOURS);
         }
     }
 
@@ -96,6 +111,24 @@ public class MailServiceImp implements IMailService{
     }
 
 
+    @Transactional(readOnly = true)
+    public void sendMailOrder(String orderId, MailType mailType) {
+        switch (mailType) {
+            case NEW_ORDER -> {
+                List<ShopOrder> shopAndItemForShop = orderServiceImp.getShopOrderByOrderId(orderId);
+                for (ShopOrder shopOrder: shopAndItemForShop) {
+                    String emailShop = shopOrder.getShop().getUser().getEmail();
+                    String shopName = shopOrder.getShop().getName();
+                    Set<ProductOrderItemDto> productOrderItems = orderServiceImp.getProductOrderItemByShopOrder(shopOrder.getId());
+                    String templateMail = MailTemplate.getNewOrderHTMLVietnamese(orderId, shopName, productOrderItems, true, feBaseUrl);
+                    sendHtmlEmail(emailShop, "Đơn Hàng Mới", templateMail);
+                }
 
+            }
+            default -> throw new AnrealShopException("INVALID_MAIL_TYPE");
+        }
+
+
+    }
 
 }

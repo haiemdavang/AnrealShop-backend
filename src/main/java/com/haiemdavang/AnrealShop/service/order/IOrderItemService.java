@@ -33,5 +33,7 @@ public interface IOrderItemService {
 
     List<OrderItem> getForShipment(@NotEmpty(message = "{SHIPMENT_SHOP_ORDER_IDS_NOT_EMPTY}") List<String> shopOrderIds);
 
+    List<OrderItem> getByShopOrderIdIn(List<String> shopOrderIds);
+
     List<OrderItem> getListOrderItems(List<String> idShopOrders, String search, SearchType searchType, String status);
 }

@@ -10,6 +10,7 @@ public class KafkaTopicConfig {
     public static final String PRODUCT_SYNC_TOPIC = "topic-product-sync";
     public static final String NOTICE_SYNC_TOPIC = "topic-notice-sync";
     public static final String SHIPPING_STATUS_SYNC_TOPIC = "topic-shipping-status-sync";
+    public static final String EMAIL_SYNC_TOPIC = "email-status-sync";
 
     @Bean
     public NewTopic productSyncTopic(){
@@ -35,5 +36,11 @@ public class KafkaTopicConfig {
                 .build();
     }
 
-    
+    @Bean
+    public NewTopic mailSyncTopic(){
+        return TopicBuilder.name(EMAIL_SYNC_TOPIC)
+                .partitions(3)
+                .replicas(1)
+                .build();
+    }
 }

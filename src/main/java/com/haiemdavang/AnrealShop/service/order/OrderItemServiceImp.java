@@ -111,6 +111,14 @@ public class OrderItemServiceImp implements IOrderItemService {
     }
 
     @Override
+    public List<OrderItem> getByShopOrderIdIn(List<String> shopOrderIds) {
+        List<OrderItem> orderItems = orderItemRepository.findByShopOrderIdIn(shopOrderIds);
+        if (orderItems.isEmpty())
+            throw new BadRequestException("SHOP_ORDER_ID_NOT_MATCH");
+        return orderItems;
+    }
+
+    @Override
     public List<OrderItem> getListOrderItems(List<String> idShopOrders, String search, SearchType searchType, String status) {
         Specification<OrderItem> spec = OrderItemSpecification.filter(idShopOrders, search, searchType, status);
         return orderItemRepository.findAll(spec);

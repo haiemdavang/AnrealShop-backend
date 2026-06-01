@@ -7,7 +7,7 @@ public final class NoticeMyShopTemplate {
 
     public static ShopNotification newOrderForShop(Shop shop, String orderId) {
         String content = "Bạn có đơn hàng mới truy cập để xem chi tiết!" ;
-        String redirectUrl = "/myshop/orders/" + orderId;
+        String redirectUrl = "/myshop/orders";
         return ShopNotification.builder()
                 .content(content)
                 .redirectUrl(redirectUrl)

@@ -41,6 +41,15 @@ public interface OrderItemRepository extends JpaRepository<OrderItem, String> , 
     })
     List<OrderItem> findByShopOrderIdInAndStatus(Collection<String> shopOrderIds, OrderTrackStatus status);
 
+    @EntityGraph(attributePaths = {
+            "shopOrder",
+            "shopOrder.order",
+            "shopOrder.order.shippingAddress",
+            "productSku",
+            "productSku.product",
+    })
+    List<OrderItem> findByShopOrderIdIn(Collection<String> shopOrderIds);
+
     @Query("SELECT oi.id AS orderItemId, " +
             "oi.status AS status, " +
             "o.user.id AS userId, " +
