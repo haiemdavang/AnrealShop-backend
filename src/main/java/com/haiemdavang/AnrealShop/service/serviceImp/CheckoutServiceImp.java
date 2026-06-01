@@ -20,8 +20,12 @@ import com.haiemdavang.AnrealShop.service.serviceInter.ICheckoutService;
 import com.haiemdavang.AnrealShop.service.serviceInter.IProductService;
 import com.haiemdavang.AnrealShop.service.order.IUserOrderService;
 import com.haiemdavang.AnrealShop.service.shipment.IGHNService;
+import com.haiemdavang.AnrealShop.tech.kafka.dto.EmailMessageDto;
+import com.haiemdavang.AnrealShop.tech.kafka.producer.EmailKafkaProducer;
 import com.haiemdavang.AnrealShop.tech.kafka.producer.NoticeKafkaProducer;
 import com.haiemdavang.AnrealShop.dto.notice.NoticeTemplate;
+import com.haiemdavang.AnrealShop.tech.mail.MailType;
+import com.haiemdavang.AnrealShop.tech.mail.service.MailServiceImp;
 import jakarta.servlet.http.HttpServletRequest;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
@@ -43,6 +47,7 @@ public class CheckoutServiceImp implements ICheckoutService {
     private final CartMapper cartMapper;
 
     private final NoticeKafkaProducer noticeKafkaProducer;
+    private final EmailKafkaProducer emailKafkaProducer;
 
 
     @Override
@@ -60,6 +65,7 @@ public class CheckoutServiceImp implements ICheckoutService {
 
         if (responseDto != null) {
             noticeKafkaProducer.sendNoticeSyncMessage(NoticeTemplate.newOrderForShop(responseDto.getOrderId()));
+            emailKafkaProducer.sendEmailSyncMessage(EmailMessageDto.buildForNewOrder(responseDto.getOrderId()));
         }
         return responseDto;
     }
