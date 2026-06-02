@@ -5,7 +5,7 @@ import com.haiemdavang.AnrealShop.dto.checkout.CheckoutInfoDto;
 import com.haiemdavang.AnrealShop.dto.checkout.CheckoutRequestDto;
 import com.haiemdavang.AnrealShop.dto.checkout.CheckoutResponseDto;
 import com.haiemdavang.AnrealShop.dto.checkout.ItemProductCheckoutDto;
-import com.haiemdavang.AnrealShop.dto.notice.NoticeTemplate;
+import com.haiemdavang.AnrealShop.tech.kafka.dto.notice.NoticeTemplate;
 import com.haiemdavang.AnrealShop.dto.shipping.InfoShipment;
 import com.haiemdavang.AnrealShop.dto.shipping.InfoShippingOrder;
 import com.haiemdavang.AnrealShop.exception.BadRequestException;

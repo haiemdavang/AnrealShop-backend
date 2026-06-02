@@ -48,4 +48,26 @@ public class UserNotification {
     @UpdateTimestamp
     @Column(name = "ngay_cap_nhat")
     private LocalDateTime updatedAt;
+
+    public static UserNotification buildPickupOrder(User user, String orderId) {
+        String content = "Đơn hàng của bạn đã được giao cho đơn vị vận chuyển!" ;
+        String redirectUrl = "/myshop/orders";
+        return UserNotification.builder()
+                .content(content)
+                .redirectUrl(redirectUrl)
+                .user(user)
+                .isRead(false)
+                .build();
+    }
+
+    public static UserNotification buildOrderDelivering(User user, String orderId) {
+        String content = "Đơn hàng của bạn đang được vận chuyển!" ;
+        String redirectUrl = "/myshop/orders";
+        return UserNotification.builder()
+                .content(content)
+                .redirectUrl(redirectUrl)
+                .user(user)
+                .isRead(false)
+                .build();
+    }
 }

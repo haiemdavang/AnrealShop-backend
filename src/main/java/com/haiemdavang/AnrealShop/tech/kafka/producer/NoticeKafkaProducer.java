@@ -1,7 +1,7 @@
 package com.haiemdavang.AnrealShop.tech.kafka.producer;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
-import com.haiemdavang.AnrealShop.dto.notice.SimpleNoticeMessage;
+import com.haiemdavang.AnrealShop.tech.kafka.dto.notice.SimpleNoticeMessage;
 import com.haiemdavang.AnrealShop.exception.AnrealShopException;
 import com.haiemdavang.AnrealShop.tech.kafka.config.KafkaTopicConfig;
 import lombok.RequiredArgsConstructor;

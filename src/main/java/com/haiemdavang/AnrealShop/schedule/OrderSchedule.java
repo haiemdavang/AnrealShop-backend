@@ -1,18 +1,23 @@
 package com.haiemdavang.AnrealShop.schedule;
 
+import com.haiemdavang.AnrealShop.tech.kafka.dto.notice.NoticeMessage;
 import com.haiemdavang.AnrealShop.modal.entity.shipping.Shipping;
 import com.haiemdavang.AnrealShop.modal.enums.ShippingStatus;
 import com.haiemdavang.AnrealShop.modal.enums.ShopOrderStatus;
-import com.haiemdavang.AnrealShop.service.serviceInter.IShipmentService;
 import com.haiemdavang.AnrealShop.service.order.IShopOrderService;
-//import com.haiemdavang.AnrealShop.tech.kafka.dto.ShippingSyncMessage;
-//import com.haiemdavang.AnrealShop.tech.kafka.producer.ShippingStatusKafkaProducer;
+import com.haiemdavang.AnrealShop.service.serviceInter.IShipmentService;
+import com.haiemdavang.AnrealShop.tech.kafka.dto.EmailMessageDto;
+import com.haiemdavang.AnrealShop.tech.kafka.dto.notice.NoticeTemplate;
+import com.haiemdavang.AnrealShop.tech.kafka.producer.EmailKafkaProducer;
+import com.haiemdavang.AnrealShop.tech.kafka.producer.NoticeKafkaProducer;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.scheduling.annotation.Scheduled;
 import org.springframework.stereotype.Component;
 
+import java.util.HashSet;
 import java.util.List;
+
 
 @Slf4j
 @Component
@@ -20,15 +25,20 @@ import java.util.List;
 public class OrderSchedule {
     private final IShopOrderService orderService;
     private final IShipmentService shipmentService;
-//    private final ShippingStatusKafkaProducer shippingStatusKafkaProducer;
+    private final EmailKafkaProducer emailKafkaProducer;
+    private final NoticeKafkaProducer noticeKafkaProducer;
 
 
-    @Scheduled(cron = "0/30 * * * * ?")
+    @Scheduled(cron = "0 0/1 * * * ?")
     public void shipperGiveOrder() {
         log.info("Running shipperGiveOrder schedule task");
         List<String> shopOrderIds = orderService.confirmOrders(ShopOrderStatus.PREPARING, ShopOrderStatus.SHIPPING);
-        if (shopOrderIds != null && !shopOrderIds.isEmpty())
+        if (shopOrderIds != null && !shopOrderIds.isEmpty()) {
             shipmentService.updateShipmentStatus(shopOrderIds, ShippingStatus.PICKED_UP, ShippingTemplateStringNote.PICKED_UP_NOTES);
+            emailKafkaProducer.sendEmailSyncMessage(EmailMessageDto.buildMailOrderPickedUp(new HashSet<>(shopOrderIds)));
+            shopOrderIds.stream().map(NoticeTemplate::buildNoticeShopOrderPickedUp).forEach(noticeKafkaProducer::sendNoticeSyncMessage);
+        }
+
     }
 
     @Scheduled(cron = "0 0/1 * * * ?")
@@ -55,6 +65,9 @@ public class OrderSchedule {
                             String outForDeliveryNote = ShippingTemplateStringNote.OUT_FOR_DELIVERY_NOTES.get(0);
 //                            shippingStatusKafkaProducer.sendSyncMessage(ShippingSyncMessage.from(id, ShippingStatus.OUT_FOR_DELIVERY, outForDeliveryNote));
                             shipmentService.processShippingStatusSync(id, ShippingStatus.OUT_FOR_DELIVERY, outForDeliveryNote);
+                            String shopOrderId = shipping.getShopOrder().getId();
+                            emailKafkaProducer.sendEmailSyncMessage(EmailMessageDto.buildMailOrderOutForDelivery(shopOrderId));
+                            noticeKafkaProducer.sendNoticeSyncMessage(NoticeTemplate.buildNoticeShopOrderOutForDelivery(shopOrderId));
                         }
                     }
                     break;
@@ -73,6 +86,4 @@ public class OrderSchedule {
             }
         }
     }
-
-
 }

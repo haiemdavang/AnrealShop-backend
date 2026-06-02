@@ -1,4 +1,4 @@
-package com.haiemdavang.AnrealShop.dto.notice;
+package com.haiemdavang.AnrealShop.tech.kafka.dto.notice;
 
 import lombok.Getter;
 
@@ -21,7 +21,7 @@ public enum NoticeTemplateType {
     // Thông báo cho User (Khách hàng)
     ORDER_CONFIRMED_BY_SHOP,
     ORDER_SHIPPED,
-    ORDER_DELIVERED,
+    ORDER_DELIVERING,
     ORDER_CANCELLED_BY_SHOP,
     NEW_CHAT_MESSAGE_FROM_SHOP,
     PROMOTION_FOR_USER

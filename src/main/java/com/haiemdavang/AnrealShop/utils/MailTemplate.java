@@ -382,9 +382,12 @@ public class MailTemplate {
                 + "        .greeting { font-size: 16px; color: #1e293b; margin-bottom: 16px; }\r\n"
                 + "        .username { font-weight: 600; color: #0ea5e9; }\r\n"
                 + "        .message { font-size: 14px; color: #475569; margin-bottom: 24px; }\r\n"
-                + "        .order-container { background: linear-gradient(135deg, #eff6ff, #dbeafe); border: 2px solid #0ea5e9; border-radius: 8px; padding: 24px; text-align: center; margin: 24px 0; }\r\n"
-                + "        .order-label { font-size: 12px; color: #64748b; text-transform: uppercase; letter-spacing: 0.5px; margin-bottom: 8px; }\r\n"
-                + "        .order-id { font-size: 24px; font-weight: 700; color: #0ea5e9; font-family: 'Courier New', monospace; }\r\n"
+                + "        /* Phần mã đơn hàng tối giản trên một hàng */\r\n"
+                + "        .order-box { font-size: 15px; color: #334155; margin: 24px 0; padding: 12px 16px; background: #f8fafc; border-radius: 6px; border: 1px dashed #e2e8f0; display: inline-flex; align-items: center; white-space: nowrap; }\r\n"
+                + "        .order-title { flex-shrink: 0; }\r\n"
+                + "        .order-id { font-family: 'Courier New', monospace; font-weight: 700; color: #0f172a; background: #e2e8f0; padding: 4px 8px; border-radius: 4px; margin: 0 8px; max-width: 150px; overflow: hidden; text-overflow: ellipsis; display: inline-block; vertical-align: middle; }\r\n"
+                + "        .btn-copy { background: #0ea5e9; color: #ffffff; border: none; width: 28px; height: 28px; border-radius: 6px; font-size: 14px; cursor: pointer; display: inline-flex; align-items: center; justify-content: center; flex-shrink: 0; transition: background 0.2s; }\r\n"
+                + "        .btn-copy:hover { background: #0284c7; }\r\n"
                 + "        .note-box { background: " + noteColor + "; border-left: 4px solid rgba(0,0,0,0.1); border-radius: 4px; padding: 12px 16px; margin: 24px 0; }\r\n"
                 + "        .note-text { font-size: 13px; color: #1e293b; }\r\n"
                 + "        .footer { background: #f8fafc; padding: 24px; text-align: center; border-top: 1px solid #e2e8f0; }\r\n"
@@ -403,9 +406,10 @@ public class MailTemplate {
                 + "            <p class=\"greeting\">" + (isForShop ? "Kính gửi chủ shop " : "Xin chào ") + "<span class=\"username\">" + userName + "</span>!</p>\r\n"
                 + "            <p class=\"message\">" + mainMessage + "</p>\r\n"
                 + "            \r\n"
-                + "            <div class=\"order-container\">\r\n"
-                + "                <div class=\"order-label\">Mã Đơn Hàng</div>\r\n"
-                + "                <div class=\"order-id\">#" + orderId + "</div>\r\n"
+                + "            <div class=\"order-box\">\r\n"
+                + "                <span class=\"order-title\">Mã đơn hàng:</span>\r\n"
+                + "                <span class=\"order-id\" title=\"" + orderId + "\">" + orderId + "</span>\r\n"
+                + "                <button class=\"btn-copy\" title=\"Sao chép mã\" onclick=\"navigator.clipboard.writeText('" + orderId + "'); alert('Đã sao chép mã đơn hàng!');\">📋</button>\r\n"
                 + "            </div>\r\n"
                 + "            \r\n"
                 + actionLinkHtml
@@ -423,7 +427,7 @@ public class MailTemplate {
                 + "                Vui lòng không trả lời email này.\r\n"
                 + "            </p>\r\n"
                 + "            <p class=\"footer-text\" style=\"margin-top: 8px;\">\r\n"
-                + "                © 2025 AnrealShop. All rights reserved.\r\n"
+                + "                © 2026 AnrealShop. All rights reserved.\r\n"
                 + "            </p>\r\n"
                 + "        </div>\r\n"
                 + "    </div>\r\n"
@@ -448,16 +452,18 @@ public class MailTemplate {
         return generateOrderEmailHTML("Xác Nhận Đơn Hàng", "✅", userName, mainMessage, orderId, buildOrderItemsTableHtml(items), noteMessage, "#f0fdf4", isForShop, null, null);
     }
 
-    public static String getOrderShippingHTMLVietnamese(String orderId, String userName, Set<ProductOrderItemDto> items, boolean isForShop) {
+    public static String getOrderShippingHTMLVietnamese(String orderId, String userName, Set<ProductOrderItemDto> items, boolean isForShop, String feBaseUrl) {
         String mainMessage = isForShop ? "Đơn hàng đã được lấy và đang trong quá trình vận chuyển đến người mua." : "Đơn hàng của bạn đã được giao cho đơn vị vận chuyển.";
-        String noteMessage = isForShop ? "Hãy theo dõi hành trình đơn hàng nếu cần." : "Vui lòng giữ điện thoại để shipper có thể liên lạc với bạn.";
-        return generateOrderEmailHTML("Đang Vận Chuyển", "📦", userName, mainMessage, orderId, buildOrderItemsTableHtml(items), noteMessage, "#f0f9ff", isForShop, null, null);
+        String noteMessage =  "Hãy theo dõi hành trình đơn hàng nếu cần.";
+        String orderLink = isForShop && feBaseUrl != null ? feBaseUrl + "/settings/orders/" + orderId : null;
+        return generateOrderEmailHTML("Đang Vận Chuyển", "📦", userName, mainMessage, orderId, buildOrderItemsTableHtml(items), noteMessage, "#f0f9ff", isForShop, orderLink, "Xem chi tiết đơn hàng");
     }
 
-    public static String getOrderDeliveringHTMLVietnamese(String orderId, String userName, Set<ProductOrderItemDto> items, boolean isForShop) {
-        String mainMessage = isForShop ? "Đơn hàng đang trên đường giao đến khách hàng." : "Đơn hàng của bạn đang trên đường giao đến bạn.";
+    public static String getOrderDeliveringHTMLVietnamese(String orderId, String userName, Set<ProductOrderItemDto> items, boolean isForShop, String feBaseUrl) {
+        String mainMessage = isForShop ? "Đơn hàng đang trên đường giao đến khách hàng." : "Đơn hàng của bạn đang trên đường giao đến bạn. vui lòng chú ý điện thoại của bạn khi nhân viên giao hàng liên hệ.";
         String noteMessage = isForShop ? "Tiến độ sẽ được cập nhật liên tục." : "Shipper sẽ liên hệ với bạn trong thời gian sớm nhất.";
-        return generateOrderEmailHTML("Đang Giao Hàng", "🚚", userName, mainMessage, orderId, buildOrderItemsTableHtml(items), noteMessage, "#f0f9ff", isForShop, null, null);
+        String orderLink = isForShop && feBaseUrl != null ? feBaseUrl + "/settings/orders/" + orderId : null;
+        return generateOrderEmailHTML("Đang Giao Hàng", "🚚", userName, mainMessage, orderId, buildOrderItemsTableHtml(items), noteMessage, "#f0f9ff", isForShop, orderLink, "Xem chi tiết đơn hàng");
     }
 
     public static String getOrderSuccessHTMLVietnamese(String orderId, String userName, Set<ProductOrderItemDto> items, boolean isForShop) {
@@ -486,8 +492,8 @@ public class MailTemplate {
             }
             case NEW_ORDER -> { return getNewOrderHTMLVietnamese(code, email, java.util.Collections.emptySet(), false, feBaseUrl); }
             case ORDER_CONFIRM -> { return getOrderConfirmHTMLVietnamese(code, email, java.util.Collections.emptySet(), false); }
-            case ORDER_SHIPPING -> { return getOrderShippingHTMLVietnamese(code, email, java.util.Collections.emptySet(), false); }
-            case ORDER_DELIVERING -> { return getOrderDeliveringHTMLVietnamese(code, email, java.util.Collections.emptySet(), false); }
+            case ORDER_SHIPPING -> { return getOrderShippingHTMLVietnamese(code, email, java.util.Collections.emptySet(), false, feBaseUrl); }
+            case ORDER_DELIVERING -> { return getOrderDeliveringHTMLVietnamese(code, email, java.util.Collections.emptySet(), false, feBaseUrl); }
             case ORDER_SUCCESS -> { return getOrderSuccessHTMLVietnamese(code, email, java.util.Collections.emptySet(), false); }
             case ORDER_CANCEL -> { return getOrderCancelHTMLVietnamese(code, email, java.util.Collections.emptySet(), false); }
             default -> throw new AnrealShopException("Unsupported mail type: " + mailType);

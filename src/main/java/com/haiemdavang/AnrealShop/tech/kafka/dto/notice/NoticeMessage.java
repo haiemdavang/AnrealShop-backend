@@ -1,4 +1,4 @@
-package com.haiemdavang.AnrealShop.dto.notice;
+package com.haiemdavang.AnrealShop.tech.kafka.dto.notice;
 
 import com.haiemdavang.AnrealShop.dto.NoticeScope;
 import lombok.AllArgsConstructor;

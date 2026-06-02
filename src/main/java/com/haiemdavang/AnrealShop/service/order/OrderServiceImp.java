@@ -21,10 +21,14 @@ public class OrderServiceImp {
     public List<ShopOrder> getShopOrderByOrderId(String orderId) {
         return shopOrderServiceImp.getShopOrdersByOrderId(orderId);
     }
-
+    public ShopOrder getShopOrderById(String shopOrderId) {
+        return shopOrderServiceImp.getShopOrderById(shopOrderId);
+    }
+    public List<ShopOrder> getShopOrderByShopOrderIds(Set<String> shopOrderIds) {
+        return shopOrderServiceImp.getShopOrdersByOrderIds(shopOrderIds);
+    }
     public Set<ProductOrderItemDto> getProductOrderItemByShopOrder(String id) {
         List<OrderItem> orderItems = orderItemService.getByShopOrderIdIn(List.of(id));
         return orderItems.stream().map(orderMapper::toOrderItemDto).collect(java.util.stream.Collectors.toSet());
     }
-
 }

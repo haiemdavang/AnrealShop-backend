@@ -48,4 +48,26 @@ public class ShopNotification {
     @UpdateTimestamp
     @Column(name = "ngay_cap_nhat")
     private LocalDateTime updatedAt;
+
+    public static ShopNotification newOrderForShop(Shop shop, String orderId) {
+        String content = "Bạn có đơn hàng mới!" ;
+        String redirectUrl = "/myshop/orders";
+        return ShopNotification.builder()
+                .content(content)
+                .redirectUrl(redirectUrl)
+                .shop(shop)
+                .isRead(false)
+                .build();
+    }
+
+    public static ShopNotification buildPickupOrder(Shop shop, String shopOrderId) {
+        String content = "Trạng thái đơn hàng đã thay đổi" ;
+        String redirectUrl = "/myshop/orders";
+        return ShopNotification.builder()
+                .content(content)
+                .redirectUrl(redirectUrl)
+                .shop(shop)
+                .isRead(false)
+                .build();
+    }
 }

@@ -1,8 +1,6 @@
 package com.haiemdavang.AnrealShop.tech.kafka.consumer;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
-import com.haiemdavang.AnrealShop.dto.notice.SimpleNoticeMessage;
-import com.haiemdavang.AnrealShop.service.notice.NotificationService;
 import com.haiemdavang.AnrealShop.tech.kafka.config.KafkaTopicConfig;
 import com.haiemdavang.AnrealShop.tech.kafka.dto.EmailMessageDto;
 import com.haiemdavang.AnrealShop.tech.mail.service.MailServiceImp;
@@ -23,7 +21,19 @@ public class EmailKafkaConsumer {
     public void consumeOrderEvent(String message) {
         try {
             EmailMessageDto emailMessageDto = objectMapper.readValue(message, EmailMessageDto.class);
-            mailServiceImp.sendMailOrder(emailMessageDto.getCode(), emailMessageDto.getMailType());
+            switch (emailMessageDto.getMailType()) {
+                case NEW_ORDER:
+                    mailServiceImp.sendMailNewOrder(emailMessageDto.getCode());
+                    break;
+                case ORDER_SHIPPING:
+                    mailServiceImp.sendMailShipperPickup(emailMessageDto.getShopOrderIds());
+                    break;
+                case ORDER_DELIVERING:
+                    mailServiceImp.sendMailOrderDelivering(emailMessageDto.getCode());
+                    break;
+                default:
+                    log.warn("Received email message with unknown mail type: {}", emailMessageDto.getMailType());
+            }
         } catch (Exception e) {
             log.error("Error parsing notification: {}", message, e);
         }

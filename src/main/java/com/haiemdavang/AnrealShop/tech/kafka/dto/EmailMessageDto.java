@@ -7,6 +7,7 @@ import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
+import java.util.List;
 import java.util.Set;
 
 @Data
@@ -19,6 +20,7 @@ public class EmailMessageDto {
     private MailType mailType;
     private String subject;
     private String code;
+    private Set<String> shopOrderIds;
     private Set<ProductOrderItemDto> items;
     private boolean isForShop;
 
@@ -26,6 +28,20 @@ public class EmailMessageDto {
         return EmailMessageDto.builder()
                 .code(orderId)
                 .mailType(MailType.NEW_ORDER)
+                .build();
+    }
+
+    public static EmailMessageDto buildMailOrderPickedUp(Set<String> shopOrderIds) {
+        return EmailMessageDto.builder()
+                .shopOrderIds(shopOrderIds)
+                .mailType(MailType.ORDER_SHIPPING)
+                .build();
+    }
+
+    public static EmailMessageDto buildMailOrderOutForDelivery(String shopOrderId) {
+        return EmailMessageDto.builder()
+                .code(shopOrderId)
+                .mailType(MailType.ORDER_DELIVERING)
                 .build();
     }
 }

@@ -240,7 +240,7 @@ public class UserOrderServiceImp implements IUserOrderService {
         Order newOrder = orderRepository.save(order);
         shopOrderService.insertShopOrderTrack(newOrder.getShopOrders(), newOrder);
         orderItemService.insertOrderItemTrack(newOrder.getOrderItems(), newOrder);
-//        productService.decreaseProductSkuQuantity(orderItems);
+        // productService.decreaseProductSkuQuantity(orderItems);
         return newOrder;
     }
 }

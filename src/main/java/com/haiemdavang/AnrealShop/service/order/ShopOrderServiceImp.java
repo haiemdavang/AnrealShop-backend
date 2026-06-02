@@ -301,6 +301,16 @@ public class ShopOrderServiceImp implements IShopOrderService {
         return shopOrderRepository.findByOrderId(content);
     }
 
+    @Override
+    public List<ShopOrder> getShopOrdersByOrderIds(Set<String> shopOrderIds) {
+        return shopOrderRepository.findByIdIn(shopOrderIds).stream().toList();
+    }
+
+    @Override
+    public ShopOrder getShopOrderById(String shopOrderId) {
+        return shopOrderRepository.findById(shopOrderId).orElseThrow(() -> new BadRequestException("ORDER_NOT_FOUND"));
+    }
+
 
     private  void handleMapStatus(ShopOrder shopOrder) {
         if (shopOrder.getOrderItems().stream().allMatch(ot -> ot.getStatus().equals(OrderTrackStatus.CANCELED))) {

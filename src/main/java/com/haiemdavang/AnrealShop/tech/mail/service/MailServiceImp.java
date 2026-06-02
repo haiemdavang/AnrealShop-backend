@@ -34,6 +34,7 @@ public class MailServiceImp implements IMailService{
     private final IRedisService redisService;
     private final OrderServiceImp orderServiceImp;
 
+
     @Value("${spring.mail.username}")
     private String mailFrom;
 
@@ -112,23 +113,38 @@ public class MailServiceImp implements IMailService{
 
 
     @Transactional(readOnly = true)
-    public void sendMailOrder(String orderId, MailType mailType) {
-        switch (mailType) {
-            case NEW_ORDER -> {
-                List<ShopOrder> shopAndItemForShop = orderServiceImp.getShopOrderByOrderId(orderId);
-                for (ShopOrder shopOrder: shopAndItemForShop) {
-                    String emailShop = shopOrder.getShop().getUser().getEmail();
-                    String shopName = shopOrder.getShop().getName();
-                    Set<ProductOrderItemDto> productOrderItems = orderServiceImp.getProductOrderItemByShopOrder(shopOrder.getId());
-                    String templateMail = MailTemplate.getNewOrderHTMLVietnamese(orderId, shopName, productOrderItems, true, feBaseUrl);
-                    sendHtmlEmail(emailShop, "Đơn Hàng Mới", templateMail);
-                }
-
-            }
-            default -> throw new AnrealShopException("INVALID_MAIL_TYPE");
+    public void sendMailNewOrder(String orderId) {
+        List<ShopOrder> shopAndItemForShop = orderServiceImp.getShopOrderByOrderId(orderId);
+        for (ShopOrder shopOrder: shopAndItemForShop) {
+            String emailShop = shopOrder.getShop().getUser().getEmail();
+            String shopName = shopOrder.getShop().getName();
+            Set<ProductOrderItemDto> productOrderItems = orderServiceImp.getProductOrderItemByShopOrder(shopOrder.getId());
+            String templateMail = MailTemplate.getNewOrderHTMLVietnamese(orderId, shopName, productOrderItems, true, feBaseUrl);
+            sendHtmlEmail(emailShop, "Đơn Hàng Mới", templateMail);
         }
-
-
     }
+
+    @Transactional(readOnly = true)
+    public void sendMailShipperPickup(Set<String> shopOrderIds) {
+        List<ShopOrder> shopOrders = orderServiceImp.getShopOrderByShopOrderIds(shopOrderIds);
+        for (ShopOrder shopOrder: shopOrders) {
+            String emailUser = shopOrder.getUser().getEmail();
+            String userName = shopOrder.getUser().getFullName();
+            Set<ProductOrderItemDto> productOrderItems = orderServiceImp.getProductOrderItemByShopOrder(shopOrder.getId());
+            String templateMail = MailTemplate.getOrderShippingHTMLVietnamese(shopOrder.getId(), userName, productOrderItems, false, feBaseUrl);
+            sendHtmlEmail(emailUser, "Cập nhật trạng thái đơn hàng", templateMail);
+        }
+    }
+
+    @Transactional(readOnly = true)
+    public void sendMailOrderDelivering(String shopOrderId) {
+        ShopOrder shopOrder = orderServiceImp.getShopOrderById(shopOrderId);
+        String emailUser = shopOrder.getUser().getEmail();
+        String userName = shopOrder.getUser().getFullName();
+        Set<ProductOrderItemDto> productOrderItems = orderServiceImp.getProductOrderItemByShopOrder(shopOrder.getId());
+        String templateMail = MailTemplate.getOrderDeliveringHTMLVietnamese(shopOrder.getId(), userName, productOrderItems, false, feBaseUrl);
+        sendHtmlEmail(emailUser, "Cập nhật trạng thái đơn hàng", templateMail);
+    }
+
 
 }
