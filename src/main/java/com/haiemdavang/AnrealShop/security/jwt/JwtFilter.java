@@ -38,8 +38,9 @@ public class JwtFilter extends OncePerRequestFilter {
                 var authentication = new UsernamePasswordAuthenticationToken(userDetails, null, userDetails.getGrantedAuthorities());
                 authentication.setDetails(new WebAuthenticationDetailsSource().buildDetails(request));
                 SecurityContextHolder.getContext().setAuthentication(authentication);
+            } else {
+                request.setAttribute("exceptionMessage", "INVALID_OR_EXPIRED_TOKEN");
             }
-
         }catch (UnAuthException e) {
             request.setAttribute("exceptionMessage", e.getMessage());
         }

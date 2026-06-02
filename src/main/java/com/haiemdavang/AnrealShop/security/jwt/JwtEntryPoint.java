@@ -30,7 +30,7 @@ public class JwtEntryPoint implements AuthenticationEntryPoint {
 
         String errorMessage = (String) request.getAttribute("exceptionMessage");
         if (errorMessage == null) {
-            errorMessage = authException.getMessage();
+            errorMessage = "Phiên đăng nhập hết hạn hoặc không hợp lệ. Vui lòng đăng nhập lại.";
         }else{
             errorMessage = env.getProperty(errorMessage, "Vui long dang nhap lai");
         }
