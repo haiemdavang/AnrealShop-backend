@@ -19,7 +19,7 @@ public class PublicProductController {
     @GetMapping()
     public ResponseEntity<List<UserProductDto>> getProducts(
             @RequestParam(required = false, defaultValue = "0") int page,
-            @RequestParam(required = false, defaultValue = "10") int limit,
+            @RequestParam(required = false, defaultValue = "12") int limit,
             @RequestParam(required = false) String search,
             @RequestParam(required = false) String categoryId,
             @RequestParam(required = false, defaultValue = "newest") String sortBy,
