@@ -31,17 +31,21 @@ public class TryOnService {
 
     private final ObjectMapper objectMapper;
     private final CredentialsProvider credentialsProvider;
+    private final ImageValidationService imageValidationService;
 
     @org.springframework.beans.factory.annotation.Value("${spring.cloud.gcp.project-id}")
     private String projectId;
 
-    @org.springframework.beans.factory.annotation.Value("${spring.cloud.gcp.credentials.location:us-central1}")
+    @org.springframework.beans.factory.annotation.Value("${spring.cloud.gcp.location:us-central1}")
     private String location;
 
     private static final String MODEL_NAME = "virtual-try-on-001";
 
     public TryOnResponse tryOn(TryOnRequest request) {
         validateRequest(request);
+
+        imageValidationService.validateImage(request.getPersonImageBase64(), "personImage");
+        imageValidationService.validateImage(request.getProductImageBase64(), "productImage");
 
         String endpoint = String.format("%s-aiplatform.googleapis.com:443", location);
 

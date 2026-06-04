@@ -2,6 +2,7 @@ package com.haiemdavang.AnrealShop.controller.user;
 
 import com.haiemdavang.AnrealShop.dto.tryon.TryOnRequest;
 import com.haiemdavang.AnrealShop.dto.tryon.TryOnResponse;
+import com.haiemdavang.AnrealShop.tech.tryon.TryOnHDService;
 import com.haiemdavang.AnrealShop.tech.tryon.TryOnService;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.tags.Tag;
@@ -19,11 +20,19 @@ import org.springframework.web.bind.annotation.*;
 public class TryOnController {
 
     private final TryOnService tryOnService;
+    private final TryOnHDService tryOnHDService;
 
     @PostMapping("/detect")
     @Operation(summary = "Virtual Try-On", description = "Try on a product image on a person image using AI")
     public ResponseEntity<TryOnResponse> tryOnDetect(@Valid @RequestBody TryOnRequest request) {
         TryOnResponse response = tryOnService.tryOn(request);
+        return ResponseEntity.ok(response);
+    }
+
+    @PostMapping("/detect-v2")
+    @Operation(summary = "Virtual Try-On Model tự xây dưng", description = "Try on a product image on a person image using AI")
+    public ResponseEntity<TryOnResponse> tryOnDetectByTrOnHD(@Valid @RequestBody TryOnRequest request) {
+        TryOnResponse response = tryOnHDService.tryOn(request);
         return ResponseEntity.ok(response);
     }
 }
