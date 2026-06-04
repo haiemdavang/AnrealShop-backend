@@ -78,8 +78,4 @@ public class AuthServiceImp implements IAuthService {
 
         return new LoginResponse(newToken.getValue(), null);
     }
-
-
-
-
 }

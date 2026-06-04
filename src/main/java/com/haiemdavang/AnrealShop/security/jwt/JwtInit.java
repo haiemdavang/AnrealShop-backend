@@ -168,10 +168,21 @@ public class JwtInit {
         return getCookieValueByName(request, token_refresh_cookie_name);
     }
 
-    public ResponseCookie getCleanJwtCookie() {
-        return ResponseCookie.from(token_cookie_name, "").path(PATH_COOKIE).build();
+    private ResponseCookie cleanCookie(String name, String path) {
+        return ResponseCookie.from(name, "")
+                .path(path)
+                .maxAge(0)
+                .httpOnly(true)
+                .sameSite("none")
+                .secure(true)
+                .build();
     }
+
+    public ResponseCookie getCleanJwtCookie() {
+        return cleanCookie(token_cookie_name, PATH_COOKIE);
+    }
+
     public ResponseCookie getCleanJwtRefreshCookie() {
-        return ResponseCookie.from(token_refresh_cookie_name, "").path(PATH_COOKIE_REFRESH).build();
+        return cleanCookie(token_refresh_cookie_name, PATH_COOKIE_REFRESH);
     }
 }
