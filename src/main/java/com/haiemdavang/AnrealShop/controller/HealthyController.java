@@ -20,4 +20,9 @@ public class HealthyController {
         ));
     }
 
+    @GetMapping("/sentry-test")
+    public String test() {
+        throw new RuntimeException("This error test");
+    }
+
 }
