@@ -26,13 +26,15 @@ public class ImageValidationService {
     private static final Set<String> ALLOWED_MIME_TYPES = Set.of(
             "image/jpeg",
             "image/png",
-            "image/webp"
+            "image/webp",
+            "image/avif"
     );
 
     private static final Map<String, byte[]> MAGIC_NUMBERS = Map.of(
             "image/jpeg", new byte[]{(byte) 0xFF, (byte) 0xD8, (byte) 0xFF},
             "image/png",  new byte[]{(byte) 0x89, 0x50, 0x4E, 0x47},
-            "image/webp", new byte[]{0x52, 0x49, 0x46, 0x46}
+            "image/webp", new byte[]{0x52, 0x49, 0x46, 0x46},
+            "image/avif", new byte[]{0x66, 0x74, 0x79, 0x70}
     );
 
 
@@ -106,6 +108,13 @@ public class ImageValidationService {
             // Bytes 8–11 must be "WEBP"
             String subtype = new String(bytes, 8, 4);
             if ("WEBP".equals(subtype)) return "image/webp";
+        }
+
+        if (bytes[4] == 0x66 && bytes[5] == 0x74 && bytes[6] == 0x79 && bytes[7] == 0x70) {
+            // Kiểm tra tiếp xem có phải là 'avif' không (tại offset 8)
+            if (bytes[8] == 0x61 && bytes[9] == 0x76 && bytes[10] == 0x69 && bytes[11] == 0x66) {
+                return "image/avif";
+            }
         }
 
         return null;
