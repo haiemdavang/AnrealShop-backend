@@ -79,6 +79,9 @@ public class EsProduct {
     @Field(name = "category_id", type = FieldType.Keyword)
     private String categoryId;
 
+    @Field(name = "category_path", type = FieldType.Keyword)
+    private String categoryPath;
+
     @Field(type = FieldType.Nested)
     private List<EsAttribute> attributes;
 }

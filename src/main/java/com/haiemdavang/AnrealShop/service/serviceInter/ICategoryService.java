@@ -12,7 +12,7 @@ import java.util.Set;
 public interface ICategoryService {
     Category findByIdAndThrow(String categoryId);
 
-    Category findByIdOrUrlSlug(String categoryId);
+    Category findByIdOrUrlPath(String categoryId);
 
     Category findById(String categoryId);
 
@@ -25,6 +25,8 @@ public interface ICategoryService {
     Category getReferenceById(String categoryId);
 
     Set<BaseCategoryDto> getCategorySuggestByProductName(String keyword);
+
+    List<String> getCategoryAndChildrenIdsByCategoryIdOrPath(String categoryId);
 
     List<CategoryModalSelectedDto> getCategoryMyShop();
 

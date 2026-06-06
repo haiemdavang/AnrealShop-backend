@@ -27,6 +27,7 @@ public class DisplayCategoryMapper {
                 .mediaType(displayCategory.getMediaType())
                 .parentId(displayCategory.getCategory().getParent() != null ? displayCategory.getCategory().getParent().getId() : null)
                 .slug(displayCategory.getCategory().getUrlSlug())
+                .path(displayCategory.getCategory().getUrlPath())
                 .level(displayCategory.getCategory().getLevel())
                 .build();
     }

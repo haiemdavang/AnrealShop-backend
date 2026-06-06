@@ -90,6 +90,9 @@
       "category_id": {
         "type": "keyword"
       },
+      "category_path": {
+        "type": "keyword"
+      },
       "attributes": {
         "type": "nested",
         "properties": {

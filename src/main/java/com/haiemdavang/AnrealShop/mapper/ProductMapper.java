@@ -225,6 +225,7 @@ public class ProductMapper {
                 .visible(esProductDto.isVisible())
                 .shop(shopMapper.toEsShop(esProductDto.getShop()))
                 .categoryId(esProductDto.getCategory() != null ? esProductDto.getCategory().getId() : null)
+                .categoryPath(esProductDto.getCategory() != null ? esProductDto.getCategory().getUrlPath() : null)
                 .attributes(attributeMapper.toEsAttributes(esProductDto.getAttributes()))
                 .build();
     }

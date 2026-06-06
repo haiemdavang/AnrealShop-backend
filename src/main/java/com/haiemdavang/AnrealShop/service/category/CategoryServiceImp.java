@@ -35,8 +35,8 @@ public class CategoryServiceImp implements ICategoryService {
     }
 
     @Override
-    public Category findByIdOrUrlSlug(String categoryId) {
-        return categoryRepository.findByIdOrUrlSlug(categoryId, categoryId)
+    public Category findByIdOrUrlPath(String categoryId) {
+        return categoryRepository.findByIdOrUrlPath(categoryId, categoryId)
                 .orElseThrow(() -> new BadRequestException("CATEGORY_NOT_FOUND"));
     }
 
@@ -63,6 +63,14 @@ public class CategoryServiceImp implements ICategoryService {
         Set<EsCategory> categories = esCategoryIndexerService.getCategoriesByProductName(keyword, null);
         return categories.stream().map(categoryMapper::toBaseCategoryDto)
                 .collect(Collectors.toSet());
+    }
+
+    @Override
+    public List<String> getCategoryAndChildrenIdsByCategoryIdOrPath(String categoryId) {
+        if (categoryId == null || categoryId.isBlank()) {
+            return List.of();
+        }
+        return categoryRepository.findCategoryAndDescendantIds(categoryId);
     }
 
     @Override
@@ -191,6 +199,8 @@ public class CategoryServiceImp implements ICategoryService {
             }
         }
     }
+
+
     private void collectChildrenForSoftDelete(
             String parentId,
             List<Category> toUpdate,

@@ -20,6 +20,7 @@ public class CategoryDisplayDto {
     private CategoryDisplayPosition position;
     private int order;
     private String slug;
+    private String path;
     private String parentId;
     private int level;
     private String thumbnailUrl;

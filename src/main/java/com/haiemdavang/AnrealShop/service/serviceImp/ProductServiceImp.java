@@ -394,7 +394,7 @@ public class ProductServiceImp implements IProductService {
         Shop currentUserShop = securityUtils.getCurrentUserShop();
         Category category = null;
         if(categoryId != null && !categoryId.isEmpty()) {
-            category = categoryService.findByIdOrUrlSlug(categoryId);
+            category = categoryService.findByIdOrUrlPath(categoryId);
         }
         RestrictStatus restrictStatus = null;
         if (status != null && !status.isEmpty()) {
@@ -427,7 +427,8 @@ public class ProductServiceImp implements IProductService {
     @Override
     public List<UserProductDto> getProducts(int page, int limit, String search, String categoryId, String sortBy,
                                             Double minPrice, Double maxPrice, int rating, List<String> brands, List<String> colors, List<String> sizes, List<String> origins, List<String> genders) {
-        List<EsProductDto> esProducts = productIndexerService.searchProducts(page, limit, search, categoryId, sortBy, minPrice, maxPrice, rating, brands, colors, sizes, origins, genders);
+        List<String> categoryIds = categoryService.getCategoryAndChildrenIdsByCategoryIdOrPath(categoryId);
+        List<EsProductDto> esProducts = productIndexerService.searchProducts(page, limit, search, categoryIds, sortBy, minPrice, maxPrice, rating, brands, colors, sizes, origins, genders);
         return productMapper.toUserProductDtos(esProducts);
     }
 
