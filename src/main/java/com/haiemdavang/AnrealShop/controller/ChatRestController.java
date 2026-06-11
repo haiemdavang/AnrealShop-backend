@@ -4,7 +4,6 @@ import com.haiemdavang.AnrealShop.dto.chat.*;
 import com.haiemdavang.AnrealShop.service.chat.ChatService;
 import com.haiemdavang.AnrealShop.service.chat.ChatbotService;
 import com.haiemdavang.AnrealShop.tech.gemini.AIGenerateService;
-import com.haiemdavang.AnrealShop.tech.gemini.GeminiClient;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -57,7 +56,13 @@ public class ChatRestController {
 
     @PostMapping("/bot")
     public ResponseEntity<ChatbotResponse> askChatbot(@Valid @RequestBody ChatbotRequest request) {
-        ChatbotResponse response = chatbotService.askChatbot(request);
+        ChatbotResponse response = chatbotService.askChatbotN8N(request);
+        return ResponseEntity.ok(response);
+    }
+
+    @PostMapping("/bot-v2")
+    public ResponseEntity<ChatbotResponse> askChatbotV2(@Valid @RequestBody ChatbotRequest request) {
+        ChatbotResponse response = chatbotService.askChatbotEmbed(request);
         return ResponseEntity.ok(response);
     }
 

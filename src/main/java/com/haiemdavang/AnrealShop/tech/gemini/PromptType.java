@@ -1,8 +1,12 @@
 package com.haiemdavang.AnrealShop.tech.gemini;
 
+import lombok.Getter;
+
 import java.util.Arrays;
 
+@Getter
 public enum PromptType {
+    SUGGEST_TEXT("suggest", "text"),
     PRODUCT_DESCRIPTION("product", "description"),
     PRODUCT_SHORT_DESCRIPTION("product", "shortDescription"),
     SHOP_NAME("shop", "name"),

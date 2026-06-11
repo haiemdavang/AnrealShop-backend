@@ -117,11 +117,11 @@ public class GlobalExceptionHandler {
                 .body(buildErrorResponse(HttpStatus.CONFLICT, errorMessage, null));
     }
 
-//    @ExceptionHandler(Exception.class)
-//    public ResponseEntity<ErrorResponseDto> handleGeneralException(Exception ex) {
-//        log.error("Đã xảy ra lỗi không mong muốn: {}", ex.getMessage(), ex);
-//        return ResponseEntity
-//                .status(HttpStatus.INTERNAL_SERVER_ERROR)
-//                .body(buildErrorResponse(HttpStatus.INTERNAL_SERVER_ERROR, "Đã xảy ra lỗi không mong muốn. Vui lòng thử lại sau.", null));
-//    }
+    @ExceptionHandler(Exception.class)
+    public ResponseEntity<ErrorResponseDto> handleGeneralException(Exception ex) {
+        log.error("Đã xảy ra lỗi không mong muốn: {}", ex.getMessage(), ex);
+        return ResponseEntity
+                .status(HttpStatus.INTERNAL_SERVER_ERROR)
+                .body(buildErrorResponse(HttpStatus.INTERNAL_SERVER_ERROR, "Đã xảy ra lỗi không mong muốn. Vui lòng thử lại sau.", null));
+    }
 }

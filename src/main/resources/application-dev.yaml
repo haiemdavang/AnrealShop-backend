@@ -69,7 +69,10 @@ logging:
         messaging: debug
       elasticsearch:
         client: TRACE
-      hibernate.jdbc.BatchingBatch: TRACE
+      hibernate:
+        jdbc.BatchingBatch: TRACE
+        SQL: DEBUG
+        orm.jdbc.bind: TRACE
 
 
 server:

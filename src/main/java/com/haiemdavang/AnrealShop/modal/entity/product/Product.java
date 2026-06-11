@@ -7,8 +7,10 @@ import com.haiemdavang.AnrealShop.modal.enums.RestrictStatus;
 import jakarta.persistence.*;
 import lombok.*;
 import org.hibernate.annotations.CreationTimestamp;
+import org.hibernate.annotations.JdbcTypeCode;
 import org.hibernate.annotations.UpdateTimestamp;
 import org.hibernate.annotations.Where;
+import org.hibernate.type.SqlTypes;
 
 import java.time.LocalDateTime;
 import java.util.HashSet;
@@ -112,6 +114,10 @@ public class Product {
     @Column(name = "da_xoa", nullable = false)
     private boolean deleted = false;
 
+    @JdbcTypeCode(SqlTypes.VECTOR)
+    @Column(name = "embedding")
+    private float[] embedding;
+
     @OneToMany(mappedBy = "product", cascade = CascadeType.ALL, fetch = FetchType.LAZY, orphanRemoval = true)
     private Set<ProductMedia> mediaList;
 
@@ -140,4 +146,32 @@ public class Product {
         productMedia.setProduct(this);
     }
 
+    @Override
+    public String toString() {
+        return """
+            Sản phẩm: %s
+            Giá gốc: %s
+            Giá giảm: %s
+            Mô tả ngắn: %s
+            Mô tả: %s
+            Số lượng còn lại: %d
+            Đã bán: %d
+            Đánh giá trung bình: %.1f/5
+            Tổng đánh giá: %d
+            ảnh: %s
+            Link: %s
+            """.formatted(
+                name,
+                price != null ? price + " VND" : "Không có",
+                discountPrice != null ? discountPrice + " VND" : "Không có",
+                sortDescription != null ? sortDescription : "Không có",
+                description != null ? description : "Không có",
+                quantity,
+                sold,
+                averageRating,
+                totalReviews,
+                thumbnailUrl,
+                urlSlug != null ? urlSlug : "Không có"
+        );
+    }
 }

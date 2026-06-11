@@ -3,84 +3,68 @@ package com.haiemdavang.AnrealShop.service.chat;
 import com.haiemdavang.AnrealShop.dto.chat.ChatbotHistoryResponse;
 import com.haiemdavang.AnrealShop.dto.chat.ChatbotRequest;
 import com.haiemdavang.AnrealShop.dto.chat.ChatbotResponse;
-import com.haiemdavang.AnrealShop.exception.BadRequestException;
 import com.haiemdavang.AnrealShop.modal.entity.chat.ChatbotHistory;
+import com.haiemdavang.AnrealShop.modal.entity.product.Product;
 import com.haiemdavang.AnrealShop.modal.entity.user.User;
 import com.haiemdavang.AnrealShop.repository.chat.ChatbotHistoryRepository;
+import com.haiemdavang.AnrealShop.repository.product.ProductRepository;
 import com.haiemdavang.AnrealShop.security.SecurityUtils;
+import com.haiemdavang.AnrealShop.tech.gemini.AIGenerateService;
+import com.haiemdavang.AnrealShop.tech.gemini.PromptType;
+import com.haiemdavang.AnrealShop.tech.n8n.N8NService;
+import com.haiemdavang.AnrealShop.tech.rag.RAGService;
+import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
-import org.springframework.beans.factory.annotation.Value;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
 import org.springframework.http.*;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
-import org.springframework.web.client.RestClientException;
-import org.springframework.web.client.RestTemplate;
 
-import java.util.HashMap;
-import java.util.Map;
+import java.util.List;
+import java.util.Set;
+import java.util.stream.Collectors;
 
 @Slf4j
 @Service
 @RequiredArgsConstructor
 public class ChatbotService {
 
-    private final RestTemplate restTemplate;
     private final SecurityUtils securityUtils;
     private final ChatbotHistoryRepository chatbotHistoryRepository;
-
-    @Value("${n8n.webhook.base-url:http://localhost:5678}")
-    private String n8nBaseUrl;
-
-    @Value("${n8n.webhook.chatbot-path:/webhook/chat-box}")
-    private String chatbotPath;
+    private final ProductRepository productRepository;
+    private final N8NService n8NService;
+    private final RAGService ragService;
+    private final AIGenerateService aiGenerateService;
 
     @Transactional
-    public ChatbotResponse askChatbot(ChatbotRequest request) {
+    public ChatbotResponse askChatbotN8N(ChatbotRequest request) {
         User currentUser = securityUtils.getCurrentUser();
         String userId = currentUser.getId();
 
-        Map<String, String> payload = new HashMap<>();
-        payload.put("chatInput", request.getChatInput());
-        payload.put("userId", userId);
+        ChatbotResponse response = n8NService.callChatbotWebhook(request.getChatInput(), userId);
+        response.setType("text");
+        saveHistory(currentUser, request.getChatInput(), response, "text");
+        return response;
+    }
 
-        log.info("Calling n8n chatbot for user {} with input: {}", userId, request.getChatInput());
+    @Transactional
+    public ChatbotResponse askChatbotEmbed(@Valid ChatbotRequest request) {
+        User currentUser = securityUtils.getCurrentUser();
+        String vectorString = RAGService.toPgVector(ragService.convertToVector(request.getChatInput()));
 
-        try {
-            String url = n8nBaseUrl + chatbotPath;
+        List<String> productIds = productRepository.searchSimilarProductIds(vectorString);
+        Set<Product> products = productRepository.findByIdIn(productIds);
 
-            HttpHeaders headers = new HttpHeaders();
-            headers.setContentType(MediaType.APPLICATION_JSON);
-
-            HttpEntity<Map<String, String>> entity = new HttpEntity<>(payload, headers);
-
-            ResponseEntity<ChatbotResponse> responseEntity = restTemplate.exchange(
-                    url,
-                    HttpMethod.POST,
-                    entity,
-                    ChatbotResponse.class
-            );
-
-            ChatbotResponse response = responseEntity.getBody();
-
-            log.info("Received chatbot response: type={}, queryType={}",
-                    response != null ? response.getType() : "null",
-                    response != null ? response.getQueryType() : "null");
-
-            saveHistory(currentUser, request.getChatInput(), response);
-
-            return response;
-
-        } catch (RestClientException e) {
-            log.error("Failed to call n8n chatbot: {}", e.getMessage(), e);
-            throw new BadRequestException("CHATBOT_UNAVAILABLE");
-        } catch (Exception e) {
-            log.error("Unexpected error calling n8n chatbot: {}", e.getMessage(), e);
-            throw new BadRequestException("CHATBOT_ERROR");
-        }
+        String response = aiGenerateService.generate(PromptType.SUGGEST_TEXT.getTableName(), PromptType.SUGGEST_TEXT.getFieldName(), products.stream().map(Product::toString).collect(Collectors.joining("\n")));
+        ChatbotResponse chatbotResponse = ChatbotResponse.builder()
+                .message(response)
+                .type("html")
+                .build();
+        saveHistory(currentUser, request.getChatInput(), chatbotResponse, "html");
+        return chatbotResponse;
     }
 
     @Transactional(readOnly = true)
@@ -92,14 +76,14 @@ public class ChatbotService {
                 .map(this::toHistoryResponse);
     }
 
-    private void saveHistory(User user, String question, ChatbotResponse response) {
+    private void saveHistory(User user, String question, ChatbotResponse response, String type) {
         if (response == null) return;
 
         ChatbotHistory history = ChatbotHistory.builder()
                 .user(user)
                 .question(question)
                 .answer(response.getMessage())
-                .type(response.getType())
+                .type(type)
                 .queryType(response.getQueryType())
                 .imageUrl(response.getImageUrl())
                 .productLink(response.getProductLink())

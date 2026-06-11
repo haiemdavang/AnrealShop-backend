@@ -6,10 +6,12 @@ import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.jpa.domain.Specification;
 import org.springframework.data.jpa.repository.*;
+import org.springframework.data.repository.query.Param;
 import org.springframework.stereotype.Repository;
 
 import java.time.LocalDateTime;
 import java.util.Collection;
+import java.util.List;
 import java.util.Optional;
 import java.util.Set;
 
@@ -94,4 +96,19 @@ public interface ProductRepository extends JpaRepository<Product, String>, JpaSp
             nativeQuery = true
     )
     Set<IProductStatus> getMetaSumByStatusForAdmin(LocalDateTime startDateTime, LocalDateTime enDateTime);
+
+    @Query(value = """
+        SELECT sp.id_san_pham AS productId
+        FROM san_pham sp
+        WHERE sp.embedding IS NOT NULL
+            AND sp.da_xoa = false
+            AND (1 - (sp.embedding <=> CAST(:queryVector AS vector))) > 0.7
+        ORDER BY sp.embedding <=> CAST(:queryVector AS vector)
+    """, nativeQuery = true)
+    List<String> searchSimilarProductIds(
+            @Param("queryVector") String queryVector
+    );
+
+
+
 }
