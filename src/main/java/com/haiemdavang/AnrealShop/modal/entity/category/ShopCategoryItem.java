@@ -16,12 +16,12 @@ public class ShopCategoryItem {
 
     @MapsId("shopCategoriesId")
     @ManyToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "id_danh_muc_cua_hang", nullable = false)
+    @JoinColumn(name = "ma_danh_muc_cua_hang", nullable = false)
     private ShopCategory shopCategory;
 
     @MapsId("categoryId")
     @ManyToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "id_danh_muc", nullable = false)
+    @JoinColumn(name = "ma_danh_muc", nullable = false)
     private Category category;
 
     public ShopCategoryItem(ShopCategory shopCategory, Category category) {

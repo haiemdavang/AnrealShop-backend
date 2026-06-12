@@ -29,14 +29,14 @@ public class Product {
 
     @Id
     @GeneratedValue(strategy = GenerationType.UUID)
-    @Column(name = "id_san_pham", length = 36, updatable = false, nullable = false)
+    @Column(name = "ma_san_pham", length = 36, updatable = false, nullable = false)
     private String id;
 
     @Column(name = "ten_san_pham", nullable = false, length = 255)
     private String name;
 
     @ManyToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "id_cua_hang", nullable = false)
+    @JoinColumn(name = "ma_cua_hang", nullable = false)
     private Shop shop;
 
     @Column(name = "mo_ta_ngan", columnDefinition = "TEXT")
@@ -62,7 +62,7 @@ public class Product {
     private int quantity = 0;
 
     @ManyToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "id_danh_muc")
+    @JoinColumn(name = "ma_danh_muc")
     private Category category;
 
     @Column(name = "khoi_luong", nullable = false, columnDefinition = "DECIMAL(10,2) default 0.00")

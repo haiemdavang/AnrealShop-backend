@@ -26,16 +26,16 @@ import java.util.Set;
 public class Shipping {
 
     @Id
-    @Column(name = "id_van_chuyen", length = 36, updatable = false, nullable = false)
+    @Column(name = "ma_van_chuyen", length = 36, updatable = false, nullable = false)
     @GeneratedValue(strategy = GenerationType.UUID)
     private String id;
 
     @ManyToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "id_dia_chi_cua_hang", nullable = false)
+    @JoinColumn(name = "ma_dia_chi_cua_hang", nullable = false)
     private ShopAddress addressFrom;
 
     @ManyToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "id_dia_chi_nguoi_dung", nullable = false)
+    @JoinColumn(name = "ma_dia_chi_nguoi_dung", nullable = false)
     private UserAddress addressTo;
 
     @Builder.Default
@@ -77,7 +77,7 @@ public class Shipping {
     private ShippingStatus status;
 
     @OneToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "id_don_hang_cua_hang", referencedColumnName = "id_don_hang_cua_hang", nullable = false, unique = true)
+    @JoinColumn(name = "ma_don_hang_cua_hang", referencedColumnName = "ma_don_hang_cua_hang", nullable = false, unique = true)
     private ShopOrder shopOrder;
 
     @OneToMany(mappedBy = "shipping", cascade = CascadeType.ALL, orphanRemoval = true, fetch = FetchType.LAZY)

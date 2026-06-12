@@ -16,12 +16,12 @@ public class ShopOrderShippingFee {
 
     @Id
     @GeneratedValue(strategy = GenerationType.UUID)
-    @Column(length = 36, updatable = false, nullable = false, name = "id_don_hang_cua_hang")
+    @Column(length = 36, updatable = false, nullable = false, name = "ma_don_hang_cua_hang")
     private String id;
 
     @OneToOne
     @MapsId
-    @JoinColumn(name = "id_don_hang_cua_hang")
+    @JoinColumn(name = "ma_don_hang_cua_hang")
     private ShopOrder shopOrder;
 
     @Column(name = "so_tien")

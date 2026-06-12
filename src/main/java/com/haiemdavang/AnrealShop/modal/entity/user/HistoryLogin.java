@@ -14,18 +14,18 @@ import java.time.LocalDateTime;
 @ToString(exclude = {"user"})
 @EqualsAndHashCode(of = "id")
 @Table(name = "lich_su_dang_nhap", indexes = {
-        @Index(name = "idx_lichsudangnhap_nguoidung", columnList = "id_nguoi_dung"),
+        @Index(name = "idx_lichsudangnhap_nguoidung", columnList = "ma_nguoi_dung"),
         @Index(name = "idx_lichsudangnhap_thoigiandangnhap", columnList = "thoi_gian_dang_nhap")
 })
 public class HistoryLogin {
 
     @Id
     @GeneratedValue(strategy = GenerationType.UUID)
-    @Column(name = "id_lich_su_dang_nhap", length = 36, updatable = false, nullable = false)
+    @Column(name = "ma_lich_su_dang_nhap", length = 36, updatable = false, nullable = false)
     private String id;
 
     @ManyToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "id_nguoi_dung", nullable = false)
+    @JoinColumn(name = "ma_nguoi_dung", nullable = false)
     private User user;
 
     @CreationTimestamp

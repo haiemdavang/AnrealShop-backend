@@ -22,7 +22,7 @@ public class OrderItemTrack {
 
     @ManyToOne(fetch = FetchType.LAZY)
     @MapsId("orderItemId")
-    @JoinColumn(name = "id_item_don_hang", insertable = false, updatable = false)
+    @JoinColumn(name = "ma_item_don_hang", insertable = false, updatable = false)
     private OrderItem orderItem;
 
     @Enumerated(EnumType.STRING)

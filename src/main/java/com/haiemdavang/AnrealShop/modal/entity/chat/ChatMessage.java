@@ -22,11 +22,11 @@ public class ChatMessage {
 
     @Id
     @GeneratedValue(strategy = GenerationType.UUID)
-    @Column(name = "id_tin_nhan", length = 36, updatable = false, nullable = false)
+    @Column(name = "ma_tin_nhan", length = 36, updatable = false, nullable = false)
     private String id;
 
     @ManyToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "id_phong_chat", nullable = false)
+    @JoinColumn(name = "ma_phong_chat", nullable = false)
     private ChatRoom room;
 
     @Enumerated(EnumType.STRING)

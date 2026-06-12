@@ -15,11 +15,11 @@ import lombok.NoArgsConstructor;
 @Table(name = "media_san_pham")
 public class ProductMedia {
     @Id
-    @Column(name = "id_media_san_pham", length = 36, updatable = false, nullable = false)
+    @Column(name = "ma_media_san_pham", length = 36, updatable = false, nullable = false)
     private String id;
 
     @ManyToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "id_san_pham", nullable = false)
+    @JoinColumn(name = "ma_san_pham", nullable = false)
     private Product product;
 
     @Column(name = "duong_dan", nullable = false, length = 255)

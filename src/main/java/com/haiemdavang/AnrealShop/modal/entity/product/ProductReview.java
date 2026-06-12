@@ -20,25 +20,25 @@ import java.util.List;
 @EqualsAndHashCode(of = "id")
 @Entity
 @Table(name = "danh_gia_san_pham", indexes = {
-        @Index(name = "idx_danhgiasanpham_user_product", columnList = "id_nguoi_dung, id_san_pham")
+        @Index(name = "idx_danhgiasanpham_user_product", columnList = "ma_nguoi_dung, ma_san_pham")
 })
 public class ProductReview {
 
     @Id
     @GeneratedValue(strategy = GenerationType.UUID)
-    @Column(name = "id_danh_gia_san_pham", length = 36, updatable = false, nullable = false)
+    @Column(name = "ma_danh_gia_san_pham", length = 36, updatable = false, nullable = false)
     private String id;
 
     @ManyToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "id_nguoi_dung", nullable = false)
+    @JoinColumn(name = "ma_nguoi_dung", nullable = false)
     private User user;
 
     @ManyToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "id_san_pham", nullable = false)
+    @JoinColumn(name = "ma_san_pham", nullable = false)
     private Product product;
 
     @OneToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "id_item_don_hang", unique = true)
+    @JoinColumn(name = "ma_item_don_hang", unique = true)
     private OrderItem orderItem; // Liên kết tới mục đơn hàng (để xác minh đã mua)
 
     @Column(name = "diem_danh_gia", nullable = false) // Ví dụ: 1, 2, 3, 4, 5

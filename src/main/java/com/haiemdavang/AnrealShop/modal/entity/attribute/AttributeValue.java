@@ -19,18 +19,18 @@ import java.util.Set;
 @Entity
 @Table(name = "gia_tri_thuoc_tinh",
         uniqueConstraints = {
-                @UniqueConstraint(name = "uk_giatrithuoctinh_khoa_giatri", columnNames  = {"id_thuoc_tinh", "gia_tri"})
+                @UniqueConstraint(name = "uk_giatrithuoctinh_khoa_giatri", columnNames  = {"ma_thuoc_tinh", "gia_tri"})
         }
 )
 public class AttributeValue {
 
     @Id
     @GeneratedValue(strategy = GenerationType.UUID)
-    @Column(name = "id_gia_tri_thuoc_tinh", length = 36, updatable = false, nullable = false)
+    @Column(name = "ma_gia_tri_thuoc_tinh", length = 36, updatable = false, nullable = false)
     private String id;
 
     @ManyToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "id_thuoc_tinh", nullable = false)
+    @JoinColumn(name = "ma_thuoc_tinh", nullable = false)
     private AttributeKey attributeKey;
 
     @Column(name = "gia_tri", nullable = false)

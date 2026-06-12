@@ -25,11 +25,11 @@ public class ProductSku {
 
     @Id
     @GeneratedValue(strategy = GenerationType.UUID)
-    @Column(name = "id_san_phamsku", length = 36, updatable = false, nullable = false)
+    @Column(name = "ma_san_phamsku", length = 36, updatable = false, nullable = false)
     private String id;
 
     @ManyToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "id_san_pham", nullable = false)
+    @JoinColumn(name = "ma_san_pham", nullable = false)
     private Product product;
 
     @Column(name = "masku", nullable = false, length = 50)
@@ -56,8 +56,8 @@ public class ProductSku {
     @ManyToMany(fetch = FetchType.LAZY, cascade = {CascadeType.MERGE, CascadeType.PERSIST})
     @JoinTable(
             name = "sku_thuoc_tinh",
-            joinColumns = @JoinColumn(name = "id_san_phamsku"),
-            inverseJoinColumns = @JoinColumn(name = "id_gia_tri_thuoc_tinh")
+            joinColumns = @JoinColumn(name = "ma_san_phamsku"),
+            inverseJoinColumns = @JoinColumn(name = "ma_gia_tri_thuoc_tinh")
     )
     private Set<AttributeValue> attributes;
 

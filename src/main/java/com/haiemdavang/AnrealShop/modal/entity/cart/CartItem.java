@@ -21,15 +21,15 @@ public class CartItem {
 
     @Id
     @GeneratedValue(strategy = GenerationType.UUID)
-    @Column(name = "id_gio_hang_item", length = 36, updatable = false, nullable = false)
+    @Column(name = "ma_gio_hang_item", length = 36, updatable = false, nullable = false)
     private String id;
 
     @ManyToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "id_gio_hang", nullable = false)
+    @JoinColumn(name = "ma_gio_hang", nullable = false)
     private Cart cart;
 
     @ManyToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "id_san_phamsku", nullable = false)
+    @JoinColumn(name = "ma_san_phamsku", nullable = false)
     private ProductSku productSku;
 
     @Column(name = "gia", nullable = false)

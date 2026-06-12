@@ -15,7 +15,7 @@ import java.time.LocalDateTime;
 @Embeddable
 public class OrderItemTrackId implements Serializable {
 
-    @Column(name = "id_item_don_hang", nullable = false, length = 36)
+    @Column(name = "ma_item_don_hang", nullable = false, length = 36)
     private String orderItemId;
 
     @Column(name = "cap_nhat_luc", nullable = false)

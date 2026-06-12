@@ -27,19 +27,19 @@ public class Order {
 
     @Id
     @GeneratedValue(strategy = GenerationType.UUID)
-    @Column(name = "id_don_hang", length = 36, updatable = false, nullable = false)
+    @Column(name = "ma_don_hang", length = 36, updatable = false, nullable = false)
     private String id;
 
     @ManyToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "id_nguoi_dung", nullable = false)
+    @JoinColumn(name = "ma_nguoi_dung", nullable = false)
     private User user;
 
     @ManyToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "id_dia_chi_nguoi_dung", nullable = false)
+    @JoinColumn(name = "ma_dia_chi_nguoi_dung", nullable = false)
     private UserAddress shippingAddress;
 
     @OneToOne(fetch = FetchType.LAZY, cascade = {CascadeType.PERSIST, CascadeType.MERGE, CascadeType.REFRESH})
-    @JoinColumn(name = "id_thanh_toan", referencedColumnName = "id_thanh_toan")
+    @JoinColumn(name = "ma_thanh_toan", referencedColumnName = "ma_thanh_toan")
     private Payment payment;
 
     @CreationTimestamp

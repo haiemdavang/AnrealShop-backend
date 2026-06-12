@@ -20,7 +20,7 @@ public class Role {
 
     @Id
     @GeneratedValue(strategy = GenerationType.UUID)
-    @Column(name = "id_vai_tro", length = 36, updatable = false, nullable = false)
+    @Column(name = "ma_vai_tro", length = 36, updatable = false, nullable = false)
     private String id;
 
     @Enumerated(EnumType.STRING)

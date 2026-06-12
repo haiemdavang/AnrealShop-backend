@@ -16,11 +16,11 @@ import lombok.*;
 public class ShopAddress {
 
     @Id
-    @Column(name = "id_dia_chi_cua_hang", length = 36, updatable = false, nullable = false)
+    @Column(name = "ma_dia_chi_cua_hang", length = 36, updatable = false, nullable = false)
     private String id;
 
     @ManyToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "id_cua_hang", nullable = false)
+    @JoinColumn(name = "ma_cua_hang", nullable = false)
     private Shop shop;
 
     @Column(name = "nguoi_gui", nullable = false, length = 100)
@@ -30,15 +30,15 @@ public class ShopAddress {
     private String phoneNumber;
 
     @ManyToOne(fetch = FetchType.EAGER)
-    @JoinColumn(name = "id_tinh", nullable = false)
+    @JoinColumn(name = "ma_tinh", nullable = false)
     private Province province;
 
     @ManyToOne(fetch = FetchType.EAGER)
-    @JoinColumn(name = "id_huyen", nullable = false)
+    @JoinColumn(name = "ma_huyen", nullable = false)
     private District district;
 
     @ManyToOne(fetch = FetchType.EAGER)
-    @JoinColumn(name = "id_xa", nullable = false)
+    @JoinColumn(name = "ma_xa", nullable = false)
     private Ward ward;
 
     @Column(name = "chi_tiet", columnDefinition = "TEXT", nullable = false)

@@ -20,14 +20,14 @@ public class Category {
     @Id
     @ToString.Include
     @GeneratedValue(strategy = GenerationType.UUID)
-    @Column(name = "id_danh_muc", length = 36, updatable = false, nullable = false)
+    @Column(name = "ma_danh_muc", length = 36, updatable = false, nullable = false)
     private String id;
 
     @Column(name = "ten_danh_muc", nullable = false, length = 100)
     private String name;
 
     @ManyToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "id_danh_muc_cha")
+    @JoinColumn(name = "ma_danh_muc_cha")
     private Category parent;
 
     @Column(name = "mo_ta", columnDefinition = "TEXT")

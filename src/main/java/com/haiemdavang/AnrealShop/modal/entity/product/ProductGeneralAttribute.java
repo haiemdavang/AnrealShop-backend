@@ -18,11 +18,11 @@ public class ProductGeneralAttribute {
 
     @ManyToOne(fetch = FetchType.LAZY)
     @MapsId("productId")
-    @JoinColumn(name = "id_san_pham", nullable = false)
+    @JoinColumn(name = "ma_san_pham", nullable = false)
     private Product product;
 
     @ManyToOne(fetch = FetchType.LAZY)
     @MapsId("attributeValueId")
-    @JoinColumn(name = "id_gia_tri_thuoc_tinh", nullable = false)
+    @JoinColumn(name = "ma_gia_tri_thuoc_tinh", nullable = false)
     private AttributeValue attributeValue;
 }

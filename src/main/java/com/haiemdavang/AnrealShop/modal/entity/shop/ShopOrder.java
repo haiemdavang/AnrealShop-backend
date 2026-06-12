@@ -44,23 +44,23 @@ public class ShopOrder {
 
     @Id
     @GeneratedValue(strategy = GenerationType.UUID)
-    @Column(name = "id_don_hang_cua_hang", length = 36, updatable = false, nullable = false)
+    @Column(name = "ma_don_hang_cua_hang", length = 36, updatable = false, nullable = false)
     private String id;
 
     @ManyToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "id_nguoi_dung", nullable = false)
+    @JoinColumn(name = "ma_nguoi_dung", nullable = false)
     private User user;
 
     @ManyToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "id_don_hang", nullable = false)
+    @JoinColumn(name = "ma_don_hang", nullable = false)
     private Order order;
 
     @ManyToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "id_dia_chi_cua_hang", nullable = false)
+    @JoinColumn(name = "ma_dia_chi_cua_hang", nullable = false)
     private ShopAddress shippingAddress;
 
     @ManyToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "id_cua_hang", nullable = false)
+    @JoinColumn(name = "ma_cua_hang", nullable = false)
     private Shop shop;
 
     @Column(name = "phi_giao_hang", nullable = false)

@@ -18,11 +18,11 @@ public class ChatbotHistory {
 
     @Id
     @GeneratedValue(strategy = GenerationType.UUID)
-    @Column(name = "id_lich_su", length = 36, updatable = false, nullable = false)
+    @Column(name = "ma_lich_su", length = 36, updatable = false, nullable = false)
     private String id;
 
     @ManyToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "id_nguoi_dung", nullable = false)
+    @JoinColumn(name = "ma_nguoi_dung", nullable = false)
     private User user;
 
     @Column(name = "cau_hoi", columnDefinition = "TEXT", nullable = false)

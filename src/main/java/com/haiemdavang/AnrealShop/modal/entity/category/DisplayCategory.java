@@ -21,11 +21,11 @@ public class DisplayCategory {
 
     @Id
     @GeneratedValue(strategy = GenerationType.UUID)
-    @Column(name = "id_hien_thi_danh_muc", length = 36, updatable = false, nullable = false)
+    @Column(name = "ma_hien_thi_danh_muc", length = 36, updatable = false, nullable = false)
     private String id;
 
     @ManyToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "id_danh_muc", nullable = false)
+    @JoinColumn(name = "ma_danh_muc", nullable = false)
     private Category category;
 
     @Column(name = "anh_dai_dien")

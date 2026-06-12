@@ -22,7 +22,7 @@ public class ShippingTrack {
 
     @ManyToOne(fetch = FetchType.LAZY)
     @MapsId("shippingId")
-    @JoinColumn(name = "id_van_chuyen", insertable = false, updatable = false)
+    @JoinColumn(name = "ma_van_chuyen", insertable = false, updatable = false)
     private Shipping shipping;
 
     @Enumerated(EnumType.STRING)

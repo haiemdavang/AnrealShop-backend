@@ -16,7 +16,7 @@ import lombok.*;
 public class Province {
 
     @Id
-    @Column(name = "id_tinh", length = 36, updatable = false, nullable = false)
+    @Column(name = "ma_tinh", length = 36, updatable = false, nullable = false)
     private String id;
 
     @Column(name = "ten_tinh", nullable = false, length = 100)

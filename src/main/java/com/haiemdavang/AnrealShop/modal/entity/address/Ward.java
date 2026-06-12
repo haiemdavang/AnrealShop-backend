@@ -15,13 +15,13 @@ import lombok.*;
 public class Ward {
 
     @Id
-    @Column(name = "id_xa", length = 36, updatable = false, nullable = false)
+    @Column(name = "ma_xa", length = 36, updatable = false, nullable = false)
     private String id;
 
     @Column(name = "ten_xa", nullable = false, length = 100)
     private String name;
 
     @ManyToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "id_huyen", nullable = false)
+    @JoinColumn(name = "ma_huyen", nullable = false)
     private District district;
 }

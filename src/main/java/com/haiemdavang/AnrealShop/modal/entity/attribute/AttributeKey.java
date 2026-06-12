@@ -24,7 +24,7 @@ public class AttributeKey {
 
     @Id
     @GeneratedValue(strategy = GenerationType.UUID)
-    @Column(name = "id_thuoc_tinh", length = 36, updatable = false, nullable = false)
+    @Column(name = "ma_thuoc_tinh", length = 36, updatable = false, nullable = false)
     private String id;
 
     @Column(name = "ten_khoa", nullable = false, length = 50)
@@ -56,8 +56,8 @@ public class AttributeKey {
     @ManyToMany(fetch = FetchType.LAZY, cascade = {CascadeType.MERGE})
     @JoinTable(
             name = "cua_hang_thuoc_tinh",
-            joinColumns = @JoinColumn(name = "id_thuoc_tinh"),
-            inverseJoinColumns = @JoinColumn(name = "id_cua_hang")
+            joinColumns = @JoinColumn(name = "ma_thuoc_tinh"),
+            inverseJoinColumns = @JoinColumn(name = "ma_cua_hang")
     )
     private Set<Shop> shops;
 }

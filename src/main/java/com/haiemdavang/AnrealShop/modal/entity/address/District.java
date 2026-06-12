@@ -15,14 +15,14 @@ import lombok.*;
 public class District {
 
     @Id
-    @Column(name = "id_huyen", length = 36, updatable = false, nullable = false)
+    @Column(name = "ma_huyen", length = 36, updatable = false, nullable = false)
     private String id;
 
     @Column(name = "ten_huyen", nullable = false, length = 100)
     private String name;
 
     @ManyToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "id_tinh", nullable = false)
+    @JoinColumn(name = "ma_tinh", nullable = false)
     private Province province;
 
 // @OneToMany(mappedBy = "district", fetch = FetchType.LAZY, cascade = CascadeType.ALL)

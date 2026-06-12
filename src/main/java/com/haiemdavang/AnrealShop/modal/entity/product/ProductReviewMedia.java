@@ -21,11 +21,11 @@ public class ProductReviewMedia {
 
     @Id
     @GeneratedValue(strategy = GenerationType.UUID)
-    @Column(name = "id_media_danh_gia_san_pham", length = 36, updatable = false, nullable = false)
+    @Column(name = "ma_media_danh_gia_san_pham", length = 36, updatable = false, nullable = false)
     private String id;
 
     @ManyToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "id_danh_gia_san_pham", nullable = false)
+    @JoinColumn(name = "ma_danh_gia_san_pham", nullable = false)
     private ProductReview review; // Đánh giá mà media này thuộc về
 
     @Column(name = "duong_dan_media", nullable = false, length = 255)

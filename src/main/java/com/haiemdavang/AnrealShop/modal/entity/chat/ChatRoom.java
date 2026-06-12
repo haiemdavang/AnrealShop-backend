@@ -18,24 +18,24 @@ import java.util.Set;
 @EqualsAndHashCode(of = "id")
 @Entity
 @Table(name = "phong_chat", uniqueConstraints = {
-        @UniqueConstraint(columnNames = {"id_nguoi_dung", "id_cua_hang"})
+        @UniqueConstraint(columnNames = {"ma_nguoi_dung", "ma_cua_hang"})
 })
 public class ChatRoom {
 
     @Id
     @GeneratedValue(strategy = GenerationType.UUID)
-    @Column(name = "id_phong_chat", length = 36, updatable = false, nullable = false)
+    @Column(name = "ma_phong_chat", length = 36, updatable = false, nullable = false)
     private String id;
 
     @Column(name = "hoat_dong_gan_nhat", columnDefinition = "TIMESTAMP DEFAULT CURRENT_TIMESTAMP")
     private LocalDateTime lastActive;
 
     @ManyToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "id_nguoi_dung", nullable = false)
+    @JoinColumn(name = "ma_nguoi_dung", nullable = false)
     private User customer;
 
     @ManyToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "id_cua_hang", nullable = false)
+    @JoinColumn(name = "ma_cua_hang", nullable = false)
     private Shop shop;
 
     @OneToMany(mappedBy = "room", cascade = CascadeType.ALL, fetch = FetchType.LAZY)

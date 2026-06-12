@@ -25,7 +25,7 @@ public class Payment {
 
     @Id
     @GeneratedValue(strategy = GenerationType.UUID)
-    @Column(name = "id_thanh_toan", length = 36, updatable = false, nullable = false)
+    @Column(name = "ma_thanh_toan", length = 36, updatable = false, nullable = false)
     private String id;
 
     @Column(name = "so_tien", nullable = false)

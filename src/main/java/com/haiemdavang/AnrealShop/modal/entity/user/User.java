@@ -24,13 +24,13 @@ import java.util.Set;
         @Index(name = "idx_nguoidung_tendangnhap", columnList = "ten_dang_nhap", unique = true),
         @Index(name = "idx_nguoidung_email", columnList = "email", unique = true)
 })
-@SQLDelete(sql = "UPDATE nguoi_dung SET da_xoa = true, ngay_cap_nhat = CURRENT_TIMESTAMP WHERE id_nguoi_dung = ?")
+@SQLDelete(sql = "UPDATE nguoi_dung SET da_xoa = true, ngay_cap_nhat = CURRENT_TIMESTAMP WHERE ma_nguoi_dung = ?")
 @Where(clause = "da_xoa = false")
 public class User {
 
     @Id
     @GeneratedValue(strategy = GenerationType.UUID)
-    @Column(name = "id_nguoi_dung", length = 36, updatable = false, nullable = false)
+    @Column(name = "ma_nguoi_dung", length = 36, updatable = false, nullable = false)
     private String id;
 
     @Column(name = "ten_dang_nhap", nullable = false, unique = true, length = 50)
@@ -64,7 +64,7 @@ public class User {
     private LocalDateTime updatedAt;
 
     @ManyToOne(fetch = FetchType.EAGER)
-    @JoinColumn(name = "id_vai_tro")
+    @JoinColumn(name = "ma_vai_tro")
     private Role role;
 
     @Column(name = "tu_mangxh", columnDefinition = "BOOLEAN DEFAULT FALSE")

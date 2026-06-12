@@ -21,12 +21,12 @@ import java.util.Set;
 @EqualsAndHashCode(of = "id")
 @Entity
 @Table(name = "cua_hang")
-@SQLDelete(sql = "UPDATE cua_hang SET da_xoa = true, ngay_cap_nhat = CURRENT_TIMESTAMP WHERE id_cua_hang = ?")
+@SQLDelete(sql = "UPDATE cua_hang SET da_xoa = true, ngay_cap_nhat = CURRENT_TIMESTAMP WHERE ma_cua_hang = ?")
 @Where(clause = "da_xoa = false")
 public class Shop {
 
     @Id
-    @Column(name = "id_cua_hang", length = 36)
+    @Column(name = "ma_cua_hang", length = 36)
     @GeneratedValue(strategy = GenerationType.UUID)
     private String id;
 
@@ -43,7 +43,7 @@ public class Shop {
     private String avatarUrl;
 
     @ManyToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "id_nguoi_dung", nullable = false)
+    @JoinColumn(name = "ma_nguoi_dung", nullable = false)
     private User user;
 
     @CreationTimestamp

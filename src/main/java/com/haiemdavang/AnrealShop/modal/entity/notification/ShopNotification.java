@@ -22,7 +22,7 @@ public class ShopNotification {
 
     @Id
     @GeneratedValue(strategy = GenerationType.UUID)
-    @Column(name = "id_thong_bao_cua_hang", length = 36, updatable = false, nullable = false)
+    @Column(name = "ma_thong_bao_cua_hang", length = 36, updatable = false, nullable = false)
     private String id;
 
     @Column(name = "noi_dung", columnDefinition = "TEXT", nullable = false)
@@ -32,7 +32,7 @@ public class ShopNotification {
     private String thumbnailUrl = "https://res.cloudinary.com/dlcjc36ow/image/upload/v1747916255/ImagError_jsv7hr.png";
 
     @ManyToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "id_cua_hang", nullable = false)
+    @JoinColumn(name = "ma_cua_hang", nullable = false)
     private Shop shop;
 
     @Column(name = "duong_dan_chuyen_huong")

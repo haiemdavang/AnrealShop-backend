@@ -15,7 +15,7 @@ import java.time.LocalDateTime;
 @Embeddable
 public class ShippingTrackId implements Serializable {
 
-    @Column(name = "id_van_chuyen", nullable = false, length = 36)
+    @Column(name = "ma_van_chuyen", nullable = false, length = 36)
     private String shippingId;
 
     @Column(name = "cap_nhat_luc", nullable = false)
