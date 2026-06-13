@@ -25,7 +25,7 @@ public class Wallet {
 
     @Id
     @GeneratedValue(strategy = GenerationType.UUID)
-    @Column(name = "id", length = 36, updatable = false, nullable = false)
+    @Column(name = "ma", length = 36, updatable = false, nullable = false)
     private String id;
 
     @Column(name = "ma_chu_so_huu", nullable = false, length = 36)

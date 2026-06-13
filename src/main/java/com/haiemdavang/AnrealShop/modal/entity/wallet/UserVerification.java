@@ -28,7 +28,7 @@ public class UserVerification {
 
     @Id
     @GeneratedValue(strategy = GenerationType.UUID)
-    @Column(name = "id", length = 36, updatable = false, nullable = false)
+    @Column(name = "ma", length = 36, updatable = false, nullable = false)
     private String id;
 
     @ManyToOne(fetch = FetchType.LAZY)
