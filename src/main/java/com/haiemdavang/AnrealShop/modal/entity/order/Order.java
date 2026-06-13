@@ -38,7 +38,7 @@ public class Order {
     @JoinColumn(name = "ma_dia_chi_nguoi_dung", nullable = false)
     private UserAddress shippingAddress;
 
-    @OneToOne(fetch = FetchType.LAZY, cascade = {CascadeType.PERSIST, CascadeType.MERGE, CascadeType.REFRESH})
+    @OneToOne(fetch = FetchType.LAZY, cascade = {CascadeType.MERGE, CascadeType.REFRESH, CascadeType.DETACH})
     @JoinColumn(name = "ma_thanh_toan", referencedColumnName = "ma_thanh_toan")
     private Payment payment;
 

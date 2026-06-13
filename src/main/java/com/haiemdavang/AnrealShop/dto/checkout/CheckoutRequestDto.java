@@ -27,6 +27,8 @@ public class CheckoutRequestDto {
     private PaymentType paymentMethod = PaymentType.COD;
     @Builder.Default
     private PaymentGateway paymentGateway = PaymentGateway.CASH_ON_DELIVERY;
+    private String ipAddress;
+    private String userId;
 
     private List<ItemProductCheckoutDto> items;
 }

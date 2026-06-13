@@ -43,6 +43,8 @@ spring:
         max.poll.interval.ms: 900000
         session.timeout.ms: 60000
         heartbeat.interval.ms: 15000
+        fetch.max.wait.ms: 500
+        max.poll.records: 5
 
   elasticsearch:
     uris: http://${ES_HOST:localhost}:${ES_PORT:9200}
@@ -70,9 +72,7 @@ logging:
       elasticsearch:
         client: TRACE
       hibernate:
-        jdbc.BatchingBatch: TRACE
         SQL: DEBUG
-        orm.jdbc.bind: TRACE
 
 
 server:

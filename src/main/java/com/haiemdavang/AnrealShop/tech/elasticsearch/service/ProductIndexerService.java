@@ -4,6 +4,7 @@ import co.elastic.clients.elasticsearch._types.query_dsl.BoolQuery;
 import co.elastic.clients.elasticsearch._types.query_dsl.QueryBuilders;
 import co.elastic.clients.elasticsearch._types.query_dsl.TextQueryType;
 import com.haiemdavang.AnrealShop.dto.product.EsProductDto;
+import com.haiemdavang.AnrealShop.exception.BadRequestException;
 import com.haiemdavang.AnrealShop.tech.elasticsearch.document.EsCategory;
 import com.haiemdavang.AnrealShop.tech.elasticsearch.document.EsProduct;
 import com.haiemdavang.AnrealShop.tech.elasticsearch.repository.EsCategoryRepository;
@@ -95,6 +96,15 @@ public class ProductIndexerService {
             esProduct.setUpdatedAt(Instant.now());
         });
         esProductRepository.saveAll(esProducts);
+    }
+
+    @Transactional
+    public void updateQuantities(String productId, int quantity) {
+        EsProduct esProduct = esProductRepository.findById(productId)
+                .orElseThrow(()-> new BadRequestException("PRODUCT_NOT_FOUND"));
+        esProduct.setQuantity(quantity);
+        esProduct.setUpdatedAt(Instant.now());
+        esProductRepository.save(esProduct);
     }
 
     public List<EsProductDto> searchProducts(int page, int limit, String search, List<String> categoryIds, String sortBy, Double minPrice,

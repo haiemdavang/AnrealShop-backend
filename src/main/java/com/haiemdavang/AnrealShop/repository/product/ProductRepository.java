@@ -109,6 +109,8 @@ public interface ProductRepository extends JpaRepository<Product, String>, JpaSp
             @Param("queryVector") String queryVector
     );
 
-
+    @Modifying
+    @Query("UPDATE Product p SET p.quantity = p.quantity - :quantity WHERE p.id = :productId AND p.quantity >= :quantity")
+    int deductStock(@Param("productId") String productId, @Param("quantity") int quantity);
 
 }

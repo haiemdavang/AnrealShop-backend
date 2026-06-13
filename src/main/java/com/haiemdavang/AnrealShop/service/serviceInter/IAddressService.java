@@ -40,7 +40,7 @@ public interface IAddressService {
 
     Map<String, AddressDto> getShopAddressByIdIn(Set<String> shopIds);
 
-    UserAddress getCurrentUserAddressById(@NotNull @NotBlank(message = "ADDRESS_ID_NOT_BLANK") String addressId);
+    UserAddress getCurrentUserAddressById(String userId, String addressId);
 
     ShopAddress getShopAddressByIdShop(String id);
 

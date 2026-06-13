@@ -5,7 +5,6 @@ import com.haiemdavang.AnrealShop.dto.checkout.CheckoutInfoDto;
 import com.haiemdavang.AnrealShop.dto.checkout.CheckoutRequestDto;
 import com.haiemdavang.AnrealShop.dto.checkout.CheckoutResponseDto;
 import com.haiemdavang.AnrealShop.dto.checkout.ItemProductCheckoutDto;
-import com.haiemdavang.AnrealShop.tech.kafka.dto.notice.NoticeTemplate;
 import com.haiemdavang.AnrealShop.dto.shipping.InfoShipment;
 import com.haiemdavang.AnrealShop.dto.shipping.InfoShippingOrder;
 import com.haiemdavang.AnrealShop.exception.BadRequestException;
@@ -17,16 +16,18 @@ import com.haiemdavang.AnrealShop.modal.entity.product.ProductSku;
 import com.haiemdavang.AnrealShop.modal.entity.shop.Shop;
 import com.haiemdavang.AnrealShop.modal.enums.PaymentType;
 import com.haiemdavang.AnrealShop.service.order.IUserOrderService;
+import com.haiemdavang.AnrealShop.service.order.InventoryService;
 import com.haiemdavang.AnrealShop.service.serviceInter.IAddressService;
 import com.haiemdavang.AnrealShop.service.serviceInter.ICheckoutService;
 import com.haiemdavang.AnrealShop.service.serviceInter.IProductService;
 import com.haiemdavang.AnrealShop.service.shipment.IGHNService;
 import com.haiemdavang.AnrealShop.tech.kafka.dto.EmailMessageDto;
+import com.haiemdavang.AnrealShop.tech.kafka.dto.notice.NoticeTemplate;
 import com.haiemdavang.AnrealShop.tech.kafka.producer.EmailKafkaProducer;
 import com.haiemdavang.AnrealShop.tech.kafka.producer.NoticeKafkaProducer;
-import jakarta.servlet.http.HttpServletRequest;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -41,20 +42,32 @@ public class CheckoutServiceImp implements ICheckoutService {
     private final IAddressService addressService;
     private final IGHNService ighnService;
     private final IProductService productService;
+    private final InventoryService inventoryService;
     private final ShopMapper shopMapper;
     private final CartMapper cartMapper;
 
     private final NoticeKafkaProducer noticeKafkaProducer;
     private final EmailKafkaProducer emailKafkaProducer;
 
+    @Override
+    @Transactional
+    public CheckoutResponseDto DecreaseBeforeCheckout(CheckoutRequestDto requestDto) {
+        List<ItemProductCheckoutDto> items = requestDto.getItems();
+        for (ItemProductCheckoutDto item : items) {
+            String skuId = item.getProductSkuId();
+            int orderQuantity = item.getQuantity();
+            inventoryService.deductInventory(skuId, orderQuantity);
+        }
+        return this.checkout(requestDto);
+    }
 
     @Override
-    public CheckoutResponseDto checkout(CheckoutRequestDto requestDto, HttpServletRequest request) {
-        UserAddress userAddress = addressService.getCurrentUserAddressById(requestDto.getAddressId());
+    public CheckoutResponseDto checkout(CheckoutRequestDto requestDto) {
+        UserAddress userAddress = addressService.getCurrentUserAddressById(requestDto.getUserId(), requestDto.getAddressId());
 
         CheckoutResponseDto responseDto;
         if (requestDto.getPaymentMethod().equals(PaymentType.BANK_TRANSFER)){
-            responseDto = orderService.createOrderBankTran(requestDto, userAddress, getClientIpAddress(request));
+            responseDto = orderService.createOrderBankTran(requestDto, userAddress);
         } else if (requestDto.getPaymentMethod().equals(PaymentType.COD)) {
             responseDto = orderService.createOrderCOD(requestDto, userAddress);
         } else {
@@ -119,11 +132,5 @@ public class CheckoutServiceImp implements ICheckoutService {
         return result;
     }
 
-    private String getClientIpAddress(HttpServletRequest request) {
-        String ipAddress = request.getHeader("X-FORWARDED-FOR");
-        if (ipAddress == null) {
-            ipAddress = request.getRemoteAddr();
-        }
-        return ipAddress;
-    }
+
 }

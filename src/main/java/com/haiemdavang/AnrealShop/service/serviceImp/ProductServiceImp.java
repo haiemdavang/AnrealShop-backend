@@ -1,22 +1,16 @@
 package com.haiemdavang.AnrealShop.service.serviceImp;
 
+import com.haiemdavang.AnrealShop.dto.SortEnum;
 import com.haiemdavang.AnrealShop.dto.attribute.ProductAttributeDto;
 import com.haiemdavang.AnrealShop.dto.attribute.ProductAttributeSingleValueDto;
-import com.haiemdavang.AnrealShop.dto.SortEnum;
 import com.haiemdavang.AnrealShop.dto.product.*;
 import com.haiemdavang.AnrealShop.dto.review.ReviewListResponse;
-import com.haiemdavang.AnrealShop.tech.elasticsearch.document.EsProduct;
-import com.haiemdavang.AnrealShop.tech.elasticsearch.service.ProductIndexerService;
 import com.haiemdavang.AnrealShop.exception.BadRequestException;
-import com.haiemdavang.AnrealShop.tech.kafka.dto.ProductSyncActionType;
-import com.haiemdavang.AnrealShop.tech.kafka.dto.ProductSyncMessage;
-import com.haiemdavang.AnrealShop.tech.kafka.producer.ProductKafkaProducer;
 import com.haiemdavang.AnrealShop.mapper.AttributeMapper;
 import com.haiemdavang.AnrealShop.mapper.ProductMapper;
 import com.haiemdavang.AnrealShop.modal.entity.attribute.AttributeKey;
 import com.haiemdavang.AnrealShop.modal.entity.attribute.AttributeValue;
 import com.haiemdavang.AnrealShop.modal.entity.category.Category;
-import com.haiemdavang.AnrealShop.modal.entity.order.OrderItem;
 import com.haiemdavang.AnrealShop.modal.entity.product.Product;
 import com.haiemdavang.AnrealShop.modal.entity.product.ProductGeneralAttribute;
 import com.haiemdavang.AnrealShop.modal.entity.product.ProductMedia;
@@ -34,6 +28,11 @@ import com.haiemdavang.AnrealShop.security.SecurityUtils;
 import com.haiemdavang.AnrealShop.service.serviceInter.ICategoryService;
 import com.haiemdavang.AnrealShop.service.serviceInter.IProductService;
 import com.haiemdavang.AnrealShop.service.serviceInter.IReviewService;
+import com.haiemdavang.AnrealShop.tech.elasticsearch.document.EsProduct;
+import com.haiemdavang.AnrealShop.tech.elasticsearch.service.ProductIndexerService;
+import com.haiemdavang.AnrealShop.tech.kafka.dto.ProductSyncActionType;
+import com.haiemdavang.AnrealShop.tech.kafka.dto.ProductSyncMessage;
+import com.haiemdavang.AnrealShop.tech.kafka.producer.ProductKafkaProducer;
 import com.haiemdavang.AnrealShop.utils.ApplicationInitHelper;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -47,7 +46,6 @@ import org.springframework.transaction.annotation.Transactional;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.util.*;
-import java.util.function.Function;
 import java.util.stream.Collectors;
 
 @Slf4j
@@ -435,50 +433,6 @@ public class ProductServiceImp implements IProductService {
     @Override
     public List<ProductSku> findByProductSkuIdIn(Set<String> ids) {
         return productSkuRepository.findByProductSkuIdIn(ids);
-    }
-
-    @Override
-    @Transactional
-    public void decreaseProductSkuQuantity(Set<OrderItem> orderItems) {
-        Map<Product, Set<ProductSku>> mapProducts = orderItems.stream()
-                .collect(Collectors.groupingBy(
-                        it -> it.getProductSku().getProduct(),
-                        Collectors.mapping(OrderItem::getProductSku, Collectors.toSet())
-                ));
-
-        for (Product product : mapProducts.keySet()) {
-            Map<String, ProductSku> existingSkusMap = product.getProductSkus().stream()
-                    .collect(Collectors.toMap(ProductSku::getId, Function.identity()));
-
-            int soldUpdate = 0;
-
-            for (ProductSku sku : mapProducts.get(product)) {
-                OrderItem orderItem = orderItems.stream()
-                        .filter(oi -> oi.getProductSku().getId().equals(sku.getId()))
-                        .findFirst()
-                        .orElse(null);
-
-                if (orderItem != null) {
-                    ProductSku existingSku = existingSkusMap.get(sku.getId());
-
-                    if (existingSku != null) {
-                        existingSku.setQuantity(existingSku.getQuantity() - orderItem.getQuantity());
-                        existingSku.setSold(existingSku.getSold() + orderItem.getQuantity());
-                        soldUpdate += orderItem.getQuantity();
-                    } else {
-                        log.warn("ProductSku with id {} not found in product {}", sku.getId(), product.getId());
-                    }
-                } else {
-                    log.warn("OrderItem not found for ProductSku with id {}", sku.getId());
-                }
-            }
-            product.setSold(product.getSold() + soldUpdate);
-            product.setQuantity(product.getQuantity() - soldUpdate);
-        }
-
-        productRepository.saveAll(mapProducts.keySet());
-
-//        cap nhat them es nha cu
     }
 
     @Override

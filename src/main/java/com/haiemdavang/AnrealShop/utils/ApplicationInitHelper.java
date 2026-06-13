@@ -1,6 +1,7 @@
 package com.haiemdavang.AnrealShop.utils;
 
 import com.haiemdavang.AnrealShop.dto.SortEnum;
+import jakarta.servlet.http.HttpServletRequest;
 import org.springframework.data.domain.Sort;
 
 import java.text.Normalizer;
@@ -50,6 +51,14 @@ public class ApplicationInitHelper {
             return "***";
         }
         return digitsOnly.substring(0, 4) + "***" + digitsOnly.substring(digitsOnly.length() - 3);
+    }
+
+    public static String getClientIpAddress(HttpServletRequest request) {
+        String ipAddress = request.getHeader("X-FORWARDED-FOR");
+        if (ipAddress == null) {
+            ipAddress = request.getRemoteAddr();
+        }
+        return ipAddress;
     }
 
 }

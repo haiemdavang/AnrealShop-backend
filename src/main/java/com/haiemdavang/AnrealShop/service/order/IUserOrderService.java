@@ -9,7 +9,7 @@ import com.haiemdavang.AnrealShop.modal.entity.address.UserAddress;
 
 public interface IUserOrderService {
 
-    CheckoutResponseDto createOrderBankTran(CheckoutRequestDto requestDto, UserAddress userAddress, String ipAddress);
+    CheckoutResponseDto createOrderBankTran(CheckoutRequestDto requestDto, UserAddress userAddress);
     CheckoutResponseDto createOrderCOD(CheckoutRequestDto requestDto, UserAddress userAddress);
 
     void handleSuccessfulPayment(String orderId);

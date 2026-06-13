@@ -35,6 +35,7 @@ public class SecurityConfig {
     public final static List<String> PUBLIC_URLS = List.of(
 //            "/**",
             "/IPN",
+            "/api/checkout/stream/**",
             "/api/public/**",
             "/api/logout",
             "/api/login",

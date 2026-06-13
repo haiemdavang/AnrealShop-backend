@@ -18,6 +18,7 @@ import com.haiemdavang.AnrealShop.modal.entity.product.ProductSku;
 import com.haiemdavang.AnrealShop.modal.entity.shipping.Shipping;
 import com.haiemdavang.AnrealShop.modal.entity.shop.Shop;
 import com.haiemdavang.AnrealShop.modal.entity.shop.ShopOrder;
+import com.haiemdavang.AnrealShop.modal.entity.user.User;
 import com.haiemdavang.AnrealShop.modal.enums.ShippingStatus;
 import com.haiemdavang.AnrealShop.modal.enums.ShopOrderStatus;
 import com.haiemdavang.AnrealShop.repository.order.ShopOrderRepository;
@@ -116,7 +117,8 @@ public class ShipmentServiceImp implements IShipmentService {
 
     @Override
     public List<CartShippingFee> getShippingFeeForCheckout(CheckoutShippingFee checkoutShippingFee) {
-        UserAddress userAddress = addressService.getCurrentUserAddressById(checkoutShippingFee.getUserAddressId());
+        User currentUser = securityUtils.getCurrentUser();
+        UserAddress userAddress = addressService.getCurrentUserAddressById(currentUser.getId(), checkoutShippingFee.getUserAddressId());
         List<ProductSku> productSkus = productService.getProductSkuByIdIn(checkoutShippingFee.getCheckoutItems().keySet());
         Map<ProductSku, Integer> productSkuIntegerMap = productSkus.stream()
                 .collect(Collectors.toMap(

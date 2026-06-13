@@ -24,6 +24,7 @@ import com.haiemdavang.AnrealShop.modal.enums.PaymentType;
 import com.haiemdavang.AnrealShop.modal.enums.ShopOrderStatus;
 import com.haiemdavang.AnrealShop.repository.order.OrderRepository;
 import com.haiemdavang.AnrealShop.repository.order.ShopOrderSpecification;
+import com.haiemdavang.AnrealShop.repository.user.UserRepository;
 import com.haiemdavang.AnrealShop.security.SecurityUtils;
 import com.haiemdavang.AnrealShop.service.serviceInter.IProductService;
 import com.haiemdavang.AnrealShop.service.serviceInter.IReviewService;
@@ -57,12 +58,13 @@ public class UserOrderServiceImp implements IUserOrderService {
     private final IReviewService reviewService;
     private final VNPayService vnPayService;
     private final SecurityUtils securityUtils;
+    private final UserRepository userRepository;
 
     private final OrderMapper orderMapper;
 
     @Override
     @Transactional
-    public CheckoutResponseDto createOrderBankTran(CheckoutRequestDto requestDto, UserAddress userAddress, String ipAddress) {
+    public CheckoutResponseDto createOrderBankTran(CheckoutRequestDto requestDto, UserAddress userAddress) {
         Order newOrder = this.createNewOrder(requestDto, userAddress, PaymentType.BANK_TRANSFER);
 
         PaymentRequestDto paymentRequestDto = PaymentRequestDto.builder()
@@ -71,7 +73,7 @@ public class UserOrderServiceImp implements IUserOrderService {
                 .orderInfo("Nhap thong tin vao nhe hai")
                 .build();
 
-        return CheckoutResponseDto.createResponseForBankTransfer(newOrder.getId(), vnPayService.createPaymentUrl(paymentRequestDto, ipAddress));
+        return CheckoutResponseDto.createResponseForBankTransfer(newOrder.getId(), vnPayService.createPaymentUrl(paymentRequestDto, requestDto.getIpAddress()));
     }
 
     @Override
@@ -172,7 +174,8 @@ public class UserOrderServiceImp implements IUserOrderService {
 
 
     private Order createNewOrder(CheckoutRequestDto requestDto, UserAddress userAddress, PaymentType paymentType) {
-        User user = securityUtils.getCurrentUser();
+        User user = userRepository.findById(requestDto.getUserId())
+                .orElseThrow(() -> new BadRequestException("USER_NOT_FOUND"));
 
         Map<String, Integer> itemRequests = requestDto.getItems().stream().collect(
                 Collectors.toMap(ItemProductCheckoutDto::getProductSkuId, ItemProductCheckoutDto::getQuantity));
@@ -240,7 +243,6 @@ public class UserOrderServiceImp implements IUserOrderService {
         Order newOrder = orderRepository.save(order);
         shopOrderService.insertShopOrderTrack(newOrder.getShopOrders(), newOrder);
         orderItemService.insertOrderItemTrack(newOrder.getOrderItems(), newOrder);
-        // productService.decreaseProductSkuQuantity(orderItems);
         return newOrder;
     }
 }

@@ -274,9 +274,8 @@ public class AddressServiceImp implements IAddressService {
     }
 
     @Override
-    public UserAddress getCurrentUserAddressById(String addressId) {
-        User currentUser = securityUtils.getCurrentUser();
-        return userAddressRepository.findByIdAndUserId(addressId, currentUser.getId())
+    public UserAddress getCurrentUserAddressById(String userId, String addressId) {
+        return userAddressRepository.findByIdAndUserId(addressId, userId)
                 .orElseThrow(() -> new BadRequestException("ADDRESS_NOT_FOUND"));
     }
 

@@ -1,7 +1,6 @@
 package com.haiemdavang.AnrealShop.service.serviceInter;
 
 import com.haiemdavang.AnrealShop.dto.product.*;
-import com.haiemdavang.AnrealShop.modal.entity.order.OrderItem;
 import com.haiemdavang.AnrealShop.modal.entity.product.ProductSku;
 import jakarta.validation.Valid;
 
@@ -41,8 +40,6 @@ public interface IProductService {
     List<UserProductDto> getProducts(int page, int limit, String search, String categoryId, String sortBy, Double minPrice, Double maxPrice, int rating, List<String> brands,  List<String> colors, List<String> sizes, List<String> origins, List<String> genders);
 
     List<ProductSku> findByProductSkuIdIn(Set<String> ids);
-
-    void decreaseProductSkuQuantity(Set<OrderItem> orderItems);
 
     List<ProductSku> getProductSkuByIdIn(Set<String> strings);
 }

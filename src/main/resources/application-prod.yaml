@@ -35,7 +35,14 @@ spring:
     username: ${EMAIL_USERNAME}
     password: ${EMAIL_PASSWORD}
   kafka:
-    bootstrap-servers: ${KAFKA_HOST}:${KAFKA_PORT}
+    bootstrap-servers: ${KAFKA_HOST}:${KAFKA_PORT:9092}
+    consumer:
+      properties:
+        max.poll.interval.ms: 900000
+        session.timeout.ms: 60000
+        heartbeat.interval.ms: 15000
+        fetch.max.wait.ms: 500
+        max.poll.records: 5
   elasticsearch:
     uris: http://${ES_HOST}:${ES_PORT}
   security:

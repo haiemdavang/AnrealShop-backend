@@ -82,6 +82,8 @@ public class User {
     @Column(name = "ly_do_xoa", columnDefinition = "TEXT")
     private String deleteReason;
 
+    @Column(name = "diem_tb")
+    private Long averageRating = 1000L;
 
      @OneToMany(mappedBy = "user", cascade = CascadeType.ALL, fetch = FetchType.LAZY)
      private Set<Shop> shops;
