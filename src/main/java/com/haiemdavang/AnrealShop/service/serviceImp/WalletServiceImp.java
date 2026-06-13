@@ -1,15 +1,8 @@
 package com.haiemdavang.AnrealShop.service.serviceImp;
 
-import com.haiemdavang.AnrealShop.dto.wallet.AdminWalletDto;
-import com.haiemdavang.AnrealShop.dto.wallet.AdminWalletListResponse;
-import com.haiemdavang.AnrealShop.dto.wallet.TransactionHistoryDto;
-import com.haiemdavang.AnrealShop.dto.wallet.TransactionHistoryListResponse;
-import com.haiemdavang.AnrealShop.dto.wallet.UserVerificationDto;
-import com.haiemdavang.AnrealShop.dto.wallet.VerifyWalletRequest;
-import com.haiemdavang.AnrealShop.dto.wallet.WalletDto;
+import com.haiemdavang.AnrealShop.dto.wallet.*;
 import com.haiemdavang.AnrealShop.exception.BadRequestException;
 import com.haiemdavang.AnrealShop.exception.ConflictException;
-import com.haiemdavang.AnrealShop.exception.ResourceNotFoundException;
 import com.haiemdavang.AnrealShop.mapper.WalletMapper;
 import com.haiemdavang.AnrealShop.modal.entity.user.User;
 import com.haiemdavang.AnrealShop.modal.entity.wallet.TransactionHistory;
@@ -116,7 +109,7 @@ public class WalletServiceImp implements IWalletService {
                 .orElseThrow(() -> new BadRequestException("USER_NOT_FOUND"));
 
         Wallet wallet = walletRepository.findByOwnerIdAndOwnerType(user.getId(), WalletOwnerType.NGUOI_DUNG)
-                .orElseThrow(() -> new ResourceNotFoundException("WALLET_NOT_FOUND"));
+                .orElseThrow(() -> new BadRequestException("WALLET_NOT_FOUND"));
 
         VerificationStatus verificationStatus = userVerificationRepository.findByUserId(user.getId())
                 .map(UserVerification::getStatus)
@@ -131,7 +124,7 @@ public class WalletServiceImp implements IWalletService {
                 .orElseThrow(() -> new BadRequestException("USER_NOT_FOUND"));
 
         UserVerification verification = userVerificationRepository.findByUserId(user.getId())
-                .orElseThrow(() -> new ResourceNotFoundException("VERIFICATION_NOT_FOUND"));
+                .orElseThrow(() -> new BadRequestException("VERIFICATION_NOT_FOUND"));
 
         return walletMapper.toUserVerificationDto(verification);
     }
@@ -140,10 +133,10 @@ public class WalletServiceImp implements IWalletService {
     @Transactional
     public AdminWalletDto approveVerification(String walletId) {
         Wallet wallet = walletRepository.findById(walletId)
-                .orElseThrow(() -> new ResourceNotFoundException("WALLET_NOT_FOUND"));
+                .orElseThrow(() -> new BadRequestException("WALLET_NOT_FOUND"));
 
         UserVerification verification = userVerificationRepository.findByUserId(wallet.getOwnerId())
-                .orElseThrow(() -> new ResourceNotFoundException("VERIFICATION_NOT_FOUND"));
+                .orElseThrow(() -> new BadRequestException("VERIFICATION_NOT_FOUND"));
 
         if (verification.getStatus() != VerificationStatus.CHO_DUYET) {
             throw new BadRequestException("VERIFICATION_NOT_PENDING");
@@ -172,10 +165,10 @@ public class WalletServiceImp implements IWalletService {
     @Transactional
     public AdminWalletDto rejectVerification(String walletId, String reason) {
         Wallet wallet = walletRepository.findById(walletId)
-                .orElseThrow(() -> new ResourceNotFoundException("WALLET_NOT_FOUND"));
+                .orElseThrow(() -> new BadRequestException("WALLET_NOT_FOUND"));
 
         UserVerification verification = userVerificationRepository.findByUserId(wallet.getOwnerId())
-                .orElseThrow(() -> new ResourceNotFoundException("VERIFICATION_NOT_FOUND"));
+                .orElseThrow(() -> new BadRequestException("VERIFICATION_NOT_FOUND"));
 
         if (verification.getStatus() != VerificationStatus.CHO_DUYET) {
             throw new BadRequestException("VERIFICATION_NOT_PENDING");
@@ -201,7 +194,7 @@ public class WalletServiceImp implements IWalletService {
                 .orElseThrow(() -> new BadRequestException("USER_NOT_FOUND"));
 
         Wallet wallet = walletRepository.findByOwnerIdAndOwnerType(user.getId(), WalletOwnerType.NGUOI_DUNG)
-                .orElseThrow(() -> new ResourceNotFoundException("WALLET_NOT_FOUND"));
+                .orElseThrow(() -> new BadRequestException("WALLET_NOT_FOUND"));
 
         if (wallet.getPaymentPassword() == null) {
             throw new BadRequestException("PAYMENT_PASSWORD_NOT_SET");
@@ -247,10 +240,10 @@ public class WalletServiceImp implements IWalletService {
     @Override
     public UserVerificationDto getWalletVerificationDetail(String walletId) {
         Wallet wallet = walletRepository.findById(walletId)
-                .orElseThrow(() -> new ResourceNotFoundException("WALLET_NOT_FOUND"));
+                .orElseThrow(() -> new BadRequestException("WALLET_NOT_FOUND"));
 
         UserVerification verification = userVerificationRepository.findByUserId(wallet.getOwnerId())
-                .orElseThrow(() -> new ResourceNotFoundException("VERIFICATION_NOT_FOUND"));
+                .orElseThrow(() -> new BadRequestException("VERIFICATION_NOT_FOUND"));
 
         return walletMapper.toUserVerificationDto(verification);
     }
@@ -262,7 +255,7 @@ public class WalletServiceImp implements IWalletService {
                 .orElseThrow(() -> new BadRequestException("USER_NOT_FOUND"));
 
         Wallet wallet = walletRepository.findByOwnerIdAndOwnerType(user.getId(), WalletOwnerType.NGUOI_DUNG)
-                .orElseThrow(() -> new ResourceNotFoundException("WALLET_NOT_FOUND"));
+                .orElseThrow(() -> new BadRequestException("WALLET_NOT_FOUND"));
 
         Pageable pageable = PageRequest.of(page, limit, ApplicationInitHelper.getSortBy(sortBy));
 

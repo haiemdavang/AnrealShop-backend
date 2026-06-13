@@ -20,7 +20,7 @@ public class Banner {
 
     @Id
     @GeneratedValue(strategy = GenerationType.UUID)
-    @Column(name = "id_banner", length = 36, updatable = false, nullable = false)
+    @Column(name = "ma_banner", length = 36, updatable = false, nullable = false)
     private String id;
 
     @Column(name = "duong_dan_anh", nullable = false, length = 255)

@@ -20,9 +20,9 @@ public interface ProductRepository extends JpaRepository<Product, String>, JpaSp
 
     @Query(
             value = """
-                    SELECT trang_thai_han_che AS id, COUNT(id_san_pham) AS count\s
+                    SELECT trang_thai_han_che AS id, COUNT(ma_san_pham) AS count\s
                                                 FROM san_pham
-                                                WHERE id_cua_hang = :shopId AND da_xoa = false
+                                                WHERE ma_cua_hang = :shopId AND da_xoa = false
                                                 GROUP BY trang_thai_han_che""",
             nativeQuery = true
     )
@@ -73,7 +73,7 @@ public interface ProductRepository extends JpaRepository<Product, String>, JpaSp
             value = """
                     SELECT
                                status_list.id,
-                               COUNT(p.id_san_pham) AS count
+                               COUNT(p.ma_san_pham) AS count
                            FROM
                                (
                                    SELECT 'ACTIVE' AS id
@@ -98,7 +98,7 @@ public interface ProductRepository extends JpaRepository<Product, String>, JpaSp
     Set<IProductStatus> getMetaSumByStatusForAdmin(LocalDateTime startDateTime, LocalDateTime enDateTime);
 
     @Query(value = """
-        SELECT sp.id_san_pham AS productId
+        SELECT sp.ma_san_pham AS productId
         FROM san_pham sp
         WHERE sp.embedding IS NOT NULL
             AND sp.da_xoa = false

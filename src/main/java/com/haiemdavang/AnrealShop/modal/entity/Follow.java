@@ -19,22 +19,22 @@ import java.time.LocalDateTime;
 @Entity
 @Table(name = "theo_doi",
         uniqueConstraints = {
-                @UniqueConstraint(name = "uk_user_shop_follow", columnNames = {"id_nguoi_dung", "id_cua_hang"})
+                @UniqueConstraint(name = "uk_user_shop_follow", columnNames = {"ma_nguoi_dung", "ma_cua_hang"})
         }
 )
 public class Follow {
 
     @Id
     @GeneratedValue(strategy = GenerationType.UUID)
-    @Column(name = "id_theo_doi", length = 36, updatable = false, nullable = false)
+    @Column(name = "ma_theo_doi", length = 36, updatable = false, nullable = false)
     private String id;
 
     @ManyToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "id_nguoi_dung", nullable = false)
+    @JoinColumn(name = "ma_nguoi_dung", nullable = false)
     private User user;
 
     @ManyToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "id_cua_hang", nullable = false)
+    @JoinColumn(name = "ma_cua_hang", nullable = false)
     private Shop shop;
 
     @CreationTimestamp

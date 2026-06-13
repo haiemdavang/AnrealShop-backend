@@ -18,26 +18,26 @@ import java.time.LocalDateTime;
 @Entity
 @Table(name = "yeu_thich",
         uniqueConstraints = {
-                @UniqueConstraint(name = "uk_user_product_favorite", columnNames = {"id_nguoi_dung", "id_san_pham"})
+                @UniqueConstraint(name = "uk_user_product_favorite", columnNames = {"ma_nguoi_dung", "ma_san_pham"})
         },
         indexes = {
-                @Index(name = "idx_favorite_user", columnList = "id_nguoi_dung"),
-                @Index(name = "idx_favorite_product", columnList = "id_san_pham")
+                @Index(name = "idx_favorite_user", columnList = "ma_nguoi_dung"),
+                @Index(name = "idx_favorite_product", columnList = "ma_san_pham")
         }
 )
 public class Favorite {
 
     @Id
     @GeneratedValue(strategy = GenerationType.UUID)
-    @Column(name = "id_yeu_thich", length = 36, updatable = false, nullable = false)
+    @Column(name = "ma_yeu_thich", length = 36, updatable = false, nullable = false)
     private String id;
 
     @ManyToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "id_nguoi_dung", nullable = false)
+    @JoinColumn(name = "ma_nguoi_dung", nullable = false)
     private User user;
 
     @ManyToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "id_san_pham", nullable = false)
+    @JoinColumn(name = "ma_san_pham", nullable = false)
     private Product product;
 
     @CreationTimestamp
