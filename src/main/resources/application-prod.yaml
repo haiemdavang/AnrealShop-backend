@@ -67,10 +67,6 @@ logging:
     org.hibernate.jpa.internal.util.LogHelper: WARN           # Tắt log PersistenceUnitInfo
     org.hibernate.Version: WARN
 
-cloudinary:
-  cloud-name: ${CLOUDINARY_NAME}
-  api-key: ${CLOUDINARY_KEY}
-  api-secret: ${CLOUDINARY_SECRET}
 payment:
   vnPay:
     url: ${VNP_URL}
@@ -81,28 +77,8 @@ payment:
     command: ${VNP_COMD}
     orderType: ${VNP_TYPE}
     timeExpire: ${VNP_MAX_TIME}
-gemini:
-  api-key: ${GEMINI_API_KEY}
+
 jwt:
   token:
     secret_Key: ${JWT_SECRET_KEY}
-ghn:
-  token: ${GHN_TOKEN}
-  shop_id: ${GHN_SHOPID}
 
-n8n:
-  webhook:
-    base-url: ${N8N_BASE_URL:http://localhost:5678}
-    chatbot-path: /webhook/chat-box
-
-# Spring Cloud GCP Configuration for Virtual Try-On
-spring.cloud.gcp:
-  project-id: ${GOOGLE_CLOUD_PROJECT_ID}
-  credentials:
-    location: ${GOOGLE_APPLICATION_CREDENTIALS:}
-  location: us-central1
-tryonhd.url: ${TRY_ON_HD_URL:http://localhost:8080}
-
-sentry:
-  dsn: https://ed6f24a0fea1f08db25510b8a3a0cecb@o4511504639131648.ingest.de.sentry.io/4511504679632976
-  send-default-pii: true

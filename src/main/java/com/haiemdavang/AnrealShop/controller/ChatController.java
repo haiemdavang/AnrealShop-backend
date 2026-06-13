@@ -19,6 +19,7 @@ public class ChatController {
     private final ChatService chatService;
     private final NotificationService notificationService;
 
+
     @MessageMapping("/chat.send")
     public void sendMessage(@Payload ChatMessageRequest chatMessageRequest, Principal principal) {
         // 1. Save to DB and get response DTO

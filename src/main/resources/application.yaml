@@ -54,13 +54,11 @@ spring:
     basename: errorMessage/MessageString
     encoding: UTF-8
 
-  ai:
-    google:
-      genai:
-        api-key: ${GEMINI_API_KEY:}
-        chat:
-          options:
-            model: gemini-2.5-flash-lite
+  cloud.gcp:
+    project-id: ${GOOGLE_CLOUD_PROJECT_ID}
+    credentials:
+      location: ${GOOGLE_APPLICATION_CREDENTIALS:}
+    location: us-central1
 
 
 server:
@@ -78,14 +76,21 @@ n8n:
     chatbot-path: /webhook/chat-box
     timeout: 30
 
-# Spring Cloud GCP Configuration for Virtual Try-On
-spring.cloud.gcp:
-  project-id: ${GOOGLE_CLOUD_PROJECT_ID:your-project-id}
-  credentials:
-    location: ${GOOGLE_APPLICATION_CREDENTIALS:}
-  location: us-central1
 tryonhd.url: ${TRY_ON_HD_URL:http://localhost:8080}
+
+chat:
+  encryption:
+    key: ${CHAT_ENCRYPTION_KEY:your_chat_encryption_key}
+
+ghn:
+  token: ${GHN_TOKEN:your_ghn_token}
+  shop_id: ${GHN_SHOPID:your_ghn_shop_id}
 
 sentry:
   dsn: https://ed6f24a0fea1f08db25510b8a3a0cecb@o4511504639131648.ingest.de.sentry.io/4511504679632976
   send-default-pii: true
+
+cloudinary:
+  cloud-name: ${CLOUDINARY_NAME:ko_co_dau}
+  api-key: ${CLOUDINARY_KEY:ko_co_dau}
+  api-secret: ${CLOUDINARY_SECRET:ko_co_dau}

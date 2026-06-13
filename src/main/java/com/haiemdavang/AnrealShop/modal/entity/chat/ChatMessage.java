@@ -1,4 +1,5 @@
 package com.haiemdavang.AnrealShop.modal.entity.chat;
+import com.haiemdavang.AnrealShop.config.StringEncryptor;
 
 
 import com.haiemdavang.AnrealShop.modal.enums.MessageType;
@@ -38,6 +39,7 @@ public class ChatMessage {
     private MessageType type;
 
     @Column(name = "noi_dung", columnDefinition = "TEXT")
+    @Convert(converter = StringEncryptor.class)
     private String content;
 
     @Column(name = "da_doc", columnDefinition = "BOOLEAN DEFAULT FALSE")
