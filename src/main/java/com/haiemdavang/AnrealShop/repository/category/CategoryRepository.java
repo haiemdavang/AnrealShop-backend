@@ -16,19 +16,19 @@ public interface CategoryRepository extends JpaRepository<Category, String> {
 
     @Query(value = """
             WITH RECURSIVE category_tree AS (
-                SELECT id_danh_muc
+                SELECT ma_danh_muc
                 FROM   danh_muc
-                WHERE  (id_danh_muc = :param OR duong_dan_day_du = :param)
+                WHERE  (ma_danh_muc = :param OR duong_dan_day_du = :param)
                   AND  da_xoa = false
 
                 UNION ALL
 
-                SELECT c.id_danh_muc
+                SELECT c.ma_danh_muc
                 FROM   danh_muc c
-                INNER JOIN category_tree ct ON c.id_danh_muc_cha = ct.id_danh_muc
+                INNER JOIN category_tree ct ON c.ma_danh_muc_cha = ct.ma_danh_muc
                 WHERE  c.da_xoa = false
             )
-            SELECT id_danh_muc FROM category_tree
+            SELECT ma_danh_muc FROM category_tree
             """, nativeQuery = true)
     List<String> findCategoryAndDescendantIds(@Param("param") String param);
 
