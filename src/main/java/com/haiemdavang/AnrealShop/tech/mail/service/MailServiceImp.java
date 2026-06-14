@@ -119,8 +119,14 @@ public class MailServiceImp implements IMailService{
             String emailShop = shopOrder.getShop().getUser().getEmail();
             String shopName = shopOrder.getShop().getName();
             Set<ProductOrderItemDto> productOrderItems = orderServiceImp.getProductOrderItemByShopOrder(shopOrder.getId());
+
             String templateMail = MailTemplate.getNewOrderHTMLVietnamese(orderId, shopName, productOrderItems, true, feBaseUrl);
             sendHtmlEmail(emailShop, "Đơn Hàng Mới", templateMail);
+
+            String emailUser = shopOrder.getUser().getEmail();
+            String userName = shopOrder.getUser().getFullName();
+            String templateMail_user = MailTemplate.getNewOrderHTMLVietnamese(shopOrder.getId(), userName, productOrderItems, true, feBaseUrl);
+            sendHtmlEmail(emailUser, "Đơn Hàng Mới", templateMail_user);
         }
     }
 

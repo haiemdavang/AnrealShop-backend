@@ -16,7 +16,7 @@ public class KafkaTopicConfig {
     @Bean
     public NewTopic productSyncTopic(){
         return TopicBuilder.name(PRODUCT_SYNC_TOPIC)
-                .partitions(2)
+                .partitions(1)
                 .replicas(1)
                 .build();
     }
@@ -24,7 +24,7 @@ public class KafkaTopicConfig {
     @Bean
     public NewTopic noticeSyncTopic(){
         return TopicBuilder.name(NOTICE_SYNC_TOPIC)
-                .partitions(2)
+                .partitions(1)
                 .replicas(1)
                 .build();
     }
@@ -32,7 +32,7 @@ public class KafkaTopicConfig {
     @Bean
     public NewTopic shippingSyncTopic(){
         return TopicBuilder.name(SHIPPING_STATUS_SYNC_TOPIC)
-                .partitions(2)
+                .partitions(1)
                 .replicas(1)
                 .build();
     }
@@ -40,7 +40,7 @@ public class KafkaTopicConfig {
     @Bean
     public NewTopic mailSyncTopic(){
         return TopicBuilder.name(EMAIL_SYNC_TOPIC)
-                .partitions(2)
+                .partitions(1)
                 .replicas(1)
                 .build();
     }
@@ -48,7 +48,7 @@ public class KafkaTopicConfig {
     @Bean
     public NewTopic checkoutSyncTopic(){
         return TopicBuilder.name(CHECKOUT_SYNC_TOPIC)
-                .partitions(2)
+                .partitions(1)
                 .replicas(1)
                 .build();
     }
