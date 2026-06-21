@@ -158,13 +158,25 @@ public class ImageValidationService {
                 throw new BadRequestException(field.toUpperCase() + "_CONTENT_CHECK_FAILED");
             }
 
+            // 1. LẤY OBJECT SAFESEARCH RA TRƯỚC
             SafeSearchAnnotation safeSearch = imageResponse.getSafeSearchAnnotation();
+
+            // 2. LOG CHI TIẾT CÁC CHỈ SỐ (Dùng log.info để dễ quan sát)
+            log.info("[{}] SafeSearch result -> Adult: {}, Violence: {}, Racy: {}, Medical: {}, Spoof: {}",
+                    field,
+                    safeSearch.getAdult().name(),
+                    safeSearch.getViolence().name(),
+                    safeSearch.getRacy().name(),
+                    safeSearch.getMedical().name(),
+                    safeSearch.getSpoof().name());
+
+            // 3. Kiểm tra logic chặn của bạn
             checkSafeSearchLikelihood(safeSearch, field);
 
         } catch (BadRequestException e) {
-            throw e; // re-throw our own exceptions as-is
-        } catch (IOException e) {
-            log.error("[{}] Failed to connect to Cloud Vision API: {}", field, e.getMessage());
+            throw e;
+        } catch (Exception e) {
+            log.error("[{}] Failed to connect to Cloud Vision API: {}", field, e.getMessage(), e);
             throw new BadRequestException(field.toUpperCase() + "_CONTENT_CHECK_FAILED");
         }
     }
