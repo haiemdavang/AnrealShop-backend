@@ -9,9 +9,13 @@ import com.google.cloud.aiplatform.v1.PredictionServiceSettings;
 import com.google.protobuf.ListValue;
 import com.google.protobuf.Struct;
 import com.google.protobuf.Value;
+import com.haiemdavang.AnrealShop.dto.product.EsProductDto;
+import com.haiemdavang.AnrealShop.exception.AnrealShopException;
+import com.haiemdavang.AnrealShop.exception.BadRequestException;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 
+import java.util.ArrayList;
 import java.util.List;
 import java.util.stream.Collectors;
 
@@ -34,6 +38,31 @@ public class RAGService {
     private Integer embeddingDimension;
 
     public List<Float> convertToVector(String rawInput) {
+        return convertToVector(rawInput, "RETRIEVAL_QUERY");
+    }
+
+    public List<Float> convertProductToVector(EsProductDto product) {
+        if (product == null) {
+            throw new BadRequestException("PRODUCT_EMBEDDING_DATA_REQUIRED");
+        }
+
+        List<String> productContent = new ArrayList<>();
+        addContent(productContent, "Tên sản phẩm", product.getName());
+        addContent(productContent, "Mô tả ngắn", product.getSortDescription());
+        addContent(productContent, "Mô tả", product.getDescription());
+        addContent(productContent, "Giá gốc", product.getPrice());
+        addContent(productContent, "Giá giảm", product.getDiscountPrice());
+        addContent(productContent, "Danh mục", product.getCategory());
+        addContent(productContent, "Thuộc tính", product.getAttributes());
+
+        return convertToVector(String.join("\n", productContent), "RETRIEVAL_DOCUMENT");
+    }
+
+    private List<Float> convertToVector(String rawInput, String taskType) {
+        if (rawInput == null || rawInput.isBlank()) {
+            throw new BadRequestException("EMBEDDING_INPUT_REQUIRED");
+        }
+
         try {
             String endpoint = location + "-aiplatform.googleapis.com:443";
 
@@ -59,7 +88,7 @@ public class RAGService {
                                                 .setStringValue(rawInput)
                                                 .build())
                                         .putFields("task_type", Value.newBuilder()
-                                                .setStringValue("RETRIEVAL_QUERY")
+                                                .setStringValue(taskType)
                                                 .build())
                                         .build()
                         )
@@ -99,19 +128,22 @@ public class RAGService {
                         .collect(Collectors.toList());
 
                 if (vector.size() != embeddingDimension) {
-                    throw new RuntimeException(
-                            "Embedding dimension mismatch. Expected "
-                                    + embeddingDimension
-                                    + " but got "
-                                    + vector.size()
-                    );
+                    throw new AnrealShopException("EMBEDDING_DIMENSION_MISMATCH");
                 }
 
                 return vector;
             }
 
+        } catch (AnrealShopException e) {
+            throw e;
         } catch (Exception e) {
-            throw new RuntimeException("Gọi Vertex AI Embedding thất bại", e);
+            throw new AnrealShopException("VERTEX_AI_EMBEDDING_FAILED");
+        }
+    }
+
+    private static void addContent(List<String> content, String label, Object value) {
+        if (value != null && !value.toString().isBlank()) {
+            content.add(label + ": " + value);
         }
     }
 

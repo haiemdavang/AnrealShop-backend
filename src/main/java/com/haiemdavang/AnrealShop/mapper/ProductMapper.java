@@ -329,6 +329,7 @@ public class ProductMapper {
                 .quantity(product.getQuantity())
                 .categoryId(product.getCategory() != null ? product.getCategory().getId() : null)
                 .categoryPath(product.getCategory() != null ? product.getCategory().getUrlPath() : null)
+                .categorySlug(product.getCategory().getUrlSlug())
                 .weight(product.getWeight())
                 .height(product.getHeight())
                 .length(product.getLength())

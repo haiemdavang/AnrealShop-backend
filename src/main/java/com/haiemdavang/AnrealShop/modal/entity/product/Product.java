@@ -115,7 +115,7 @@ public class Product {
     private boolean deleted = false;
 
     @JdbcTypeCode(SqlTypes.VECTOR)
-    @Column(name = "embedding")
+    @Column(name = "embedding", columnDefinition = "vector(768)")
     private float[] embedding;
 
     @OneToMany(mappedBy = "product", cascade = CascadeType.ALL, fetch = FetchType.LAZY, orphanRemoval = true)

@@ -44,6 +44,8 @@ public class BaseProductRequest {
 
     private String categoryPath;
 
+    private String categorySlug;
+
     @NotNull(message = "PRODUCT_WEIGHT_NOTNULL")
     private Long weight;
 

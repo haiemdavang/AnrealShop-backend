@@ -242,8 +242,30 @@ public class ProductServiceImp implements IProductService {
         EsProductDto esProductDto = productMapper.toEsProductDto(newProduct, allAttributes);
         ProductSyncMessage message = ProductSyncMessage.builder()
                 .action(ProductSyncActionType.CREATE)
-                .product(esProductDto).build();
+                .id(newProduct.getId())
+                .product(esProductDto)
+                .build();
         productKafkaProducer.sendProductSyncMessage(message);
+    }
+
+    @Override
+    @Transactional
+    public void updateProductEmbedding(String productId, List<Float> embedding) {
+        if (productId == null || productId.isBlank()) {
+            throw new BadRequestException("PRODUCT_ID_REQUIRED");
+        }
+        if (embedding == null || embedding.isEmpty()) {
+            throw new BadRequestException("PRODUCT_EMBEDDING_REQUIRED");
+        }
+
+        Product product = productRepository.findById(productId)
+                .orElseThrow(() -> new BadRequestException("PRODUCT_NOT_FOUND"));
+        float[] embeddingArray = new float[embedding.size()];
+        for (int i = 0; i < embedding.size(); i++) {
+            embeddingArray[i] = embedding.get(i);
+        }
+        product.setEmbedding(embeddingArray);
+        productRepository.save(product);
     }
 
     @Override

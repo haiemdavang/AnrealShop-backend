@@ -42,4 +42,6 @@ public interface IProductService {
     List<ProductSku> findByProductSkuIdIn(Set<String> ids);
 
     List<ProductSku> getProductSkuByIdIn(Set<String> strings);
+
+    void updateProductEmbedding(String productId, List<Float> embedding);
 }
