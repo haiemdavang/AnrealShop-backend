@@ -182,24 +182,32 @@ public class ImageValidationService {
     }
 
     private void checkSafeSearchLikelihood(SafeSearchAnnotation annotation, String field) {
-        Likelihood adult    = annotation.getAdult();
+
+        Likelihood adult = annotation.getAdult();
         Likelihood violence = annotation.getViolence();
-        Likelihood racy     = annotation.getRacy();
-        Likelihood medical  = annotation.getMedical();
+        Likelihood racy = annotation.getRacy();
 
-        log.debug("[{}] SafeSearch → adult={}, violence={}, racy={}, medical={}",
-                field, adult, violence, racy, medical);
+        log.info("[{}] SafeSearch -> Adult={}, Violence={}, Racy={}",
+                field,
+                adult,
+                violence,
+                racy);
 
-        if (isUnsafe(adult)) {
-            log.warn("[{}] Rejected: adult content detected ({})", field, adult);
+        // Adult: chặn mạnh
+        if (isAdultOrViolenceUnsafe(adult)) {
+            log.warn("[{}] Adult content detected: {}", field, adult);
             throw new BadRequestException(field.toUpperCase() + "_CONTAINS_ADULT_CONTENT");
         }
-        if (isUnsafe(violence)) {
-            log.warn("[{}] Rejected: violent content detected ({})", field, violence);
+
+        // Violence: chặn mạnh
+        if (isAdultOrViolenceUnsafe(violence)) {
+            log.warn("[{}] Violent content detected: {}", field, violence);
             throw new BadRequestException(field.toUpperCase() + "_CONTAINS_VIOLENT_CONTENT");
         }
-        if (isUnsafe(racy)) {
-            log.warn("[{}] Rejected: racy/suggestive content detected ({})", field, racy);
+
+        // Racy: chỉ chặn VERY_LIKELY
+        if (isRacyUnsafe(racy)) {
+            log.warn("[{}] Racy content detected: {}", field, racy);
             throw new BadRequestException(field.toUpperCase() + "_CONTAINS_INAPPROPRIATE_CONTENT");
         }
     }
@@ -208,8 +216,13 @@ public class ImageValidationService {
      * Returns true if likelihood is LIKELY or VERY_LIKELY.
      * POSSIBLE is intentionally allowed to avoid false positives (e.g. swimwear product shots).
      */
-    private boolean isUnsafe(Likelihood likelihood) {
-        return likelihood == Likelihood.LIKELY || likelihood == Likelihood.VERY_LIKELY;
+    private boolean isAdultOrViolenceUnsafe(Likelihood likelihood) {
+        return likelihood == Likelihood.LIKELY
+                || likelihood == Likelihood.VERY_LIKELY;
+    }
+
+    private boolean isRacyUnsafe(Likelihood likelihood) {
+        return likelihood == Likelihood.VERY_LIKELY;
     }
 
     // -----------------------------------------------------------------------

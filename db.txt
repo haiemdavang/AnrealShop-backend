@@ -1,0 +1,961 @@
+-- public.banner definition
+
+-- Drop table
+
+-- DROP TABLE public.banner;
+
+CREATE TABLE public.banner (
+                               ma_banner varchar(36) NOT NULL,
+                               ngay_tao timestamp DEFAULT CURRENT_TIMESTAMP NULL,
+                               mo_ta text NULL,
+                               thu_tu_hien_thi int4 DEFAULT 0 NULL,
+                               ngay_ket_thuc timestamp(6) NULL,
+                               duong_dan_anh varchar(255) NOT NULL,
+                               dang_hoat_dong bool DEFAULT true NULL,
+                               duong_dan_chuyen_huong varchar(255) NULL,
+                               ngay_bat_dau timestamp(6) NULL,
+                               tieu_de varchar(100) NULL,
+                               ngay_cap_nhat timestamp(6) NULL,
+                               CONSTRAINT banner_pkey PRIMARY KEY (ma_banner)
+);
+
+
+-- public.flyway_schema_history definition
+
+-- Drop table
+
+-- DROP TABLE public.flyway_schema_history;
+
+CREATE TABLE public.flyway_schema_history (
+                                              installed_rank int4 NOT NULL,
+                                              "version" varchar(50) NULL,
+                                              description varchar(200) NOT NULL,
+                                              "type" varchar(20) NOT NULL,
+                                              script varchar(1000) NOT NULL,
+                                              checksum int4 NULL,
+                                              installed_by varchar(100) NOT NULL,
+                                              installed_on timestamp DEFAULT now() NOT NULL,
+                                              execution_time int4 NOT NULL,
+                                              success bool NOT NULL,
+                                              CONSTRAINT flyway_schema_history_pk PRIMARY KEY (installed_rank)
+);
+CREATE INDEX flyway_schema_history_s_idx ON public.flyway_schema_history USING btree (success);
+
+
+-- public.thanh_toan definition
+
+-- Drop table
+
+-- DROP TABLE public.thanh_toan;
+
+CREATE TABLE public.thanh_toan (
+                                   ma_thanh_toan varchar(36) NOT NULL,
+                                   so_tien int8 NOT NULL,
+                                   ngay_tao timestamp(6) NULL,
+                                   het_han_luc timestamp(6) NULL,
+                                   cong_thanh_toan varchar(255) NULL,
+                                   trang_thai varchar(255) NOT NULL,
+                                   loai_thanh_toan varchar(50) NULL,
+                                   ngay_cap_nhat timestamp(6) NULL,
+                                   CONSTRAINT thanh_toan_cong_thanh_toan_check CHECK (((cong_thanh_toan)::text = ANY (ARRAY[('VNPAY'::character varying)::text, ('MOMO'::character varying)::text, ('CASH_ON_DELIVERY'::character varying)::text]))),
+	CONSTRAINT thanh_toan_loai_thanh_toan_check CHECK (((loai_thanh_toan)::text = ANY (ARRAY[('COD'::character varying)::text, ('BANK_TRANSFER'::character varying)::text]))),
+	CONSTRAINT thanh_toan_pkey PRIMARY KEY (ma_thanh_toan),
+	CONSTRAINT thanh_toan_trang_thai_check CHECK (((trang_thai)::text = ANY (ARRAY[('PENDING'::character varying)::text, ('COMPLETED'::character varying)::text, ('CANCELED'::character varying)::text, ('EXPIRED'::character varying)::text, ('REFUNDED'::character varying)::text, ('FAILED'::character varying)::text])))
+);
+
+
+-- public.thuoc_tinh definition
+
+-- Drop table
+
+-- DROP TABLE public.thuoc_tinh;
+
+CREATE TABLE public.thuoc_tinh (
+                                   ma_thuoc_tinh varchar(36) NOT NULL,
+                                   ngay_tao timestamp(6) NULL,
+                                   ten_hien_thi varchar(100) NOT NULL,
+                                   thu_tu_hien_thi int4 NULL,
+                                   mac_dinh bool DEFAULT false NULL,
+                                   dung_chosku bool DEFAULT false NULL,
+                                   chon_nhieu bool DEFAULT false NULL,
+                                   ten_khoa varchar(50) NOT NULL,
+                                   ngay_cap_nhat timestamp(6) NULL,
+                                   CONSTRAINT idx_thuoctinh_tenkhoa UNIQUE (ten_khoa),
+                                   CONSTRAINT thuoc_tinh_pkey PRIMARY KEY (ma_thuoc_tinh)
+);
+
+
+-- public.tinh definition
+
+-- Drop table
+
+-- DROP TABLE public.tinh;
+
+CREATE TABLE public.tinh (
+                             ma_tinh varchar(36) NOT NULL,
+                             ten_tinh varchar(100) NOT NULL,
+                             CONSTRAINT tinh_pkey PRIMARY KEY (ma_tinh)
+);
+
+
+-- public.vai_tro definition
+
+-- Drop table
+
+-- DROP TABLE public.vai_tro;
+
+CREATE TABLE public.vai_tro (
+                                ma_vai_tro varchar(36) NOT NULL,
+                                mo_ta varchar(255) NULL,
+                                ten_vai_tro varchar(10) NOT NULL,
+                                CONSTRAINT idx_vaitro_ten UNIQUE (ten_vai_tro),
+                                CONSTRAINT vai_tro_pkey PRIMARY KEY (ma_vai_tro),
+                                CONSTRAINT vai_tro_ten_vai_tro_check CHECK (((ten_vai_tro)::text = ANY (ARRAY[('USER'::character varying)::text, ('ADMIN'::character varying)::text])))
+);
+
+
+-- public.vi_dien_tu definition
+
+-- Drop table
+
+-- DROP TABLE public.vi_dien_tu;
+
+CREATE TABLE public.vi_dien_tu (
+                                   ma varchar(36) NOT NULL,
+                                   ma_chu_so_huu varchar(36) NOT NULL,
+                                   loai_chu_so_huu varchar(20) NOT NULL,
+                                   so_du_kha_dung int8 DEFAULT 0 NOT NULL,
+                                   loai_tien_te varchar(10) DEFAULT 'VND'::character varying NULL,
+                                   mat_khau_thanh_toan varchar(255) DEFAULT NULL::character varying NULL,
+                                   trang_thai varchar(20) DEFAULT 'DANG_HOAT_DONG'::character varying NULL,
+                                   ngay_tao timestamp(6) DEFAULT CURRENT_TIMESTAMP NULL,
+                                   ngay_cap_nhat timestamp(6) DEFAULT CURRENT_TIMESTAMP NULL,
+                                   CONSTRAINT uk_vi_chu_so_huu UNIQUE (ma_chu_so_huu, loai_chu_so_huu),
+                                   CONSTRAINT vi_dien_tu_loai_chu_so_huu_check CHECK (((loai_chu_so_huu)::text = ANY (ARRAY[('NGUOI_DUNG'::character varying)::text, ('CUA_HANG'::character varying)::text]))),
+	CONSTRAINT vi_dien_tu_pkey PRIMARY KEY (ma),
+	CONSTRAINT vi_dien_tu_trang_thai_check CHECK (((trang_thai)::text = ANY (ARRAY[('DANG_HOAT_DONG'::character varying)::text, ('TAM_KHOA'::character varying)::text, ('BI_VO_HIEU_HOA'::character varying)::text])))
+);
+
+
+-- public.danh_muc definition
+
+-- Drop table
+
+-- DROP TABLE public.danh_muc;
+
+CREATE TABLE public.danh_muc (
+                                 ma_danh_muc varchar(36) NOT NULL,
+                                 ngay_tao timestamp(6) NULL,
+                                 mo_ta text NULL,
+                                 co_con bool DEFAULT false NOT NULL,
+                                 da_xoa bool DEFAULT false NOT NULL,
+                                 hien_thi bool DEFAULT true NOT NULL,
+                                 cap int4 NULL,
+                                 ten_danh_muc varchar(100) NOT NULL,
+                                 tong_san_pham int4 DEFAULT 0 NOT NULL,
+                                 duong_dan_day_du text NULL,
+                                 duong_dan varchar(100) NULL,
+                                 ma_danh_muc_cha varchar(36) NULL,
+                                 CONSTRAINT danh_muc_pkey PRIMARY KEY (ma_danh_muc),
+                                 CONSTRAINT fkru5gr4onfkt5doeemc6y691ax FOREIGN KEY (ma_danh_muc_cha) REFERENCES public.danh_muc(ma_danh_muc)
+);
+
+
+-- public.gia_tri_thuoc_tinh definition
+
+-- Drop table
+
+-- DROP TABLE public.gia_tri_thuoc_tinh;
+
+CREATE TABLE public.gia_tri_thuoc_tinh (
+                                           ma_gia_tri_thuoc_tinh varchar(36) NOT NULL,
+                                           ngay_tao timestamp(6) NULL,
+                                           thu_tu_hien_thi int4 DEFAULT 0 NULL,
+                                           mac_dinh bool DEFAULT false NULL,
+                                           du_lieu_mo_ta text NULL,
+                                           ngay_cap_nhat timestamp(6) NULL,
+                                           gia_tri varchar(255) NOT NULL,
+                                           ma_thuoc_tinh varchar(36) NOT NULL,
+                                           CONSTRAINT gia_tri_thuoc_tinh_pkey PRIMARY KEY (ma_gia_tri_thuoc_tinh),
+                                           CONSTRAINT uk_giatrithuoctinh_khoa_giatri UNIQUE (ma_thuoc_tinh, gia_tri),
+                                           CONSTRAINT fk5o1gx280qdmg5lunj9iaspylu FOREIGN KEY (ma_thuoc_tinh) REFERENCES public.thuoc_tinh(ma_thuoc_tinh)
+);
+
+
+-- public.hien_thi_danh_muc definition
+
+-- Drop table
+
+-- DROP TABLE public.hien_thi_danh_muc;
+
+CREATE TABLE public.hien_thi_danh_muc (
+                                          ma_hien_thi_danh_muc varchar(36) NOT NULL,
+                                          thu_tu_hien_thi int4 NOT NULL,
+                                          loai_media varchar(255) NULL,
+                                          vi_tri varchar(255) NULL,
+                                          anh_dai_dien varchar(255) NULL,
+                                          ma_danh_muc varchar(36) NOT NULL,
+                                          CONSTRAINT hien_thi_danh_muc_loai_media_check CHECK (((loai_media)::text = ANY (ARRAY[('IMAGE'::character varying)::text, ('VIDEO'::character varying)::text]))),
+	CONSTRAINT hien_thi_danh_muc_pkey PRIMARY KEY (ma_hien_thi_danh_muc),
+	CONSTRAINT hien_thi_danh_muc_vi_tri_check CHECK (((vi_tri)::text = ANY (ARRAY[('HOMEPAGE'::character varying)::text, ('SIDEBAR'::character varying)::text]))),
+	CONSTRAINT fkica36u84cpim4ke7cpaerfi62 FOREIGN KEY (ma_danh_muc) REFERENCES public.danh_muc(ma_danh_muc)
+);
+
+
+-- public.huyen definition
+
+-- Drop table
+
+-- DROP TABLE public.huyen;
+
+CREATE TABLE public.huyen (
+                              ma_huyen varchar(36) NOT NULL,
+                              ten_huyen varchar(100) NOT NULL,
+                              ma_tinh varchar(36) NOT NULL,
+                              CONSTRAINT huyen_pkey PRIMARY KEY (ma_huyen),
+                              CONSTRAINT fkgeetcgvdsjub12jb5engn84d9 FOREIGN KEY (ma_tinh) REFERENCES public.tinh(ma_tinh)
+);
+
+
+-- public.lich_su_giao_dich_vi definition
+
+-- Drop table
+
+-- DROP TABLE public.lich_su_giao_dich_vi;
+
+CREATE TABLE public.lich_su_giao_dich_vi (
+                                             ma varchar(36) NOT NULL,
+                                             ma_vi varchar(36) NOT NULL,
+                                             loai_giao_dich varchar(30) NOT NULL,
+                                             so_tien int8 NOT NULL,
+                                             so_du_truoc int8 DEFAULT 0 NOT NULL,
+                                             so_du_sau int8 DEFAULT 0 NOT NULL,
+                                             trang_thai varchar(20) DEFAULT 'THANH_CONG'::character varying NOT NULL,
+                                             ma_tham_chieu varchar(100) DEFAULT NULL::character varying NULL,
+                                             mo_ta text NULL,
+                                             ngay_tao timestamp(6) DEFAULT CURRENT_TIMESTAMP NULL,
+                                             CONSTRAINT lich_su_giao_dich_vi_pkey PRIMARY KEY (ma),
+                                             CONSTRAINT lich_su_loai_giao_dich_check CHECK (((loai_giao_dich)::text = ANY (ARRAY[('NAP_TIEN'::character varying)::text, ('RUT_TIEN'::character varying)::text, ('THANH_TOAN'::character varying)::text, ('NHAN_TIEN'::character varying)::text, ('HOAN_TIEN'::character varying)::text]))),
+	CONSTRAINT lich_su_trang_thai_check CHECK (((trang_thai)::text = ANY (ARRAY[('THANH_CONG'::character varying)::text, ('THAT_BAI'::character varying)::text, ('DANG_XU_LY'::character varying)::text]))),
+	CONSTRAINT fk_giaodich_vi FOREIGN KEY (ma_vi) REFERENCES public.vi_dien_tu(ma)
+);
+CREATE INDEX idx_giaodich_loai ON public.lich_su_giao_dich_vi USING btree (loai_giao_dich);
+CREATE INDEX idx_giaodich_ma_vi ON public.lich_su_giao_dich_vi USING btree (ma_vi);
+CREATE INDEX idx_giaodich_ngay_tao ON public.lich_su_giao_dich_vi USING btree (ngay_tao);
+
+
+-- public.nguoi_dung definition
+
+-- Drop table
+
+-- DROP TABLE public.nguoi_dung;
+
+CREATE TABLE public.nguoi_dung (
+                                   ma_nguoi_dung varchar(36) NOT NULL,
+                                   anh_dai_dien varchar(255) NULL,
+                                   ngay_tao timestamp DEFAULT CURRENT_TIMESTAMP NULL,
+                                   ly_do_xoa text NULL,
+                                   da_xoa bool DEFAULT false NULL,
+                                   ngay_sinh date NULL,
+                                   email varchar(100) NOT NULL,
+                                   tu_mangxh bool DEFAULT false NULL,
+                                   ho_ten varchar(100) NULL,
+                                   gioi_tinh varchar(255) NULL,
+                                   mat_khau varchar(255) NULL,
+                                   so_dien_thoai varchar(20) NULL,
+                                   ngay_cap_nhat timestamp(6) NULL,
+                                   ten_dang_nhap varchar(50) NOT NULL,
+                                   da_xac_thuc bool DEFAULT false NULL,
+                                   ma_vai_tro varchar(36) NULL,
+                                   diem_tb numeric DEFAULT 1000 NULL,
+                                   CONSTRAINT idx_nguoidung_email UNIQUE (email),
+                                   CONSTRAINT idx_nguoidung_tendangnhap UNIQUE (ten_dang_nhap),
+                                   CONSTRAINT nguoi_dung_gioi_tinh_check CHECK (((gioi_tinh)::text = ANY (ARRAY[('MALE'::character varying)::text, ('FEMALE'::character varying)::text, ('OTHER'::character varying)::text]))),
+	CONSTRAINT nguoi_dung_pkey PRIMARY KEY (ma_nguoi_dung),
+	CONSTRAINT fksuvgf33tfdlh0i4vyo6edecvl FOREIGN KEY (ma_vai_tro) REFERENCES public.vai_tro(ma_vai_tro)
+);
+
+
+-- public.thong_bao_nguoi_dung definition
+
+-- Drop table
+
+-- DROP TABLE public.thong_bao_nguoi_dung;
+
+CREATE TABLE public.thong_bao_nguoi_dung (
+                                             ma_thong_bao_nguoi_dung varchar(36) NOT NULL,
+                                             noi_dung text NOT NULL,
+                                             ngay_tao timestamp DEFAULT CURRENT_TIMESTAMP NULL,
+                                             da_doc bool DEFAULT false NULL,
+                                             duong_dan_chuyen_huong varchar(255) NULL,
+                                             anh_dai_dien varchar(255) NULL,
+                                             ngay_cap_nhat timestamp(6) NULL,
+                                             ma_nguoi_dung varchar(36) NOT NULL,
+                                             CONSTRAINT thong_bao_nguoi_dung_pkey PRIMARY KEY (ma_thong_bao_nguoi_dung),
+                                             CONSTRAINT fkr9uq3ve6x6ypcuga1mcld82jf FOREIGN KEY (ma_nguoi_dung) REFERENCES public.nguoi_dung(ma_nguoi_dung)
+);
+
+
+-- public.xa definition
+
+-- Drop table
+
+-- DROP TABLE public.xa;
+
+CREATE TABLE public.xa (
+                           ma_xa varchar(36) NOT NULL,
+                           ten_xa varchar(100) NOT NULL,
+                           ma_huyen varchar(36) NOT NULL,
+                           CONSTRAINT xa_pkey PRIMARY KEY (ma_xa),
+                           CONSTRAINT fkr10jf325f08v1xurksmwe7cir FOREIGN KEY (ma_huyen) REFERENCES public.huyen(ma_huyen)
+);
+
+
+-- public.xac_thuc_nguoi_dung definition
+
+-- Drop table
+
+-- DROP TABLE public.xac_thuc_nguoi_dung;
+
+CREATE TABLE public.xac_thuc_nguoi_dung (
+                                            ma varchar(36) NOT NULL,
+                                            ma_nguoi_dung varchar(36) NOT NULL,
+                                            ho_ten_that varchar(100) NOT NULL,
+                                            so_giay_to varchar(20) NOT NULL,
+                                            loai_giay_to varchar(20) NOT NULL,
+                                            ngay_sinh date NULL,
+                                            anh_mat_truoc varchar(255) DEFAULT NULL::character varying NULL,
+                                            anh_mat_sau varchar(255) DEFAULT NULL::character varying NULL,
+                                            anh_chan_dung varchar(255) DEFAULT NULL::character varying NULL,
+                                            trang_thai varchar(20) DEFAULT 'CHO_DUYET'::character varying NULL,
+                                            ly_do_tu_choi text NULL,
+                                            ngay_phe_duyet timestamp(6) DEFAULT NULL::timestamp without time zone NULL,
+                                            ngay_tao timestamp(6) DEFAULT CURRENT_TIMESTAMP NULL,
+                                            ngay_cap_nhat timestamp(6) DEFAULT CURRENT_TIMESTAMP NULL,
+                                            CONSTRAINT uk_so_giay_to UNIQUE (so_giay_to),
+                                            CONSTRAINT xac_thuc_loai_giay_to_check CHECK (((loai_giay_to)::text = ANY (ARRAY[('CCCD'::character varying)::text, ('HO_CHIEU'::character varying)::text]))),
+	CONSTRAINT xac_thuc_nguoi_dung_pkey PRIMARY KEY (ma),
+	CONSTRAINT xac_thuc_trang_thai_check CHECK (((trang_thai)::text = ANY (ARRAY[('CHO_DUYET'::character varying)::text, ('DA_XAC_THUC'::character varying)::text, ('BI_TU_CHOI'::character varying)::text]))),
+	CONSTRAINT fk_xacthuc_nguoidung FOREIGN KEY (ma_nguoi_dung) REFERENCES public.nguoi_dung(ma_nguoi_dung)
+);
+
+
+-- public.cua_hang definition
+
+-- Drop table
+
+-- DROP TABLE public.cua_hang;
+
+CREATE TABLE public.cua_hang (
+                                 ma_cua_hang varchar(36) NOT NULL,
+                                 anh_dai_dien varchar(255) NULL,
+                                 diem_danh_giatb float8 DEFAULT 0 NULL,
+                                 ngay_tao timestamp DEFAULT CURRENT_TIMESTAMP NULL,
+                                 da_xoa bool DEFAULT false NULL,
+                                 mo_ta text NULL,
+                                 luot_theo_doi int4 DEFAULT 0 NULL,
+                                 ten_cua_hang varchar(100) NOT NULL,
+                                 tongsp int4 DEFAULT 0 NULL,
+                                 doanh_thu int8 DEFAULT 0 NULL,
+                                 tong_danh_gia int4 DEFAULT 0 NULL,
+                                 ngay_cap_nhat timestamp(6) NULL,
+                                 duong_dan text NULL,
+                                 ma_nguoi_dung varchar(36) NOT NULL,
+                                 CONSTRAINT cua_hang_pkey PRIMARY KEY (ma_cua_hang),
+                                 CONSTRAINT fk1yiasf2ahk01uijc1hncvduao FOREIGN KEY (ma_nguoi_dung) REFERENCES public.nguoi_dung(ma_nguoi_dung)
+);
+
+
+-- public.cua_hang_thuoc_tinh definition
+
+-- Drop table
+
+-- DROP TABLE public.cua_hang_thuoc_tinh;
+
+CREATE TABLE public.cua_hang_thuoc_tinh (
+                                            ma_thuoc_tinh varchar(36) NOT NULL,
+                                            ma_cua_hang varchar(36) NOT NULL,
+                                            CONSTRAINT shop_thuoc_tinh_pkey PRIMARY KEY (ma_thuoc_tinh, ma_cua_hang),
+                                            CONSTRAINT fk2p3l4c6d8m7svk0c9nb9o9t9b FOREIGN KEY (ma_cua_hang) REFERENCES public.cua_hang(ma_cua_hang),
+                                            CONSTRAINT fkl5p5mqpu88lsjlsdy942ygbyw FOREIGN KEY (ma_thuoc_tinh) REFERENCES public.thuoc_tinh(ma_thuoc_tinh)
+);
+
+
+-- public.danh_muc_cua_hang definition
+
+-- Drop table
+
+-- DROP TABLE public.danh_muc_cua_hang;
+
+CREATE TABLE public.danh_muc_cua_hang (
+                                          ma_danh_muc_cua_hang varchar(36) NOT NULL,
+                                          ma_cua_hang varchar(36) NOT NULL,
+                                          CONSTRAINT danh_muc_cua_hang_pkey PRIMARY KEY (ma_danh_muc_cua_hang),
+                                          CONSTRAINT fkg96om833nnrr6qiyv9ex2b6tc FOREIGN KEY (ma_cua_hang) REFERENCES public.cua_hang(ma_cua_hang)
+);
+
+
+-- public.danh_muc_cua_hang_item definition
+
+-- Drop table
+
+-- DROP TABLE public.danh_muc_cua_hang_item;
+
+CREATE TABLE public.danh_muc_cua_hang_item (
+                                               ma_danhmuc varchar(255) NOT NULL,
+                                               ma_danh_muc varchar(36) NOT NULL,
+                                               ma_danhmuccuahang varchar(255) NOT NULL,
+                                               ma_danh_muc_cua_hang varchar(36) NOT NULL,
+                                               CONSTRAINT danh_muc_cua_hang_item_pkey PRIMARY KEY (ma_danhmuc, ma_danhmuccuahang),
+                                               CONSTRAINT fkay6lnm7n51qyg64hwykv4v1dk FOREIGN KEY (ma_danh_muc_cua_hang) REFERENCES public.danh_muc_cua_hang(ma_danh_muc_cua_hang),
+                                               CONSTRAINT fks4w163lvkq5kf79fv476nejsq FOREIGN KEY (ma_danh_muc) REFERENCES public.danh_muc(ma_danh_muc)
+);
+
+
+-- public.dia_chi_cua_hang definition
+
+-- Drop table
+
+-- DROP TABLE public.dia_chi_cua_hang;
+
+CREATE TABLE public.dia_chi_cua_hang (
+                                         ma_dia_chi_cua_hang varchar(36) NOT NULL,
+                                         chi_tiet text NOT NULL,
+                                         so_dien_thoai varchar(20) NOT NULL,
+                                         dia_chi_mac_dinh bool DEFAULT false NULL,
+                                         nguoi_gui varchar(100) NOT NULL,
+                                         ma_huyen varchar(36) NOT NULL,
+                                         ma_tinh varchar(36) NOT NULL,
+                                         ma_cua_hang varchar(36) NOT NULL,
+                                         ma_xa varchar(36) NOT NULL,
+                                         CONSTRAINT dia_chi_cua_hang_pkey PRIMARY KEY (ma_dia_chi_cua_hang),
+                                         CONSTRAINT fkd5198ypdlad1klax27p3vqteb FOREIGN KEY (ma_tinh) REFERENCES public.tinh(ma_tinh),
+                                         CONSTRAINT fke5mf6u4ifkc9ajy14r0ssi8po FOREIGN KEY (ma_cua_hang) REFERENCES public.cua_hang(ma_cua_hang),
+                                         CONSTRAINT fknrxf96p5pmkyix7tynyf71hx2 FOREIGN KEY (ma_huyen) REFERENCES public.huyen(ma_huyen),
+                                         CONSTRAINT fkr2xys7vsml8is6b0jonqdgeub FOREIGN KEY (ma_xa) REFERENCES public.xa(ma_xa)
+);
+
+
+-- public.dia_chi_nguoi_dung definition
+
+-- Drop table
+
+-- DROP TABLE public.dia_chi_nguoi_dung;
+
+CREATE TABLE public.dia_chi_nguoi_dung (
+                                           ma_dia_chi_nguoi_dung varchar(36) NOT NULL,
+                                           chi_tiet text NOT NULL,
+                                           so_dien_thoai varchar(20) NOT NULL,
+                                           dia_chi_mac_dinh bool DEFAULT false NULL,
+                                           nguoi_nhan varchar(100) NOT NULL,
+                                           ma_huyen varchar(36) NOT NULL,
+                                           ma_tinh varchar(36) NOT NULL,
+                                           ma_nguoi_dung varchar(36) NOT NULL,
+                                           ma_xa varchar(36) NOT NULL,
+                                           CONSTRAINT dia_chi_nguoi_dung_pkey PRIMARY KEY (ma_dia_chi_nguoi_dung),
+                                           CONSTRAINT fk19wch0pqjt4q6qsw4du2d27qm FOREIGN KEY (ma_huyen) REFERENCES public.huyen(ma_huyen),
+                                           CONSTRAINT fk4ud7s0si11mnq7nkhc7bh4vyb FOREIGN KEY (ma_xa) REFERENCES public.xa(ma_xa),
+                                           CONSTRAINT fkilird8t69twn8u8c8ukhso6ir FOREIGN KEY (ma_nguoi_dung) REFERENCES public.nguoi_dung(ma_nguoi_dung),
+                                           CONSTRAINT fkqgmda9qbpnmqkbqq7ph629oxa FOREIGN KEY (ma_tinh) REFERENCES public.tinh(ma_tinh)
+);
+
+
+-- public.don_hang definition
+
+-- Drop table
+
+-- DROP TABLE public.don_hang;
+
+CREATE TABLE public.don_hang (
+                                 ma_don_hang varchar(36) NOT NULL,
+                                 ngay_tao timestamp DEFAULT CURRENT_TIMESTAMP NULL,
+                                 tong_tien int8 NOT NULL,
+                                 trang_thai varchar(255) NOT NULL,
+                                 tam_tinh int8 NULL,
+                                 tong_phi_van_chuyen int8 NULL,
+                                 ngay_cap_nhat timestamp(6) NULL,
+                                 ma_thanh_toan varchar(36) NULL,
+                                 ma_dia_chi_nguoi_dung varchar(36) NOT NULL,
+                                 ma_nguoi_dung varchar(36) NOT NULL,
+                                 CONSTRAINT don_hang_pkey PRIMARY KEY (ma_don_hang),
+                                 CONSTRAINT don_hang_trang_thai_check CHECK (((trang_thai)::text = ANY (ARRAY[('PROCESSING'::character varying)::text, ('SUCCESS'::character varying)::text, ('CANCELED'::character varying)::text]))),
+	CONSTRAINT ukqjrnvbm2sdw3qi8871yfr0ivp UNIQUE (ma_thanh_toan),
+	CONSTRAINT fkc5tkognwtgw8fw3dnpylmoad0 FOREIGN KEY (ma_nguoi_dung) REFERENCES public.nguoi_dung(ma_nguoi_dung),
+	CONSTRAINT fkn0hu63ofdu8ym4a4knv3rimw5 FOREIGN KEY (ma_dia_chi_nguoi_dung) REFERENCES public.dia_chi_nguoi_dung(ma_dia_chi_nguoi_dung),
+	CONSTRAINT fkrspgexpthb7jujuqrnxpnr17w FOREIGN KEY (ma_thanh_toan) REFERENCES public.thanh_toan(ma_thanh_toan)
+);
+
+
+-- public.don_hang_cua_hang definition
+
+-- Drop table
+
+-- DROP TABLE public.don_hang_cua_hang;
+
+CREATE TABLE public.don_hang_cua_hang (
+                                          ma_don_hang_cua_hang varchar(36) NOT NULL,
+                                          ngay_tao timestamp DEFAULT CURRENT_TIMESTAMP NULL,
+                                          phi_giao_hang int8 NOT NULL,
+                                          trang_thai varchar(255) NULL,
+                                          tong_tien int8 NOT NULL,
+                                          tong_khoi_luong int8 NOT NULL,
+                                          ngay_cap_nhat timestamp DEFAULT CURRENT_TIMESTAMP NULL,
+                                          ma_don_hang varchar(36) NOT NULL,
+                                          ma_dia_chi_cua_hang varchar(36) NOT NULL,
+                                          ma_cua_hang varchar(36) NOT NULL,
+                                          ma_nguoi_dung varchar(36) NOT NULL,
+                                          CONSTRAINT don_hang_cua_hang_pkey PRIMARY KEY (ma_don_hang_cua_hang),
+                                          CONSTRAINT don_hang_cua_hang_trang_thai_check CHECK (((trang_thai)::text = ANY (ARRAY['INIT_PROCESSING'::text, 'PENDING_CONFIRMATION'::text, 'CONFIRMED'::text, 'PREPARING'::text, 'SHIPPING'::text, 'DELIVERED'::text, 'CLOSED'::text, 'SUCCESS'::text]))),
+	CONSTRAINT fk16d92q883uq4akhgqhwnd42ug FOREIGN KEY (ma_don_hang) REFERENCES public.don_hang(ma_don_hang),
+	CONSTRAINT fk3l9jm8vqdls9yu6v8jhppdiud FOREIGN KEY (ma_cua_hang) REFERENCES public.cua_hang(ma_cua_hang),
+	CONSTRAINT fkl5i3s4wvk8v2o06tgw6rri4va FOREIGN KEY (ma_nguoi_dung) REFERENCES public.nguoi_dung(ma_nguoi_dung),
+	CONSTRAINT fkos6kbas8wnu7pbblfo7r4c7ws FOREIGN KEY (ma_dia_chi_cua_hang) REFERENCES public.dia_chi_cua_hang(ma_dia_chi_cua_hang)
+);
+
+
+-- public.gio_hang definition
+
+-- Drop table
+
+-- DROP TABLE public.gio_hang;
+
+CREATE TABLE public.gio_hang (
+                                 ma_gio_hang varchar(36) NOT NULL,
+                                 ngay_cap_nhat timestamp(6) NULL,
+                                 ma_nguoi_dung varchar(36) NOT NULL,
+                                 CONSTRAINT gio_hang_pkey PRIMARY KEY (ma_gio_hang),
+                                 CONSTRAINT fk2u78fj8dii7flm08i96u70nbo FOREIGN KEY (ma_nguoi_dung) REFERENCES public.nguoi_dung(ma_nguoi_dung)
+);
+
+
+-- public.lich_su_chatbot definition
+
+-- Drop table
+
+-- DROP TABLE public.lich_su_chatbot;
+
+CREATE TABLE public.lich_su_chatbot (
+                                        ma_lich_su varchar(36) NOT NULL,
+                                        ma_nguoi_dung varchar(36) NOT NULL,
+                                        cau_hoi text NOT NULL,
+                                        tra_loi text NULL,
+                                        loai_response varchar(50) NULL,
+                                        loai_query varchar(50) NULL,
+                                        anh_dai_dien varchar(500) NULL,
+                                        link_san_pham varchar(255) NULL,
+                                        ngay_tao timestamp DEFAULT CURRENT_TIMESTAMP NULL,
+                                        CONSTRAINT lich_su_chatbot_pkey PRIMARY KEY (ma_lich_su),
+                                        CONSTRAINT fk_chatbot_history_user FOREIGN KEY (ma_nguoi_dung) REFERENCES public.nguoi_dung(ma_nguoi_dung)
+);
+CREATE INDEX idx_chatbot_history_created ON public.lich_su_chatbot USING btree (ngay_tao DESC);
+CREATE INDEX idx_chatbot_history_user ON public.lich_su_chatbot USING btree (ma_nguoi_dung);
+
+
+-- public.lich_su_dang_nhap definition
+
+-- Drop table
+
+-- DROP TABLE public.lich_su_dang_nhap;
+
+CREATE TABLE public.lich_su_dang_nhap (
+                                          ma_lich_su_dang_nhap varchar(36) NOT NULL,
+                                          thiet_bi varchar(100) NULL,
+                                          dia_chiip varchar(45) NOT NULL,
+                                          vi_tri varchar(100) NULL,
+                                          thoi_gian_dang_nhap timestamp(6) NOT NULL,
+                                          thoi_gian_dang_xuat timestamp(6) NULL,
+                                          user_agent varchar(255) NULL,
+                                          ma_nguoi_dung varchar(36) NOT NULL,
+                                          CONSTRAINT lich_su_dang_nhap_pkey PRIMARY KEY (ma_lich_su_dang_nhap),
+                                          CONSTRAINT fk46a274f1gtlwsekfe7cbfbvqc FOREIGN KEY (ma_nguoi_dung) REFERENCES public.nguoi_dung(ma_nguoi_dung)
+);
+CREATE INDEX idx_lichsudangnhap_nguoidung ON public.lich_su_dang_nhap USING btree (ma_nguoi_dung);
+CREATE INDEX idx_lichsudangnhap_thoigiandangnhap ON public.lich_su_dang_nhap USING btree (thoi_gian_dang_nhap);
+
+
+-- public.phi_van_chuyen_don_hang_cua_hang definition
+
+-- Drop table
+
+-- DROP TABLE public.phi_van_chuyen_don_hang_cua_hang;
+
+CREATE TABLE public.phi_van_chuyen_don_hang_cua_hang (
+                                                         ma_don_hang_cua_hang varchar(36) NOT NULL,
+                                                         so_tien int8 NULL,
+                                                         CONSTRAINT phi_van_chuyen_don_hang_cua_hang_pkey PRIMARY KEY (ma_don_hang_cua_hang),
+                                                         CONSTRAINT fk79xrl47iwar5up5i0d0sk55t3 FOREIGN KEY (ma_don_hang_cua_hang) REFERENCES public.don_hang_cua_hang(ma_don_hang_cua_hang)
+);
+
+
+-- public.phong_chat definition
+
+-- Drop table
+
+-- DROP TABLE public.phong_chat;
+
+CREATE TABLE public.phong_chat (
+                                   ma_phong_chat varchar(36) NOT NULL,
+                                   hoat_dong_gan_nhat timestamp DEFAULT CURRENT_TIMESTAMP NULL,
+                                   ma_nguoi_dung varchar(36) NOT NULL,
+                                   ma_cua_hang varchar(36) NOT NULL,
+                                   CONSTRAINT phong_chat_pkey PRIMARY KEY (ma_phong_chat),
+                                   CONSTRAINT uq_user_shop_pair UNIQUE (ma_nguoi_dung, ma_cua_hang),
+                                   CONSTRAINT fk_chatroom_customer FOREIGN KEY (ma_nguoi_dung) REFERENCES public.nguoi_dung(ma_nguoi_dung),
+                                   CONSTRAINT fk_chatroom_shop FOREIGN KEY (ma_cua_hang) REFERENCES public.cua_hang(ma_cua_hang)
+);
+
+
+-- public.san_pham definition
+
+-- Drop table
+
+-- DROP TABLE public.san_pham;
+
+CREATE TABLE public.san_pham (
+                                 ma_san_pham varchar(36) NOT NULL,
+                                 diem_danh_giatb float4 NOT NULL,
+                                 ngay_tao timestamp(6) NULL,
+                                 da_xoa bool NOT NULL,
+                                 mo_ta text NULL,
+                                 gia_giam int8 NOT NULL,
+                                 chieu_cao int8 NOT NULL,
+                                 chieu_dai int8 NOT NULL,
+                                 ten_san_pham varchar(255) NOT NULL,
+                                 gia_goc int8 NOT NULL,
+                                 so_luong int4 NOT NULL,
+                                 trang_thai_han_che varchar(255) NOT NULL,
+                                 bi_han_che bool NOT NULL,
+                                 ly_do_han_che text NULL,
+                                 doanh_thu int8 NOT NULL,
+                                 da_ban int4 NOT NULL,
+                                 mo_ta_ngan text NULL,
+                                 anh_dai_dien varchar(255) NULL,
+                                 tong_danh_gia int4 NOT NULL,
+                                 ngay_cap_nhat timestamp(6) NULL,
+                                 duong_dan text NULL,
+                                 hien_thi bool NOT NULL,
+                                 khoi_luong int8 NOT NULL,
+                                 chieu_rong int8 NOT NULL,
+                                 ma_danh_muc varchar(36) NULL,
+                                 ma_cua_hang varchar(36) NOT NULL,
+                                 embedding public.vector NULL,
+                                 CONSTRAINT san_pham_pkey PRIMARY KEY (ma_san_pham),
+                                 CONSTRAINT san_pham_trang_thai_han_che_check CHECK (((trang_thai_han_che)::text = ANY (ARRAY[('ALL'::character varying)::text, ('ACTIVE'::character varying)::text, ('VIOLATION'::character varying)::text, ('PENDING'::character varying)::text, ('HIDDEN'::character varying)::text]))),
+	CONSTRAINT fkd58u2abkk8djfe7kfatndp012 FOREIGN KEY (ma_cua_hang) REFERENCES public.cua_hang(ma_cua_hang),
+	CONSTRAINT fkk8b4wwituxbxbcudtvqie796j FOREIGN KEY (ma_danh_muc) REFERENCES public.danh_muc(ma_danh_muc)
+);
+CREATE INDEX idx_san_pham_embedding ON public.san_pham USING ivfflat (embedding vector_cosine_ops) WITH (lists='100');
+
+
+-- public.san_pham_thuoc_tinh_chung definition
+
+-- Drop table
+
+-- DROP TABLE public.san_pham_thuoc_tinh_chung;
+
+CREATE TABLE public.san_pham_thuoc_tinh_chung (
+                                                  ma_gia_tri_thuoc_tinh varchar(36) NOT NULL,
+                                                  ma_san_pham varchar(36) NOT NULL,
+                                                  CONSTRAINT san_pham_thuoc_tinh_chung_pkey PRIMARY KEY (ma_gia_tri_thuoc_tinh, ma_san_pham),
+                                                  CONSTRAINT fk5uo5qqddb55s4wcawfhj7wjy5 FOREIGN KEY (ma_gia_tri_thuoc_tinh) REFERENCES public.gia_tri_thuoc_tinh(ma_gia_tri_thuoc_tinh),
+                                                  CONSTRAINT fk6wx5bih63mx7pxilrxen690u8 FOREIGN KEY (ma_san_pham) REFERENCES public.san_pham(ma_san_pham)
+);
+
+
+-- public.san_phamsku definition
+
+-- Drop table
+
+-- DROP TABLE public.san_phamsku;
+
+CREATE TABLE public.san_phamsku (
+                                    ma_san_phamsku varchar(36) NOT NULL,
+                                    ngay_tao timestamp(6) NULL,
+                                    gia int8 NOT NULL,
+                                    so_luong int4 DEFAULT 0 NULL,
+                                    masku varchar(50) NOT NULL,
+                                    da_ban int4 NOT NULL,
+                                    anh_dai_dien varchar(255) NULL,
+                                    ngay_cap_nhat timestamp(6) NULL,
+                                    ma_san_pham varchar(36) NOT NULL,
+                                    CONSTRAINT san_phamsku_pkey PRIMARY KEY (ma_san_phamsku),
+                                    CONSTRAINT fkbi5llaiyrmsktmk4f7qdjtauy FOREIGN KEY (ma_san_pham) REFERENCES public.san_pham(ma_san_pham)
+);
+
+
+-- public.sku_thuoc_tinh definition
+
+-- Drop table
+
+-- DROP TABLE public.sku_thuoc_tinh;
+
+CREATE TABLE public.sku_thuoc_tinh (
+                                       ma_san_phamsku varchar(36) NOT NULL,
+                                       ma_gia_tri_thuoc_tinh varchar(36) NOT NULL,
+                                       CONSTRAINT sku_thuoc_tinh_pkey PRIMARY KEY (ma_san_phamsku, ma_gia_tri_thuoc_tinh),
+                                       CONSTRAINT fk4conbbhyvu0in0tv6pleq0wgi FOREIGN KEY (ma_san_phamsku) REFERENCES public.san_phamsku(ma_san_phamsku),
+                                       CONSTRAINT fk4kfxuq71qy6um3i6jl9xn0v15 FOREIGN KEY (ma_gia_tri_thuoc_tinh) REFERENCES public.gia_tri_thuoc_tinh(ma_gia_tri_thuoc_tinh)
+);
+
+
+-- public.theo_doi definition
+
+-- Drop table
+
+-- DROP TABLE public.theo_doi;
+
+CREATE TABLE public.theo_doi (
+                                 ma_theo_doi varchar(36) NOT NULL,
+                                 thoi_gian_theo_doi timestamp DEFAULT CURRENT_TIMESTAMP NULL,
+                                 ma_cua_hang varchar(36) NOT NULL,
+                                 ma_nguoi_dung varchar(36) NOT NULL,
+                                 CONSTRAINT theo_doi_pkey PRIMARY KEY (ma_theo_doi),
+                                 CONSTRAINT uk_user_shop_follow UNIQUE (ma_nguoi_dung, ma_cua_hang),
+                                 CONSTRAINT fk_theodoi_cuahang FOREIGN KEY (ma_cua_hang) REFERENCES public.cua_hang(ma_cua_hang),
+                                 CONSTRAINT fk_theodoi_nguoidung FOREIGN KEY (ma_nguoi_dung) REFERENCES public.nguoi_dung(ma_nguoi_dung)
+);
+
+
+-- public.theo_doi_don_hang_cua_hang definition
+
+-- Drop table
+
+-- DROP TABLE public.theo_doi_don_hang_cua_hang;
+
+CREATE TABLE public.theo_doi_don_hang_cua_hang (
+                                                   cap_nhat_luc timestamp(6) NOT NULL,
+                                                   trang_thai varchar(255) NOT NULL,
+                                                   ma_don_hang_cua_hang varchar(36) NOT NULL,
+                                                   CONSTRAINT theo_doi_don_hang_cua_hang_trang_thai_check CHECK (((trang_thai)::text = ANY (ARRAY['INIT_PROCESSING'::text, 'PENDING_CONFIRMATION'::text, 'CONFIRMED'::text, 'PREPARING'::text, 'SHIPPING'::text, 'DELIVERED'::text, 'SUCCESS'::text, 'CLOSED'::text]))),
+	CONSTRAINT fkc9f6gbyyposndh5q6xy7gx7n4 FOREIGN KEY (ma_don_hang_cua_hang) REFERENCES public.don_hang_cua_hang(ma_don_hang_cua_hang)
+);
+
+
+-- public.thong_bao_cua_hang definition
+
+-- Drop table
+
+-- DROP TABLE public.thong_bao_cua_hang;
+
+CREATE TABLE public.thong_bao_cua_hang (
+                                           ma_thong_bao_cua_hang varchar(36) NOT NULL,
+                                           noi_dung text NOT NULL,
+                                           ngay_tao timestamp DEFAULT CURRENT_TIMESTAMP NULL,
+                                           da_doc bool DEFAULT false NULL,
+                                           duong_dan_chuyen_huong varchar(255) NULL,
+                                           anh_dai_dien varchar(255) NULL,
+                                           ngay_cap_nhat timestamp(6) NULL,
+                                           ma_cua_hang varchar(36) NOT NULL,
+                                           CONSTRAINT thong_bao_cua_hang_pkey PRIMARY KEY (ma_thong_bao_cua_hang),
+                                           CONSTRAINT fk89ookkhc84nsf4awhb2maln78 FOREIGN KEY (ma_cua_hang) REFERENCES public.cua_hang(ma_cua_hang)
+);
+
+
+-- public.tin_nhan definition
+
+-- Drop table
+
+-- DROP TABLE public.tin_nhan;
+
+CREATE TABLE public.tin_nhan (
+                                 ma_tin_nhan varchar(36) NOT NULL,
+                                 noi_dung text NULL,
+                                 ngay_tao timestamp DEFAULT CURRENT_TIMESTAMP NULL,
+                                 da_doc bool DEFAULT false NULL,
+                                 loai_tin_nhan varchar(255) NOT NULL,
+                                 ma_phong_chat varchar(36) NOT NULL,
+                                 ben_gui varchar(20) NOT NULL,
+                                 CONSTRAINT tin_nhan_loai_tin_nhan_check CHECK (((loai_tin_nhan)::text = ANY (ARRAY[('TEXT'::character varying)::text, ('MEDIA'::character varying)::text]))),
+	CONSTRAINT tin_nhan_pkey PRIMARY KEY (ma_tin_nhan),
+	CONSTRAINT fk6qots5hs8qprp58ev9snwjfy9 FOREIGN KEY (ma_phong_chat) REFERENCES public.phong_chat(ma_phong_chat)
+);
+
+
+-- public.van_chuyen definition
+
+-- Drop table
+
+-- DROP TABLE public.van_chuyen;
+
+CREATE TABLE public.van_chuyen (
+                                   ma_van_chuyen varchar(36) NOT NULL,
+                                   ly_do_huy varchar(500) NULL,
+                                   ngay_tao timestamp(6) NULL,
+                                   ngay_lay_hang date NOT NULL,
+                                   phi_van_chuyen int8 NOT NULL,
+                                   da_in bool NOT NULL,
+                                   ghi_chu varchar(255) NULL,
+                                   ten_don_vi_giao varchar(100) NOT NULL,
+                                   sdtdon_vi_giao varchar(20) NOT NULL,
+                                   trang_thai varchar(255) NOT NULL,
+                                   tong_khoi_luong int8 NOT NULL,
+                                   ma_dia_chi_cua_hang varchar(36) NOT NULL,
+                                   ma_dia_chi_nguoi_dung varchar(36) NOT NULL,
+                                   ma_don_hang_cua_hang varchar(36) NOT NULL,
+                                   CONSTRAINT ukqs411ruu1p3p1tpakix7b2qve UNIQUE (ma_don_hang_cua_hang),
+                                   CONSTRAINT van_chuyen_pkey PRIMARY KEY (ma_van_chuyen),
+                                   CONSTRAINT van_chuyen_trang_thai_check CHECK (((trang_thai)::text = ANY (ARRAY[('ORDER_CREATED'::character varying)::text, ('WAITING_FOR_PICKUP'::character varying)::text, ('PICKED_UP'::character varying)::text, ('IN_TRANSIT'::character varying)::text, ('OUT_FOR_DELIVERY'::character varying)::text, ('DELIVERED'::character varying)::text, ('DELIVERY_FAILED'::character varying)::text, ('RETURNED'::character varying)::text]))),
+	CONSTRAINT fk66xdq4du4cis71yuakk98p28n FOREIGN KEY (ma_dia_chi_nguoi_dung) REFERENCES public.dia_chi_nguoi_dung(ma_dia_chi_nguoi_dung),
+	CONSTRAINT fkho2dfwfg1fe51tbhpgb1evf9b FOREIGN KEY (ma_don_hang_cua_hang) REFERENCES public.don_hang_cua_hang(ma_don_hang_cua_hang),
+	CONSTRAINT fkmxlqlfmijr5ly0c65shq8uvsp FOREIGN KEY (ma_dia_chi_cua_hang) REFERENCES public.dia_chi_cua_hang(ma_dia_chi_cua_hang)
+);
+
+
+-- public.yeu_thich definition
+
+-- Drop table
+
+-- DROP TABLE public.yeu_thich;
+
+CREATE TABLE public.yeu_thich (
+                                  ma_yeu_thich varchar(36) NOT NULL,
+                                  ma_nguoi_dung varchar(36) NOT NULL,
+                                  ma_san_pham varchar(36) NOT NULL,
+                                  thoi_gian_yeu_thich timestamp DEFAULT CURRENT_TIMESTAMP NULL,
+                                  CONSTRAINT uk_user_product_favorite UNIQUE (ma_nguoi_dung, ma_san_pham),
+                                  CONSTRAINT yeu_thich_pkey PRIMARY KEY (ma_yeu_thich),
+                                  CONSTRAINT fk_favorite_product FOREIGN KEY (ma_san_pham) REFERENCES public.san_pham(ma_san_pham),
+                                  CONSTRAINT fk_favorite_user FOREIGN KEY (ma_nguoi_dung) REFERENCES public.nguoi_dung(ma_nguoi_dung)
+);
+CREATE INDEX idx_favorite_created ON public.yeu_thich USING btree (thoi_gian_yeu_thich DESC);
+CREATE INDEX idx_favorite_product ON public.yeu_thich USING btree (ma_san_pham);
+CREATE INDEX idx_favorite_user ON public.yeu_thich USING btree (ma_nguoi_dung);
+
+
+-- public.gio_hang_item definition
+
+-- Drop table
+
+-- DROP TABLE public.gio_hang_item;
+
+CREATE TABLE public.gio_hang_item (
+                                      ma_gio_hang_item varchar(36) NOT NULL,
+                                      gia int8 NOT NULL,
+                                      so_luong int4 DEFAULT 1 NULL,
+                                      duoc_chon bool DEFAULT true NULL,
+                                      ma_gio_hang varchar(36) NOT NULL,
+                                      ma_san_phamsku varchar(36) NOT NULL,
+                                      CONSTRAINT gio_hang_item_pkey PRIMARY KEY (ma_gio_hang_item),
+                                      CONSTRAINT fk3tlitj5uoounj67vfs1jddlax FOREIGN KEY (ma_gio_hang) REFERENCES public.gio_hang(ma_gio_hang),
+                                      CONSTRAINT fkltqol4xlx4djkx4sb4kg7w15x FOREIGN KEY (ma_san_phamsku) REFERENCES public.san_phamsku(ma_san_phamsku)
+);
+
+
+-- public.item_don_hang definition
+
+-- Drop table
+
+-- DROP TABLE public.item_don_hang;
+
+CREATE TABLE public.item_don_hang (
+                                      ma_item_don_hang varchar(36) NOT NULL,
+                                      ly_do_huy text NULL,
+                                      huy_boi varchar(255) NULL,
+                                      ngay_tao timestamp(6) NULL,
+                                      gia int8 NOT NULL,
+                                      so_luong int4 NOT NULL,
+                                      trang_thai varchar(255) NULL,
+                                      thanh_cong bool DEFAULT false NULL,
+                                      ngay_cap_nhat timestamp(6) NULL,
+                                      ma_don_hang varchar(36) NOT NULL,
+                                      ma_san_phamsku varchar(36) NOT NULL,
+                                      ma_don_hang_cua_hang varchar(36) NOT NULL,
+                                      CONSTRAINT item_don_hang_huy_boi_check CHECK (((huy_boi)::text = ANY (ARRAY[('CUSTOMER'::character varying)::text, ('SHOP'::character varying)::text, ('ADMIN'::character varying)::text]))),
+	CONSTRAINT item_don_hang_pkey PRIMARY KEY (ma_item_don_hang),
+	CONSTRAINT item_don_hang_trang_thai_check CHECK (((trang_thai)::text = ANY (ARRAY['PROCESSING'::text, 'PENDING_CONFIRMATION'::text, 'PREPARING'::text, 'WAIT_SHIPMENT'::text, 'SHIPPING'::text, 'DELIVERED'::text, 'SUCCESS'::text, 'REFUND'::text, 'CANCELED'::text]))),
+	CONSTRAINT fk6bdb8al23ds9ek2cx8c249mhl FOREIGN KEY (ma_don_hang) REFERENCES public.don_hang(ma_don_hang),
+	CONSTRAINT fklw37476jcp7efhdydpvstv8y8 FOREIGN KEY (ma_san_phamsku) REFERENCES public.san_phamsku(ma_san_phamsku),
+	CONSTRAINT fkpd6wbrjxa9sribjku1n9aigf7 FOREIGN KEY (ma_don_hang_cua_hang) REFERENCES public.don_hang_cua_hang(ma_don_hang_cua_hang)
+);
+
+
+-- public.media_san_pham definition
+
+-- Drop table
+
+-- DROP TABLE public.media_san_pham;
+
+CREATE TABLE public.media_san_pham (
+                                       ma_media_san_pham varchar(36) NOT NULL,
+                                       anh_dai_dien varchar(255) NULL,
+                                       loai_media varchar(255) NOT NULL,
+                                       duong_dan varchar(255) NOT NULL,
+                                       ma_san_pham varchar(36) NOT NULL,
+                                       CONSTRAINT media_san_pham_loai_media_check CHECK (((loai_media)::text = ANY (ARRAY[('IMAGE'::character varying)::text, ('VIDEO'::character varying)::text]))),
+	CONSTRAINT media_san_pham_pkey PRIMARY KEY (ma_media_san_pham),
+	CONSTRAINT fkknpiqd3d7hhgg5gadjrn9b9ie FOREIGN KEY (ma_san_pham) REFERENCES public.san_pham(ma_san_pham)
+);
+
+
+-- public.theo_doi_item_don_hang definition
+
+-- Drop table
+
+-- DROP TABLE public.theo_doi_item_don_hang;
+
+CREATE TABLE public.theo_doi_item_don_hang (
+                                               cap_nhat_luc timestamp(6) NOT NULL,
+                                               trang_thai varchar(255) NOT NULL,
+                                               ma_item_don_hang varchar(36) NOT NULL,
+                                               CONSTRAINT theo_doi_item_don_hang_pkey PRIMARY KEY (ma_item_don_hang, cap_nhat_luc),
+                                               CONSTRAINT theo_doi_item_don_hang_trang_thai_check CHECK (((trang_thai)::text = ANY (ARRAY['PROCESSING'::text, 'PENDING_CONFIRMATION'::text, 'PREPARING'::text, 'WAIT_SHIPMENT'::text, 'SHIPPING'::text, 'DELIVERED'::text, 'SUCCESS'::text, 'REFUND'::text, 'CANCELED'::text]))),
+	CONSTRAINT fkhrxvsngitik0cm5pidw2dj0je FOREIGN KEY (ma_item_don_hang) REFERENCES public.item_don_hang(ma_item_don_hang)
+);
+
+
+-- public.theo_doi_van_chuyen definition
+
+-- Drop table
+
+-- DROP TABLE public.theo_doi_van_chuyen;
+
+CREATE TABLE public.theo_doi_van_chuyen (
+                                            cap_nhat_luc timestamp(6) NOT NULL,
+                                            ghi_chu varchar(255) NULL,
+                                            trang_thai varchar(255) NOT NULL,
+                                            ma_van_chuyen varchar(36) NOT NULL,
+                                            CONSTRAINT theo_doi_van_chuyen_trang_thai_check CHECK (((trang_thai)::text = ANY (ARRAY[('ORDER_CREATED'::character varying)::text, ('WAITING_FOR_PICKUP'::character varying)::text, ('PICKED_UP'::character varying)::text, ('IN_TRANSIT'::character varying)::text, ('OUT_FOR_DELIVERY'::character varying)::text, ('DELIVERED'::character varying)::text, ('DELIVERY_FAILED'::character varying)::text, ('RETURNED'::character varying)::text]))),
+	CONSTRAINT fkqw0bbhlixvbkhmo8r0gax5rrb FOREIGN KEY (ma_van_chuyen) REFERENCES public.van_chuyen(ma_van_chuyen)
+);
+
+
+-- public.danh_gia_san_pham definition
+
+-- Drop table
+
+-- DROP TABLE public.danh_gia_san_pham;
+
+CREATE TABLE public.danh_gia_san_pham (
+                                          ma_danh_gia_san_pham varchar(36) NOT NULL,
+                                          binh_luan text NULL,
+                                          ngay_tao timestamp(6) NULL,
+                                          diem_danh_gia int4 NOT NULL,
+                                          ngay_cap_nhat timestamp(6) NULL,
+                                          ma_item_don_hang varchar(36) NULL,
+                                          ma_san_pham varchar(36) NOT NULL,
+                                          ma_nguoi_dung varchar(36) NOT NULL,
+                                          CONSTRAINT danh_gia_san_pham_pkey PRIMARY KEY (ma_danh_gia_san_pham),
+                                          CONSTRAINT uknmyq31tvfvseo2yr8cy0gfflp UNIQUE (ma_item_don_hang),
+                                          CONSTRAINT fk17nf4ylmnmmuqidlsl5vmot3v FOREIGN KEY (ma_nguoi_dung) REFERENCES public.nguoi_dung(ma_nguoi_dung),
+                                          CONSTRAINT fkbi9oecnm517cffsvogwr2cqnq FOREIGN KEY (ma_san_pham) REFERENCES public.san_pham(ma_san_pham),
+                                          CONSTRAINT fko903uwi8dkxh9hais3hih6pe8 FOREIGN KEY (ma_item_don_hang) REFERENCES public.item_don_hang(ma_item_don_hang)
+);
+CREATE INDEX idx_danhgiasanpham_user_product ON public.danh_gia_san_pham USING btree (ma_nguoi_dung, ma_san_pham);
+
+
+-- public.danh_gia_san_pham_media definition
+
+-- Drop table
+
+-- DROP TABLE public.danh_gia_san_pham_media;
+
+CREATE TABLE public.danh_gia_san_pham_media (
+                                                ma_media_danh_gia_san_pham varchar(36) NOT NULL,
+                                                ngay_tao timestamp(6) NULL,
+                                                loai_media varchar(10) NOT NULL,
+                                                duong_dan_media varchar(255) NOT NULL,
+                                                ma_danh_gia_san_pham varchar(36) NOT NULL,
+                                                CONSTRAINT danh_gia_san_pham_media_loai_media_check CHECK (((loai_media)::text = ANY (ARRAY[('IMAGE'::character varying)::text, ('VIDEO'::character varying)::text]))),
+	CONSTRAINT danh_gia_san_pham_media_pkey PRIMARY KEY (ma_media_danh_gia_san_pham),
+	CONSTRAINT fklxxg1rftf9qs3vht0isgeh1f9 FOREIGN KEY (ma_danh_gia_san_pham) REFERENCES public.danh_gia_san_pham(ma_danh_gia_san_pham)
+);

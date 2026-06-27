@@ -24,7 +24,7 @@ public class TryOnResponse {
                 .resultImageBase64(resultImageBase64)
                 .mimeType(mimeType)
                 .success(true)
-                .message("Virtual try-on completed successfully")
+                .message("Thử sản phẩm thành công!")
                 .build();
     }
 
