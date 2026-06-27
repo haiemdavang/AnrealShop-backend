@@ -41,7 +41,6 @@ public class CheckoutController {
     public ResponseEntity<CheckoutResponseDto> checkout(@RequestBody @Valid CheckoutRequestDto requestDto, HttpServletRequest request) {
         User currentUser = securityUtil.getCurrentUser();
         checkoutService.validateItems(requestDto.getItems());
-        requestDto.setAddressId(ApplicationInitHelper.getClientIpAddress(request));
         requestDto.setUserId(currentUser.getId());
         return ResponseEntity.ok(checkoutService.DecreaseBeforeCheckout(requestDto));
     }

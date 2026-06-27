@@ -73,7 +73,7 @@ public class AddressServiceImp implements IAddressService {
 
         return provinces.stream()
                 .map(province -> SingleAddressDto.builder()
-                        .id(Integer.parseInt(province.getId()))
+                        .id(province.getId())
                         .nameDisplay(province.getName())
                         .build())
                 .collect(Collectors.toSet());
@@ -91,7 +91,7 @@ public class AddressServiceImp implements IAddressService {
 
         return districts.stream()
                 .map(district -> SingleAddressDto.builder()
-                        .id(Integer.parseInt(district.getId()))
+                        .id(district.getId())
                         .nameDisplay(district.getName())
                         .build())
                 .collect(Collectors.toSet());
@@ -108,7 +108,7 @@ public class AddressServiceImp implements IAddressService {
 
         return wards.stream()
                 .map(ward -> SingleAddressDto.builder()
-                        .id(Integer.parseInt(ward.getId()))
+                        .id(ward.getId())
                         .nameDisplay(ward.getName())
                         .build())
                 .collect(Collectors.toSet());

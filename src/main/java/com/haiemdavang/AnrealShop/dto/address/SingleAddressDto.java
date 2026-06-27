@@ -8,6 +8,6 @@ import lombok.Data;
 @Builder
 @JsonInclude(JsonInclude.Include.NON_NULL)
 public class SingleAddressDto {
-    private int id;
+    private String id;
     private String nameDisplay;
 }
