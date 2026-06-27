@@ -31,7 +31,7 @@ public class ProductController {
             @RequestParam(required = false, defaultValue = "ALL") String status,
             @RequestParam(required = false) String search,
             @RequestParam(required = false) String categoryId,
-            @RequestParam(required = false, defaultValue = "name-asc") String sortBy) {
+            @RequestParam(required = false, defaultValue = "newest") String sortBy) {
 
         MyShopProductListResponse response = productService.getMyShopProducts(page, limit, status, search, categoryId, sortBy);
         return ResponseEntity.ok(response);
